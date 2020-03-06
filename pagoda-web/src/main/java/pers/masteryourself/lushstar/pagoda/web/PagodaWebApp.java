@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * <p>description : PluginWebApp
+ * <p>description : PagodaWebApp, web 启动
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
@@ -13,10 +13,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date : 2020/2/25 21:11
  */
 @SpringBootApplication
-public class PluginWebApp {
+public class PagodaWebApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(PluginWebApp.class, args);
+        SpringApplication.run(PagodaWebApp.class, args);
     }
 
 }

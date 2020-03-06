@@ -11,7 +11,7 @@ import pers.masteryourself.lushstar.pagoda.web.vo.AppVo;
 import java.util.List;
 
 /**
- * <p>description : AppController
+ * <p>description : AppWebController
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "web/app")
-public class AppController {
+public class AppWebController {
 
     @Value("${pagoda.service.url}")
     private String routeUrl;

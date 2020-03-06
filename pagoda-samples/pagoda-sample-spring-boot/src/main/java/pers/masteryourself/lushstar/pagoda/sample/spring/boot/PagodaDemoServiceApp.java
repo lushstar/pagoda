@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * <p>description : DemoServiceApp
+ * <p>description : PagodaDemoServiceApp
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
@@ -13,10 +13,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date : 2020/2/26 1:23
  */
 @SpringBootApplication
-public class DemoServiceApp {
+public class PagodaDemoServiceApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoServiceApp.class, args);
+        SpringApplication.run(PagodaDemoServiceApp.class, args);
     }
 
 }

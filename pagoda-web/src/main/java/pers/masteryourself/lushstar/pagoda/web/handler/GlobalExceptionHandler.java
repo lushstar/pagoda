@@ -1,4 +1,4 @@
-package pers.masteryourself.lushstar.pagoda.web.controller;
+package pers.masteryourself.lushstar.pagoda.web.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public WebResponse<String> customException(Exception e) {
-        log.error(e.getMessage(), e);
+        log.error("GlobalExceptionHandler catch exception", e);
         return WebResponse.error(e.getMessage());
     }
 

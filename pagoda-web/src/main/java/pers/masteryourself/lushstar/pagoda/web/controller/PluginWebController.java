@@ -3,18 +3,15 @@ package pers.masteryourself.lushstar.pagoda.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pers.masteryourself.lushstar.pagoda.web.vo.PluginVo;
 import pers.masteryourself.lushstar.pagoda.web.vo.WebResponse;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,12 +45,32 @@ public class PluginWebController {
         return "plugin/list";
     }
 
+    @GetMapping(value = "toAdd")
+    public String toAdd() {
+        return "plugin/add";
+    }
+
+    @PostMapping(value = "add")
+    public String add(PluginVo pluginVo, Model model) {
+        ParameterizedTypeReference<WebResponse<List<PluginVo>>> typeRef = new ParameterizedTypeReference<WebResponse<List<PluginVo>>>() {
+        };
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<WebResponse<List<PluginVo>>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/add",
+                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
+        Date now = new Date();
+        pluginVo.setCreateTime(now);
+        pluginVo.setUpdateTime(now);
+        model.addAttribute("pluginVoList", responseEntity.getBody().getData());
+        return "plugin/add";
+    }
+
     @GetMapping(value = "find/{id}")
-    public WebResponse<PluginVo> findById(@PathVariable Long id) {
+    public WebResponse<PluginVo> findById(@PathVariable Long id, Model model) {
         ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
         };
         ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/find/" + id,
                 HttpMethod.GET, null, typeRef);
+        model.addAttribute("pluginVoList", responseEntity.getBody().getData());
         return responseEntity.getBody();
     }
 

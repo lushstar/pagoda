@@ -11,8 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
 </head>
 <body style="text-align: center">
-<h1>pagoda 插件管理
+<h1>
     <button type="button" class="btn btn-primary" onclick="history.go(-1)">回退</button>
+    pagoda 插件管理
+    <button type="button" class="btn btn-primary" onclick="toAdd()">新增</button>
 </h1>
 
 <script src="/jquery-3.4.1/jquery-3.4.1.min.js"></script>
@@ -45,5 +47,10 @@
         </#list>
     </tr>
 </table>
+<script>
+    function toAdd() {
+        window.location.href = "/web/plugin/toAdd";
+    }
+</script>
 </body>
 </html>

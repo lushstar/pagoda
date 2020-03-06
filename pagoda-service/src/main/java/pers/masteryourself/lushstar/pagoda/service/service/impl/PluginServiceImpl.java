@@ -4,6 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.masteryourself.lushstar.pagoda.config.dal.PluginRepository;
+import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
 import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
 
@@ -35,6 +36,11 @@ public class PluginServiceImpl implements PluginService {
     @Override
     public PluginBo findById(Long id) {
         return mapperFacade.map(pluginRepository.findById(id).orElse(null), PluginBo.class);
+    }
+
+    @Override
+    public PluginBo save(PluginEntity pluginEntity) {
+        return mapperFacade.map(pluginRepository.save(pluginEntity), PluginBo.class);
     }
 
 }

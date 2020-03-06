@@ -1,5 +1,6 @@
 package pers.masteryourself.lushstar.pagoda.service.service;
 
+import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface PluginService {
 
     PluginBo findById(Long id);
 
+    PluginBo save(PluginEntity pluginEntity);
 }

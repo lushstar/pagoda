@@ -16,9 +16,9 @@ import java.util.List;
  */
 public interface PluginService {
 
-    List<PluginBo> list();
+    List<PluginEntity> list();
 
-    PluginBo findById(Long id);
+    PluginEntity findById(Long id);
 
-    PluginBo save(PluginEntity pluginEntity);
+    PluginEntity save(PluginEntity pluginEntity);
 }

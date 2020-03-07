@@ -52,26 +52,37 @@ public class PluginWebController {
 
     @PostMapping(value = "add")
     public String add(PluginVo pluginVo, Model model) {
-        ParameterizedTypeReference<WebResponse<List<PluginVo>>> typeRef = new ParameterizedTypeReference<WebResponse<List<PluginVo>>>() {
+        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
         };
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<WebResponse<List<PluginVo>>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/add",
-                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
         Date now = new Date();
         pluginVo.setCreateTime(now);
         pluginVo.setUpdateTime(now);
+        ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/add",
+                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
         model.addAttribute("pluginVoList", responseEntity.getBody().getData());
-        return "plugin/add";
+        return "redirect:/web/plugin/list";
     }
 
-    @GetMapping(value = "find/{id}")
-    public WebResponse<PluginVo> findById(@PathVariable Long id, Model model) {
+    @GetMapping(value = "toEdit/{id}")
+    public String toEdit(@PathVariable Long id, Model model) {
         ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
         };
         ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/find/" + id,
                 HttpMethod.GET, null, typeRef);
-        model.addAttribute("pluginVoList", responseEntity.getBody().getData());
-        return responseEntity.getBody();
+        model.addAttribute("pluginVo", responseEntity.getBody().getData());
+        return "plugin/edit";
+    }
+
+    @PostMapping(value = "edit")
+    public String edit(PluginVo pluginVo, Model model) {
+        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
+        };
+        pluginVo.setUpdateTime(new Date());
+        ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/update",
+                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
+        model.addAttribute("pluginVo", responseEntity.getBody().getData());
+        return "redirect:/web/plugin/list";
     }
 
 }

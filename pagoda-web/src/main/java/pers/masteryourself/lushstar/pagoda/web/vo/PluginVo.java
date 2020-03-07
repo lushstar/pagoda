@@ -40,4 +40,6 @@ public class PluginVo {
      * 状态
      */
     private boolean status;
+
+    private String className;
 }

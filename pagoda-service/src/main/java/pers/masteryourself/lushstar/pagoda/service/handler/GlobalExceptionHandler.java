@@ -1,4 +1,4 @@
-package pers.masteryourself.lushstar.pagoda.service.controller;
+package pers.masteryourself.lushstar.pagoda.service.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;

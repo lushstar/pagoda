@@ -31,17 +31,30 @@ public class PluginServiceController {
 
     @GetMapping(value = "list")
     public ServiceResponse<List<PluginBo>> list() {
-        return ServiceResponse.success(pluginService.list());
+        List<PluginEntity> pluginEntityList = pluginService.list();
+        return ServiceResponse.success(mapperFacade.mapAsList(pluginEntityList, PluginBo.class));
     }
 
     @PostMapping(value = "add")
     public ServiceResponse<PluginBo> add(@RequestBody PluginBo pluginBo) {
-        return ServiceResponse.success(pluginService.save(mapperFacade.map(pluginBo, PluginEntity.class)));
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginBo, PluginEntity.class));
+        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginBo.class));
     }
 
     @GetMapping(value = "find/{id}")
     public ServiceResponse<PluginBo> findById(@PathVariable Long id) {
-        return ServiceResponse.success(pluginService.findById(id));
+        PluginEntity pluginEntity = pluginService.findById(id);
+        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginBo.class));
+    }
+
+    @PostMapping(value = "update")
+    public ServiceResponse<PluginBo> update(@RequestBody PluginBo pluginBo) {
+        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
+        pluginEntity.setName(pluginBo.getName());
+        pluginEntity.setDescription(pluginBo.getDescription());
+        pluginEntity.setClassName(pluginBo.getClassName());
+        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }
 
 }

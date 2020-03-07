@@ -22,25 +22,25 @@ import java.util.List;
 @Service
 public class PluginServiceImpl implements PluginService {
 
-    @Autowired
-    private MapperFacade mapperFacade;
+    /*@Autowired
+    private MapperFacade mapperFacade;*/
 
     @Autowired
     private PluginRepository pluginRepository;
 
     @Override
-    public List<PluginBo> list() {
-        return mapperFacade.mapAsList(pluginRepository.findAll(), PluginBo.class);
+    public List<PluginEntity> list() {
+        return pluginRepository.findAll();
     }
 
     @Override
-    public PluginBo findById(Long id) {
-        return mapperFacade.map(pluginRepository.findById(id).orElse(null), PluginBo.class);
+    public PluginEntity findById(Long id) {
+        return pluginRepository.findById(id).orElse(null);
     }
 
     @Override
-    public PluginBo save(PluginEntity pluginEntity) {
-        return mapperFacade.map(pluginRepository.save(pluginEntity), PluginBo.class);
+    public PluginEntity save(PluginEntity pluginEntity) {
+        return pluginRepository.saveAndFlush(pluginEntity);
     }
 
 }

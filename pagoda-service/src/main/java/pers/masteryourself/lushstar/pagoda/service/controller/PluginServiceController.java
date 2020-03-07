@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
+import pers.masteryourself.lushstar.pagoda.service.event.PluginChangeEvent;
+import pers.masteryourself.lushstar.pagoda.service.event.PluginChangeModel;
 import pers.masteryourself.lushstar.pagoda.service.response.ServiceResponse;
+import pers.masteryourself.lushstar.pagoda.service.service.EventService;
 import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
 
 import java.util.List;
@@ -29,6 +32,9 @@ public class PluginServiceController {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Autowired
+    private EventService eventService;
+
     @GetMapping(value = "list")
     public ServiceResponse<List<PluginBo>> list() {
         List<PluginEntity> pluginEntityList = pluginService.list();
@@ -44,6 +50,7 @@ public class PluginServiceController {
     @GetMapping(value = "find/{id}")
     public ServiceResponse<PluginBo> findById(@PathVariable Long id) {
         PluginEntity pluginEntity = pluginService.findById(id);
+        eventService.sendEvent(new PluginChangeEvent(new PluginChangeModel()));
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginBo.class));
     }
 

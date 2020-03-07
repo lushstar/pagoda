@@ -9,8 +9,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import pers.masteryourself.lushstar.pagoda.client.PluginFactory;
 import pers.masteryourself.lushstar.pagoda.client.po.Plugin;
+import pers.masteryourself.lushstar.pagoda.client.util.ResourcesUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -223,10 +227,10 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         } finally {
-            close(inputStream);
-            close(readChannel);
-            close(outputStream);
-            close(writeChannel);
+            ResourcesUtils.close(inputStream);
+            ResourcesUtils.close(readChannel);
+            ResourcesUtils.close(outputStream);
+            ResourcesUtils.close(writeChannel);
         }
     }
 
@@ -316,21 +320,6 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
                 return;
             }
             jarURLConnection.getJarFile().close();
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * 释放资源
-     *
-     * @param closeable
-     */
-    private void close(Closeable closeable) {
-        try {
-            if (closeable != null) {
-                closeable.close();
-            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

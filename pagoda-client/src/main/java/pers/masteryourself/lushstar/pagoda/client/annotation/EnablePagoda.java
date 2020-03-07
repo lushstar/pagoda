@@ -1,6 +1,7 @@
 package pers.masteryourself.lushstar.pagoda.client.annotation;
 
 import org.springframework.context.annotation.Import;
+import pers.masteryourself.lushstar.pagoda.client.core.PluginSyncActuator;
 
 import java.lang.annotation.*;
 
@@ -16,7 +17,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({PagodaRegistrar.class})
+@Import({PagodaRegistrar.class, PluginSyncActuator.class})
 public @interface EnablePagoda {
 
     String[] basePackages() default {};

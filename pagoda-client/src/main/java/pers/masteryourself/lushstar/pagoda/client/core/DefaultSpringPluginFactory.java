@@ -1,4 +1,4 @@
-package pers.masteryourself.lushstar.pagoda.client;
+package pers.masteryourself.lushstar.pagoda.client.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
@@ -7,6 +7,7 @@ import org.springframework.aop.framework.Advised;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import pers.masteryourself.lushstar.pagoda.client.PluginFactory;
 import pers.masteryourself.lushstar.pagoda.client.po.Plugin;
 
 import java.io.*;

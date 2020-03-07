@@ -2,6 +2,7 @@ package pers.masteryourself.lushstar.pagoda.sample.spring.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import pers.masteryourself.lushstar.pagoda.client.annotation.EnablePagoda;
 
 /**
  * <p>description : PagodaDemoServiceApp
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date : 2020/2/26 1:23
  */
 @SpringBootApplication
+@EnablePagoda
 public class PagodaDemoServiceApp {
 
     public static void main(String[] args) {

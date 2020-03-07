@@ -5,8 +5,15 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
+import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.util.StringUtils;
 import pers.masteryourself.lushstar.pagoda.client.core.DefaultSpringPluginFactory;
+import pers.masteryourself.lushstar.pagoda.client.core.PagodaScanner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>description : PagodaRegistrar, 动态向项目中注入 {@link DefaultSpringPluginFactory}
@@ -32,7 +39,6 @@ public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
             if (beanDefinition.getBeanClassName().equals(PLUGIN_FACTORY_BEAN_NAME)) {
                 flag = true;
                 break;
-
             }
         }
         if (flag) {
@@ -42,8 +48,29 @@ public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
             registry.registerBeanDefinition("defaultSpringPluginFactory", new RootBeanDefinition(DefaultSpringPluginFactory.class));
             log.info("current project inject {}", PLUGIN_FACTORY_BEAN_NAME);
         }
-        // register PagodaConfigurer
-        registry.registerBeanDefinition("pagodaConfigurer", new RootBeanDefinition(PagodaConfigurer.class));
+        // scan
+        this.doScanner(importingClassMetadata, registry);
+    }
+
+    /**
+     * 扫包, 只扫描 {@link Pagoda} 标识的类
+     */
+    private void doScanner(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        AnnotationAttributes annotationAttrs = AnnotationAttributes.fromMap(
+                importingClassMetadata.getAnnotationAttributes(EnablePagoda.class.getName()));
+        PagodaScanner scanner = new PagodaScanner(registry);
+        List<String> basePackages = new ArrayList<>();
+        for (String pkg : annotationAttrs.getStringArray("basePackages")) {
+            if (StringUtils.hasText(pkg)) {
+                basePackages.add(pkg);
+            }
+        }
+        // 默认扫描当前注解下的包
+        if (basePackages.isEmpty()) {
+            basePackages.add(importingClassMetadata.getClassName().substring(0, importingClassMetadata.getClassName().lastIndexOf(".")));
+        }
+        scanner.addIncludeFilter(new AnnotationTypeFilter(Pagoda.class));
+        scanner.doScan(StringUtils.toStringArray(basePackages));
     }
 
 }

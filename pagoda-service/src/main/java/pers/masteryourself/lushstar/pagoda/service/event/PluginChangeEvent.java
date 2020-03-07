@@ -1,6 +1,7 @@
 package pers.masteryourself.lushstar.pagoda.service.event;
 
 import org.springframework.context.ApplicationEvent;
+import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
 
 /**
  * <p>description : PluginChangeEvent, 插件信息修改事件
@@ -13,8 +14,8 @@ import org.springframework.context.ApplicationEvent;
  */
 public class PluginChangeEvent extends ApplicationEvent {
 
-    public PluginChangeEvent(PluginChangeModel pluginChangeModel) {
-        super(pluginChangeModel);
+    public PluginChangeEvent(PluginBo pluginBo) {
+        super(pluginBo);
     }
 
 }

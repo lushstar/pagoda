@@ -48,4 +48,9 @@ public class Plugin {
      */
     private String localAddress;
 
+    /**
+     * 事件源
+     */
+    private SourceType sourceType;
+
 }

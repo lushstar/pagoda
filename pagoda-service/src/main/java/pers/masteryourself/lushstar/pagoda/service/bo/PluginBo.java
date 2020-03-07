@@ -37,13 +37,15 @@ public class PluginBo {
     private String address;
 
     /**
-     * 状态
+     * 是否激活
      */
-    private boolean status;
+    private boolean active;
 
     /**
      * 插件类名
      */
     private String className;
+
+    private SourceType sourceType;
 
 }

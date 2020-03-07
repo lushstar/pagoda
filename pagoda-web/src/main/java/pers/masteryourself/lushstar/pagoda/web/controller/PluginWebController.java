@@ -1,5 +1,6 @@
 package pers.masteryourself.lushstar.pagoda.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "web/plugin")
+@Slf4j
 public class PluginWebController {
 
     @Value("${pagoda.service.url}")
@@ -82,6 +84,46 @@ public class PluginWebController {
         ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/update",
                 HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
         model.addAttribute("pluginVo", responseEntity.getBody().getData());
+        return "redirect:/web/plugin/list";
+    }
+
+    @GetMapping(value = "{action}/{id}")
+    public String action(@PathVariable String action,
+                         @PathVariable Long id, Model model) {
+        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
+        };
+        ResponseEntity<WebResponse<PluginVo>> findResponseEntity = restTemplate.exchange(routeUrl + prefix + "/find/" + id,
+                HttpMethod.GET, null, typeRef);
+        PluginVo pluginVo = findResponseEntity.getBody().getData();
+        String op;
+        switch (action) {
+            case "install":
+                op = "install";
+                break;
+            case "active":
+                pluginVo.setActive(true);
+                op = "active";
+                break;
+            case "disable":
+                pluginVo.setActive(false);
+                op = "disable";
+                break;
+            case "uninstall":
+                op = "uninstall";
+                break;
+            default:
+                log.warn("操作有问题 {}", action);
+                op = null;
+                break;
+        }
+        if (op == null) {
+            log.warn("操作有问题 {}, 请求取消", action);
+            return "redirect:/web/plugin/list";
+        }
+        pluginVo.setUpdateTime(new Date());
+        ResponseEntity<WebResponse<PluginVo>> updateResponseEntity = restTemplate.exchange(routeUrl + prefix + "/" + op,
+                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
+        model.addAttribute("pluginVo", updateResponseEntity.getBody().getData());
         return "redirect:/web/plugin/list";
     }
 

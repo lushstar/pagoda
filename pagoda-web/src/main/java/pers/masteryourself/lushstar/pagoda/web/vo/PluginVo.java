@@ -37,9 +37,9 @@ public class PluginVo {
     private String address;
 
     /**
-     * 状态
+     * 是否激活
      */
-    private boolean status;
+    private boolean active;
 
     private String className;
 }

@@ -39,6 +39,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-sm-2 control-label">address</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="请输入地址" name="address">
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-sm-2 control-label">appName</label>
         <div class="col-sm-10">
             <select class="form-control">

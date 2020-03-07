@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
+import pers.masteryourself.lushstar.pagoda.service.bo.SourceType;
 import pers.masteryourself.lushstar.pagoda.service.event.PluginChangeEvent;
-import pers.masteryourself.lushstar.pagoda.service.event.PluginChangeModel;
 import pers.masteryourself.lushstar.pagoda.service.response.ServiceResponse;
 import pers.masteryourself.lushstar.pagoda.service.service.EventService;
 import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
@@ -50,7 +50,6 @@ public class PluginServiceController {
     @GetMapping(value = "find/{id}")
     public ServiceResponse<PluginBo> findById(@PathVariable Long id) {
         PluginEntity pluginEntity = pluginService.findById(id);
-        eventService.sendEvent(new PluginChangeEvent(new PluginChangeModel()));
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginBo.class));
     }
 
@@ -61,6 +60,47 @@ public class PluginServiceController {
         pluginEntity.setDescription(pluginBo.getDescription());
         pluginEntity.setClassName(pluginBo.getClassName());
         pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        pluginEntity.setActive(pluginBo.isActive());
+        pluginBo.setSourceType(SourceType.ACTIVE);
+        eventService.sendEvent(new PluginChangeEvent(pluginBo));
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
+    }
+
+    @PostMapping(value = "install")
+    public ServiceResponse<PluginBo> install(@RequestBody PluginBo pluginBo) {
+        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
+        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        pluginBo.setSourceType(SourceType.INSTALL);
+        eventService.sendEvent(new PluginChangeEvent(pluginBo));
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
+    }
+
+    @PostMapping(value = "active")
+    public ServiceResponse<PluginBo> active(@RequestBody PluginBo pluginBo) {
+        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
+        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        pluginEntity.setActive(true);
+        pluginBo.setSourceType(SourceType.ACTIVE);
+        eventService.sendEvent(new PluginChangeEvent(pluginBo));
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
+    }
+
+    @PostMapping(value = "disable")
+    public ServiceResponse<PluginBo> disable(@RequestBody PluginBo pluginBo) {
+        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
+        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        pluginEntity.setActive(false);
+        pluginBo.setSourceType(SourceType.DISABLE);
+        eventService.sendEvent(new PluginChangeEvent(pluginBo));
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
+    }
+
+    @PostMapping(value = "uninstall")
+    public ServiceResponse<PluginBo> uninstall(@RequestBody PluginBo pluginBo) {
+        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
+        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        pluginBo.setSourceType(SourceType.UNINSTALL);
+        eventService.sendEvent(new PluginChangeEvent(pluginBo));
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }
 

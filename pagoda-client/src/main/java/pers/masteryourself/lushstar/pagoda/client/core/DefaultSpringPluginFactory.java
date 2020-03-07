@@ -63,13 +63,15 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         // 1. 判断插件是否已经激活
         Plugin cachePlugin = pluginCache.get(plugin.getId());
         if (cachePlugin != null) {
-            log.debug("plugin {} has been active, cancel install operation", cachePlugin);
+            log.warn("plugin {} has been active, cancel install operation", cachePlugin);
             return;
         }
         // 2. 判断插件是否存在，不存在则下载插件
         log.info("download plugin {} start", plugin);
         this.download(plugin);
         // 3. 添加到插件列表中
+        // todo temp solution
+        plugin.setActive(false);
         pluginCache.putIfAbsent(plugin.getId(), plugin);
     }
 
@@ -79,7 +81,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         // 1. 判断插件是否存在
         Plugin plugin = pluginCache.get(id);
         if (plugin == null) {
-            log.debug("plugin id {} is empty, cancel uninstall operation", id);
+            log.warn("plugin id {} is empty, cancel uninstall operation", id);
             return;
         }
         // 2. 禁用插件
@@ -88,6 +90,8 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         this.releaseJarResource(plugin.getId());
         // 4. 删除本地 plugin 文件
         this.deleteLocalPlugin(plugin);
+        // 5. 清除插件 cache 缓存
+        pluginCache.remove(id);
     }
 
     @Override
@@ -95,18 +99,23 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         // 1. 判断插件是否存在
         Plugin plugin = pluginCache.get(id);
         if (plugin == null) {
-            log.debug("plugin id {} is empty, cancel active operation", id);
+            log.warn("plugin id {} is empty, cancel active operation", id);
+            return;
+        }
+        // 2. 判断插件是否激活
+        if (plugin.isActive()) {
+            log.warn("plugin id {} has been active", id);
             return;
         }
         try {
-            // 2. 装载 jar 包
+            // 3. 装载 jar 包
             URLClassLoader classLoader = (URLClassLoader) this.getClass().getClassLoader();
             this.localJarResource(classLoader, plugin);
-            // 3. 装载插件并实例化
+            // 4. 装载插件并实例化
             Advice advice = this.loadAdviceClass(plugin, classLoader);
-            // 4. 装载至 spring proxy bean 中
+            // 5. 装载至 spring proxy bean 中
             this.modifyAdvisedAdvice(plugin, advice);
-            // 5. 设置激活状态
+            // 6. 设置激活状态
             plugin.setActive(true);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -119,12 +128,17 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         // 1. 判断插件是否存在
         Plugin plugin = pluginCache.get(id);
         if (plugin == null) {
-            log.debug("plugin id {} is empty, cancel uninstall operation", id);
+            log.warn("plugin id {} is empty, cancel uninstall operation", id);
             return;
         }
-        // 2. 禁用插件
+        // 2. 判断插件是否禁用
+        if (!plugin.isActive()) {
+            log.warn("plugin id {} has been active", id);
+            return;
+        }
+        // 3. 禁用插件
         this.modifyAdvisedAdvice(plugin, null);
-        // 3. 设置激活状态
+        // 4. 设置激活状态
         plugin.setActive(false);
     }
 
@@ -184,7 +198,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
             // 4. 缓存 url 资源
             this.cacheUrlConnection(plugin.getId(), targetUrl);
         } else {
-            log.debug("plugin {} has been load", plugin.getLocalAddress());
+            log.warn("plugin {} has been load", plugin.getLocalAddress());
         }
     }
 
@@ -258,7 +272,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
                 }
                 // 添加 advice，结束
                 ((Advised) bean).addAdvice(advice);
-                log.debug("bean {}, add advice {}", ((Advised) bean).getTargetSource(), advice);
+                log.info("bean {}, add advice {}", ((Advised) bean).getTargetSource(), advice);
                 continue;
             }
             // 删除，判断是否有这个 Advice
@@ -266,7 +280,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
             if (candidateAdvice != null) {
                 // 删除
                 ((Advised) bean).removeAdvice(candidateAdvice);
-                log.debug("bean {}, remove advice {}", ((Advised) bean).getTargetSource(), candidateAdvice);
+                log.info("bean {}, remove advice {}", ((Advised) bean).getTargetSource(), candidateAdvice);
             }
         }
     }
@@ -316,7 +330,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         try {
             JarURLConnection jarURLConnection = jarCache.get(id);
             if (jarURLConnection == null) {
-                log.debug("未找到插件 {} 对应的 jarURLConnection", pluginCache.get(id));
+                log.warn("未找到插件 {} 对应的 jarURLConnection", pluginCache.get(id));
                 return;
             }
             jarURLConnection.getJarFile().close();

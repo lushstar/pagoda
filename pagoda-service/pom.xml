@@ -29,6 +29,12 @@
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
             <version>1.4.5</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>javassist</artifactId>
+                    <groupId>org.javassist</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 

@@ -3,8 +3,7 @@ package pers.masteryourself.lushstar.pagoda.service.response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
-
-import java.util.Map;
+import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
 
 /**
  * <p>description : DeferredResultWrapper
@@ -17,11 +16,11 @@ import java.util.Map;
  */
 public class DeferredResultWrapper {
 
-    private static final long TIMEOUT = 60 * 1000;
+    private static final long TIMEOUT = 30 * 1000;
 
-    private static final ResponseEntity<Map<String, String>> NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    private static final ResponseEntity<PluginBo> NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
-    private DeferredResult<ResponseEntity<Map<String, String>>> result;
+    private DeferredResult<ResponseEntity<PluginBo>> result;
 
     public DeferredResultWrapper() {
         result = new DeferredResult<>(TIMEOUT, NOT_MODIFIED_RESPONSE);
@@ -35,11 +34,11 @@ public class DeferredResultWrapper {
         result.onCompletion(completionCallback);
     }
 
-    public void setResult(Map<String, String> data) {
-        result.setResult(new ResponseEntity<>(data, HttpStatus.OK));
+    public void setResult(PluginBo pluginBo) {
+        result.setResult(new ResponseEntity<>(pluginBo, HttpStatus.OK));
     }
 
-    public DeferredResult<ResponseEntity<Map<String, String>>> getResult() {
+    public DeferredResult<ResponseEntity<PluginBo>> getResult() {
         return result;
     }
 

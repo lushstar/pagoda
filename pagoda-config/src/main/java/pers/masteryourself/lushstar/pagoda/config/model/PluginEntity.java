@@ -22,7 +22,7 @@ import java.util.Date;
 public class PluginEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "create_time")
@@ -47,10 +47,10 @@ public class PluginEntity {
     private String address;
 
     /**
-     * 状态
+     * 是否激活
      */
     @Column
-    private boolean status;
+    private boolean active;
 
     /**
      * 插件类名

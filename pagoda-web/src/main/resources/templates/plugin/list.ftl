@@ -26,6 +26,7 @@
         <td>插件名称</td>
         <td>类名</td>
         <td>插件描述</td>
+        <td>插件地址</td>
         <td>插件状态</td>
         <td>创建时间</td>
         <td>修改时间</td>
@@ -37,15 +38,16 @@
             <td>${pluginVo.name!""}</td>
             <td>${pluginVo.className!""}</td>
             <td>${pluginVo.description!""}</td>
-            <td>${pluginVo.status?string("开启","关闭")!}</td>
+            <td>${pluginVo.address!""}</td>
+            <td>${pluginVo.active?string("开启","关闭")!}</td>
             <td>${pluginVo.createTime?datetime!}</td>
             <td>${pluginVo.updateTime?datetime!}</td>
             <td>
                 <button type="button" class="btn btn-primary" onclick="toEdit(${pluginVo.id})">修改</button>
-                <button type="button" class="btn btn-success">安装</button>
-                <button type="button" class="btn btn-info">激活</button>
-                <button type="button" class="btn btn-warning">禁用</button>
-                <button type="button" class="btn btn-danger">卸载</button>
+                <button type="button" class="btn btn-success" onclick="install(${pluginVo.id})">安装</button>
+                <button type="button" class="btn btn-info" onclick="active(${pluginVo.id})">激活</button>
+                <button type="button" class="btn btn-warning" onclick="disable(${pluginVo.id})">禁用</button>
+                <button type="button" class="btn btn-danger" onclick="uninstall(${pluginVo.id})">卸载</button>
             </td>
         </tr>
     </#list>
@@ -57,6 +59,22 @@
 
     function toEdit(id) {
         window.location.href = "/web/plugin/toEdit/" + id;
+    }
+
+    function install(id) {
+        window.location.href = "/web/plugin/install/" + id;
+    }
+
+    function active(id) {
+        window.location.href = "/web/plugin/active/" + id;
+    }
+
+    function disable(id) {
+        window.location.href = "/web/plugin/disable/" + id;
+    }
+
+    function uninstall(id) {
+        window.location.href = "/web/plugin/uninstall/" + id;
     }
 </script>
 </body>

@@ -79,39 +79,4 @@ public class PluginRemoteImpl implements PluginRemote {
         return responseEntity.getBody().getData();
     }
 
-    @Override
-    public PluginVo update(Long id, String action) {
-        PluginVo pluginVo = this.find(id);
-        String op;
-        switch (action) {
-            case "install":
-                op = "install";
-                break;
-            case "active":
-                pluginVo.setActive(true);
-                op = "active";
-                break;
-            case "disable":
-                pluginVo.setActive(false);
-                op = "disable";
-                break;
-            case "uninstall":
-                op = "uninstall";
-                break;
-            default:
-                log.warn("操作有问题 {}", action);
-                op = null;
-                break;
-        }
-        if (op == null) {
-            log.warn("操作有问题 {}, 请求取消", action);
-            return null;
-        }
-        pluginVo.setUpdateTime(new Date());
-        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
-        };
-        ResponseEntity<WebResponse<PluginVo>> updateResponseEntity = restTemplate.exchange(routeUrl + prefix + "/" + op,
-                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
-        return updateResponseEntity.getBody().getData();
-    }
 }

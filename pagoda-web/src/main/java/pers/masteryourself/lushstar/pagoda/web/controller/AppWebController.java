@@ -7,14 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pers.masteryourself.lushstar.pagoda.web.remote.AppPluginRemote;
 import pers.masteryourself.lushstar.pagoda.web.remote.AppRemote;
-import pers.masteryourself.lushstar.pagoda.web.remote.PluginRemote;
-import pers.masteryourself.lushstar.pagoda.web.vo.AppPluginVo;
 import pers.masteryourself.lushstar.pagoda.web.vo.AppVo;
-import pers.masteryourself.lushstar.pagoda.web.vo.PluginVo;
-
-import java.util.List;
 
 /**
  * <p>description : AppWebController
@@ -31,12 +25,6 @@ public class AppWebController {
 
     @Autowired
     private AppRemote appRemote;
-
-    @Autowired
-    private PluginRemote pluginRemote;
-
-    @Autowired
-    private AppPluginRemote appPluginRemote;
 
     @GetMapping(value = "list")
     public String list(Model model) {
@@ -69,30 +57,12 @@ public class AppWebController {
     }
 
     @GetMapping(value = "del/{id}")
-    public String del(@PathVariable Long id, Model model) {
+    public String del(@PathVariable Long id) {
         AppVo appVo = new AppVo();
         appVo.setId(id);
         appVo.setDel(true);
-        model.addAttribute("appVo", appRemote.update(appVo));
+        appRemote.update(appVo);
         return "redirect:/web/app/list";
-    }
-
-    @GetMapping(value = "plugin/{appId}")
-    public String plugin(@PathVariable Long appId, Model model) {
-        List<PluginVo> pluginVoList = pluginRemote.list();
-        List<AppPluginVo> appPluginVoList = appPluginRemote.findByAppId(appId);
-        model.addAttribute("pluginVoList", pluginVoList);
-        model.addAttribute("appId", appId);
-        pluginVoList.forEach(pluginVo -> {
-            appPluginVoList.forEach(appPluginVo -> {
-                if (appPluginVo.getPluginId().equals(pluginVo.getId())) {
-                    // 表示已经安装过
-                    pluginVo.setInstall(true);
-                    pluginVo.setActive(appPluginVo.getActive());
-                }
-            });
-        });
-        return "app/plugin/list";
     }
 
 }

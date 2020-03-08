@@ -23,6 +23,4 @@ public interface PluginRemote {
 
     PluginVo update(PluginVo pluginVo);
 
-    PluginVo update(Long id, String action);
-
 }

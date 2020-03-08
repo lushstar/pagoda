@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pers.masteryourself.lushstar.pagoda.web.remote.PluginRemote;
 import pers.masteryourself.lushstar.pagoda.web.vo.PluginVo;
 
+import java.util.Date;
+
 /**
  * <p>description : PluginWebController
  *
@@ -54,15 +56,17 @@ public class PluginWebController {
     }
 
     @PostMapping(value = "edit")
-    public String edit(PluginVo pluginVo, Model model) {
-        model.addAttribute("pluginVo", pluginRemote.update(pluginVo));
+    public String edit(PluginVo pluginVo) {
+        pluginRemote.update(pluginVo);
         return "redirect:/web/plugin/list";
     }
 
-    @GetMapping(value = "{action}/{id}")
-    public String action(@PathVariable String action,
-                         @PathVariable Long id) {
-        pluginRemote.update(id, action);
+    @GetMapping(value = "del/{id}")
+    public String del(@PathVariable Long id) {
+        PluginVo pluginVo = pluginRemote.find(id);
+        pluginVo.setUpdateTime(new Date());
+        pluginVo.setDel(true);
+        pluginRemote.update(pluginVo);
         return "redirect:/web/plugin/list";
     }
 

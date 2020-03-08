@@ -6,10 +6,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
-import pers.masteryourself.lushstar.pagoda.service.bo.SourceType;
-import pers.masteryourself.lushstar.pagoda.service.event.PluginChangeEvent;
 import pers.masteryourself.lushstar.pagoda.service.response.ServiceResponse;
-import pers.masteryourself.lushstar.pagoda.service.service.EventService;
 import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
 
 import java.util.Date;
@@ -34,8 +31,8 @@ public class PluginServiceController {
     @Autowired
     private MapperFacade mapperFacade;
 
-    @Autowired
-    private EventService eventService;
+/*    @Autowired
+    private EventService eventService;*/
 
     @GetMapping(value = "list")
     public ServiceResponse<List<PluginBo>> list() {
@@ -78,7 +75,7 @@ public class PluginServiceController {
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }
 
-    @PostMapping(value = "install")
+/*    @PostMapping(value = "install")
     public ServiceResponse<PluginBo> install(@RequestBody PluginBo pluginBo) {
         PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
         pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
@@ -113,6 +110,6 @@ public class PluginServiceController {
         pluginBo.setDel(true);
         eventService.sendEvent(new PluginChangeEvent(pluginBo));
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
-    }
+    }*/
 
 }

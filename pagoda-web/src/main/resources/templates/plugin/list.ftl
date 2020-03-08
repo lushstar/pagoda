@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>pagoda 插件管理</title>
+    <title>pagoda</title>
     <!-- Bootstrap -->
     <link href="/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
@@ -44,10 +44,7 @@
             <td>${pluginVo.updateTime?datetime!}</td>
             <td>
                 <button type="button" class="btn btn-primary" onclick="toEdit(${pluginVo.id})">修改</button>
-                <button type="button" class="btn btn-success" onclick="install(${pluginVo.id})">安装</button>
-                <button type="button" class="btn btn-info" onclick="active(${pluginVo.id})">激活</button>
-                <button type="button" class="btn btn-warning" onclick="disable(${pluginVo.id})">禁用</button>
-                <button type="button" class="btn btn-danger" onclick="uninstall(${pluginVo.id})">卸载</button>
+                <button type="button" class="btn btn-danger" onclick="del(${pluginVo.id})">删除</button>
             </td>
         </tr>
     </#list>
@@ -61,20 +58,8 @@
         window.location.href = "/web/plugin/toEdit/" + id;
     }
 
-    function install(id) {
-        window.location.href = "/web/plugin/install/" + id;
-    }
-
-    function active(id) {
-        window.location.href = "/web/plugin/active/" + id;
-    }
-
-    function disable(id) {
-        window.location.href = "/web/plugin/disable/" + id;
-    }
-
-    function uninstall(id) {
-        window.location.href = "/web/plugin/uninstall/" + id;
+    function del(id) {
+        window.location.href = "/web/plugin/del/" + id;
     }
 </script>
 </body>

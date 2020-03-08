@@ -1,6 +1,7 @@
 package pers.masteryourself.lushstar.pagoda.client.core;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -12,6 +13,7 @@ import pers.masteryourself.lushstar.pagoda.client.util.HttpUtils;
 import pers.masteryourself.lushstar.pagoda.client.util.SimpleHttpResult;
 
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,13 +31,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class PluginSyncActuator implements EnvironmentAware, ApplicationContextAware {
 
-    private PluginFactory pluginFactory;
+    private static final String PART_PLUGIN_SYNC_URL = "/service/plugin/sync/part/";
+
+    private static final String FULL_PLUGIN_SYNC_URL = "/service/plugin/sync/full/";
 
     private static final Gson GSON = new Gson();
 
     private static AtomicBoolean initFlag = new AtomicBoolean(false);
 
+    private PluginFactory pluginFactory;
+
     String appName;
+
     String serviceUrl;
 
     public PluginSyncActuator() {
@@ -44,16 +51,34 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     public void initScheduleSync() {
         if (initFlag.compareAndSet(false, true)) {
-            log.info("pluginSyncActuator start");
-            ScheduledExecutorService pool = Executors.newSingleThreadScheduledExecutor();
-            // 第一次有 5s 延时，防止初始化未完成
-            pool.scheduleWithFixedDelay(this::syncPluginInfo, 5, 3, TimeUnit.SECONDS);
+            log.info("init sync thread");
+            //initPartIncrementThread();
+            initFullInIncrementThread();
         }
     }
 
-    private void syncPluginInfo() {
-        log.info("插件信息同步开始");
-        SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + appName, null);
+    /**
+     * 初始化增量同步线程
+     * 第一次有 5s 延时，防止初始化未完成, 每隔 3s 同步一次信息, 每次同步信息最大有 60s 延时
+     */
+    private void initPartIncrementThread() {
+        ScheduledExecutorService pool = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "part-increment-plugin-sync-thread"));
+        pool.scheduleWithFixedDelay(this::partSyncPluginInfo, 5, 3, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 初始化全量同步线程
+     * 第一次有 5s 延时，防止初始化未完成, 每隔 60s 同步一次全量信息, 从数据库中查询数据，直接返回
+     */
+    private void initFullInIncrementThread() {
+        // 第一次有 5s 延时，防止初始化未完成, 每隔 3s 同步一次信息, 每次同步信息最大有 60s 延时
+        ScheduledExecutorService pool = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "full-increment-plugin-sync-thread"));
+        pool.scheduleWithFixedDelay(this::fullSyncPluginInfo, 5, 60, TimeUnit.SECONDS);
+    }
+
+    private void partSyncPluginInfo() {
+        log.info("{} plugin info sync start", Thread.currentThread().getName());
+        SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + PART_PLUGIN_SYNC_URL + appName, null);
         if (HttpURLConnection.HTTP_NOT_MODIFIED == httpResult.getCode()) {
             log.info("poll config 304 no change");
             return;
@@ -68,6 +93,35 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
         }
         PluginChangeMetadata pluginChangeMetadata = GSON.fromJson(result, PluginChangeMetadata.class);
         this.notifyPlugin(pluginChangeMetadata);
+    }
+
+    private void fullSyncPluginInfo() {
+        log.info("{} plugin info sync start", Thread.currentThread().getName());
+        SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + FULL_PLUGIN_SYNC_URL + appName, null);
+        String result = httpResult.getData();
+        if (result == null || "".equals(result)) {
+            return;
+        }
+        BizResponse<List<PluginChangeMetadata>> bizResponse = GSON.fromJson(result, new TypeToken<BizResponse<List<PluginChangeMetadata>>>() {
+        }.getType());
+        List<PluginChangeMetadata> pluginChangeMetadataList = bizResponse.getData();
+        if (pluginChangeMetadataList == null) {
+            return;
+        }
+        pluginChangeMetadataList.forEach(pluginChangeMetadata -> {
+            SourceType oldSourceType = pluginChangeMetadata.getSourceType();
+            if (oldSourceType == SourceType.ACTIVE || oldSourceType == SourceType.DISABLE) {
+                // 这里如果是 ACTIVE、DISABLE 类型，要先判断插件缓存是否有次插件，没有插件就下载
+                if (!pluginFactory.hasPlugin(pluginChangeMetadata.getId())) {
+                    log.warn("plugin id {} is empty, begin download", pluginChangeMetadata.getId());
+                    pluginChangeMetadata.setSourceType(SourceType.INSTALL);
+                    this.notifyPlugin(pluginChangeMetadata);
+                }
+                // 还原
+                pluginChangeMetadata.setSourceType(oldSourceType);
+                this.notifyPlugin(pluginChangeMetadata);
+            }
+        });
     }
 
     /**

@@ -22,6 +22,14 @@ public interface PluginFactory {
     void install(PluginChangeMetadata pluginChangeMetadata);
 
     /**
+     * 判断是否有插件
+     *
+     * @param id
+     * @return
+     */
+    boolean hasPlugin(Long id);
+
+    /**
      * 卸载插件
      *
      * @param id

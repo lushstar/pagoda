@@ -113,7 +113,7 @@ public class AppPluginServiceController {
         PluginEntity pluginEntity = pluginService.findById(appPluginEntity.getPluginId());
         PluginChangeMetadata pluginChangeMetadata = new PluginChangeMetadata();
         pluginChangeMetadata.setId(appPluginEntity.getId());
-        pluginChangeMetadata.setActive(appPluginEntity.getActive());
+        pluginChangeMetadata.setActive(appPluginEntity.isActive());
         pluginChangeMetadata.setAddress(pluginEntity.getAddress());
         pluginChangeMetadata.setClassName(pluginEntity.getClassName());
         pluginChangeMetadata.setSourceType(sourceType);

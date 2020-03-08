@@ -40,7 +40,7 @@ public class AppPluginEntity {
     @Column(name = "plugin_id", columnDefinition = "bigint(20) COMMENT '插件 id'")
     private Long pluginId;
 
-    @Column(columnDefinition = "bit(1) COMMENT '是否激活，0、false 表示未激活'")
-    private Boolean active;
+    @Column(columnDefinition = "bit(1) COMMENT '是否激活，0、false 表示未激活, null 表示刚刚 install'")
+    private boolean active;
 
 }

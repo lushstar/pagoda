@@ -31,6 +31,6 @@ public class AppPluginVo {
 
     private Long pluginId;
 
-    private Boolean active;
+    private boolean active;
 
 }

@@ -24,6 +24,9 @@ public class PluginChangeMetadata {
 
     private SourceType sourceType;
 
+    /**
+     * 0、false 表示禁用
+     */
     private boolean active;
 
     /**

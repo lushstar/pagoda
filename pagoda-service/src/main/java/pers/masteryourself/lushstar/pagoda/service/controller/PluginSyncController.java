@@ -1,16 +1,27 @@
 package pers.masteryourself.lushstar.pagoda.service.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
+import pers.masteryourself.lushstar.pagoda.config.model.AppEntity;
+import pers.masteryourself.lushstar.pagoda.config.model.AppPluginEntity;
+import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginChangeMetadata;
+import pers.masteryourself.lushstar.pagoda.service.bo.SourceType;
 import pers.masteryourself.lushstar.pagoda.service.event.PluginContext;
 import pers.masteryourself.lushstar.pagoda.service.response.DeferredResultWrapper;
+import pers.masteryourself.lushstar.pagoda.service.response.ServiceResponse;
+import pers.masteryourself.lushstar.pagoda.service.service.AppPluginService;
+import pers.masteryourself.lushstar.pagoda.service.service.AppService;
+import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>description : PluginSyncController, 同步插件信息
@@ -22,15 +33,21 @@ import javax.servlet.http.HttpServletRequest;
  * @date : 2020/3/7 20:39
  */
 @RestController
-@RequestMapping(value = "service/plugin")
+@RequestMapping(value = "service/plugin/sync")
 @Slf4j
 public class PluginSyncController {
 
-    @RequestMapping("sync/{appName}")
-    public DeferredResult<ResponseEntity<PluginChangeMetadata>> poll(
-            HttpServletRequest request,
-            @PathVariable(value = "appName") String appName) {
-        // todo appName 鉴权
+    @Autowired
+    private AppPluginService appPluginService;
+
+    @Autowired
+    private AppService appService;
+
+    @Autowired
+    private PluginService pluginService;
+
+    @RequestMapping("part/{appName}")
+    public DeferredResult<ResponseEntity<PluginChangeMetadata>> partSync(HttpServletRequest request, @PathVariable(value = "appName") String appName) {
         // 判断是否已经缓存, 如果有了, 则直接响应结果
         if (PluginContext.CACHE_CONFIGS.containsKey(appName)) {
             DeferredResultWrapper deferredResult = new DeferredResultWrapper();
@@ -54,6 +71,28 @@ public class PluginSyncController {
         PluginContext.HOLD_REQUEST_CONFIGS.put(appName, deferredResult);
         // 响应
         return deferredResult.getResult();
+    }
+
+    @RequestMapping("full/{appName}")
+    public ServiceResponse<List<PluginChangeMetadata>> fullSync(HttpServletRequest request, @PathVariable(value = "appName") String appName) {
+        AppEntity appEntity = appService.findByName(appName);
+        List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appEntity.getId());
+        List<PluginChangeMetadata> result = new ArrayList<>();
+        appPluginEntityList.forEach(appPluginEntity -> {
+            PluginEntity pluginEntity = pluginService.findById(appPluginEntity.getPluginId());
+            PluginChangeMetadata temp = new PluginChangeMetadata();
+            temp.setId(appPluginEntity.getId());
+            temp.setClassName(pluginEntity.getClassName());
+            temp.setAddress(pluginEntity.getAddress());
+            temp.setActive(appPluginEntity.isActive());
+            if (appPluginEntity.isActive()) {
+                temp.setSourceType(SourceType.ACTIVE);
+            } else {
+                temp.setSourceType(SourceType.DISABLE);
+            }
+            result.add(temp);
+        });
+        return ServiceResponse.success(result);
     }
 
 }

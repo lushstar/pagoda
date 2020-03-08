@@ -50,7 +50,7 @@ public class AppPluginWebController {
                     // 表示已经安装过
                     pluginVo.setInstall(true);
                     // 设置激活属性
-                    pluginVo.setActive(appPluginVo.getActive());
+                    pluginVo.setActive(appPluginVo.isActive());
                 }
             });
         });

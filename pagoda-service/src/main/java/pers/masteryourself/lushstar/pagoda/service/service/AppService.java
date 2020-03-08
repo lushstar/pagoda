@@ -21,4 +21,5 @@ public interface AppService {
 
     AppEntity save(AppEntity appEntity);
 
+    AppEntity findByName(String appName);
 }

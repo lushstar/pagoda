@@ -13,4 +13,7 @@ import pers.masteryourself.lushstar.pagoda.config.model.AppEntity;
  * @date : 2020/2/25 21:28
  */
 public interface AppRepository extends JpaRepository<AppEntity, Long> {
+
+    AppEntity findByName(String appName);
+
 }

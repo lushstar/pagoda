@@ -68,10 +68,14 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
         // 2. 判断插件是否存在，不存在则下载插件
         log.info("download plugin {} start", pluginChangeMetadata);
         this.download(pluginChangeMetadata);
-        // 3. 添加到插件列表中
-        // todo temp solution
+        // 3. 添加到插件列表中, 刚刚 install 过的插件默认是禁用
         pluginChangeMetadata.setActive(false);
         pluginCache.putIfAbsent(pluginChangeMetadata.getId(), pluginChangeMetadata);
+    }
+
+    @Override
+    public boolean hasPlugin(Long id) {
+        return pluginCache.get(id) != null;
     }
 
 

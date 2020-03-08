@@ -39,4 +39,9 @@ public class AppServiceImpl implements AppService {
     public AppEntity save(AppEntity appEntity) {
         return appRepository.saveAndFlush(appEntity);
     }
+
+    @Override
+    public AppEntity findByName(String appName) {
+        return appRepository.findByName(appName);
+    }
 }

@@ -103,7 +103,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
             return;
         }
         // 2. 判断插件是否激活
-        if (plugin.isActive()) {
+        if (plugin.getActive()) {
             log.warn("plugin id {} has been active", id);
             return;
         }
@@ -132,7 +132,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
             return;
         }
         // 2. 判断插件是否禁用
-        if (!plugin.isActive()) {
+        if (!plugin.getActive()) {
             log.warn("plugin id {} has been active", id);
             return;
         }

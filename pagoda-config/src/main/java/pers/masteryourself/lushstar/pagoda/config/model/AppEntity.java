@@ -31,21 +31,12 @@ public class AppEntity {
     @Column(name = "update_time", columnDefinition = "datetime COMMENT '修改时间'")
     private Date updateTime;
 
-    /**
-     * 0 表示未删除
-     */
     @Column(columnDefinition = "bit(1) COMMENT '是否删除，0、false 表示未删除'")
-    private Boolean del;
+    private boolean del;
 
-    /**
-     * 应用名称
-     */
     @Column(unique = true, columnDefinition = "varchar(100) COMMENT '应用名称'")
     private String name;
 
-    /**
-     * 应用描述
-     */
     @Column(columnDefinition = "varchar(5000) COMMENT '应用描述'")
     private String description;
 

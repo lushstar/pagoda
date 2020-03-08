@@ -18,9 +18,6 @@ import java.util.Date;
  * @date : 2020/2/25 21:11
  */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AppVo {
 
     private Long id;

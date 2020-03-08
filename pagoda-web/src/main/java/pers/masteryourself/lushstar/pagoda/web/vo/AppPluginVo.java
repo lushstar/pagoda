@@ -1,4 +1,4 @@
-package pers.masteryourself.lushstar.pagoda.service.bo;
+package pers.masteryourself.lushstar.pagoda.web.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -6,16 +6,16 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * <p>description : PluginBo
+ * <p>description : AppPluginVo
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0
- * @date : 2020/2/25 21:44
+ * @date : 2020/3/8 14:56
  */
 @Data
-public class PluginBo {
+public class AppPluginVo {
 
     private Long id;
 
@@ -25,22 +25,12 @@ public class PluginBo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    /**
-     * 0 表示未删除
-     */
-    private Boolean del;
+    private boolean del;
 
-    private String name;
+    private Long appId;
 
-    private String description;
+    private Long pluginId;
 
-    private String address;
-
-    /**
-     * 插件类名
-     */
-    private String className;
-
-    private SourceType sourceType;
+    private Boolean active;
 
 }

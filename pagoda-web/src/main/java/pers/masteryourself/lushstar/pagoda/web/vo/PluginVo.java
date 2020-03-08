@@ -25,9 +25,6 @@ public class PluginVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    /**
-     * 0 表示未删除
-     */
     private Boolean del;
 
     private String name;
@@ -36,10 +33,17 @@ public class PluginVo {
 
     private String address;
 
-    /**
-     * 是否激活
-     */
-    private Boolean active;
-
     private String className;
+
+    /**
+     * 临时变量, 仅用于页面数据展示
+     * true 表示已经激活
+     */
+    private boolean active = false;
+
+    /**
+     * 临时变量, 仅用于页面数据展示
+     * true 表示已安装
+     */
+    private boolean install;
 }

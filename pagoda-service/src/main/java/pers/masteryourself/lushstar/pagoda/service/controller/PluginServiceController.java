@@ -75,9 +75,6 @@ public class PluginServiceController {
         if (pluginBo.getDel() != null) {
             pluginEntity.setDel(pluginBo.getDel());
         }
-        if (pluginBo.getActive() != null) {
-            pluginEntity.setDel(pluginBo.getActive());
-        }
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }
 
@@ -94,7 +91,6 @@ public class PluginServiceController {
     public ServiceResponse<PluginBo> active(@RequestBody PluginBo pluginBo) {
         PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
         pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginEntity.setActive(true);
         pluginBo.setSourceType(SourceType.ACTIVE);
         eventService.sendEvent(new PluginChangeEvent(pluginBo));
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
@@ -104,7 +100,6 @@ public class PluginServiceController {
     public ServiceResponse<PluginBo> disable(@RequestBody PluginBo pluginBo) {
         PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
         pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginEntity.setActive(false);
         pluginBo.setSourceType(SourceType.DISABLE);
         eventService.sendEvent(new PluginChangeEvent(pluginBo));
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));

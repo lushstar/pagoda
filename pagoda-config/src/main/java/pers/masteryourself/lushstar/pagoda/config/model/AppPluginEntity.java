@@ -7,19 +7,19 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * <p>description : PluginEntity
+ * <p>description : AppPlugin
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0
- * @date : 2020/2/25 21:28
+ * @date : 2020/3/8 14:45
  */
 @Entity
-@Table(name = "plugin")
+@Table(name = "app_plugin")
 @Where(clause = "del = 0")
 @Data
-public class PluginEntity {
+public class AppPluginEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,16 +34,13 @@ public class PluginEntity {
     @Column(columnDefinition = "bit(1) COMMENT '是否删除，0、false 表示未删除'")
     private boolean del;
 
-    @Column(unique = true, columnDefinition = "varchar(100) COMMENT '插件名称'")
-    private String name;
+    @Column(name = "app_id", columnDefinition = "bigint(20) COMMENT '应用 id'")
+    private Long appId;
 
-    @Column(columnDefinition = "varchar(5000) COMMENT '插件描述'")
-    private String description;
+    @Column(name = "plugin_id", columnDefinition = "bigint(20) COMMENT '插件 id'")
+    private Long pluginId;
 
-    @Column(columnDefinition = "varchar(5000) COMMENT '插件地址'")
-    private String address;
-
-    @Column(name = "class_name", unique = true, columnDefinition = "varchar(100) COMMENT '插件类名'")
-    private String className;
+    @Column(columnDefinition = "bit(1) COMMENT '是否激活，0、false 表示未激活'")
+    private Boolean active;
 
 }

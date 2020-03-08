@@ -21,5 +21,4 @@ public interface AppPluginService {
 
     AppPluginEntity findByAppIdAndPluginId(Long appId, Long pluginId);
 
-    int deleteAppPluginEntityByAppIdAndPluginId(Long appId, Long pluginId);
 }

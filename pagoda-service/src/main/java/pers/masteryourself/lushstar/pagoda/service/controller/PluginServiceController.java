@@ -31,9 +31,6 @@ public class PluginServiceController {
     @Autowired
     private MapperFacade mapperFacade;
 
-/*    @Autowired
-    private EventService eventService;*/
-
     @GetMapping(value = "list")
     public ServiceResponse<List<PluginBo>> list() {
         List<PluginEntity> pluginEntityList = pluginService.list();
@@ -74,42 +71,5 @@ public class PluginServiceController {
         }
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }
-
-/*    @PostMapping(value = "install")
-    public ServiceResponse<PluginBo> install(@RequestBody PluginBo pluginBo) {
-        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
-        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginBo.setSourceType(SourceType.INSTALL);
-        eventService.sendEvent(new PluginChangeEvent(pluginBo));
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
-    }
-
-    @PostMapping(value = "active")
-    public ServiceResponse<PluginBo> active(@RequestBody PluginBo pluginBo) {
-        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
-        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginBo.setSourceType(SourceType.ACTIVE);
-        eventService.sendEvent(new PluginChangeEvent(pluginBo));
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
-    }
-
-    @PostMapping(value = "disable")
-    public ServiceResponse<PluginBo> disable(@RequestBody PluginBo pluginBo) {
-        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
-        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginBo.setSourceType(SourceType.DISABLE);
-        eventService.sendEvent(new PluginChangeEvent(pluginBo));
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
-    }
-
-    @PostMapping(value = "uninstall")
-    public ServiceResponse<PluginBo> uninstall(@RequestBody PluginBo pluginBo) {
-        PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
-        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginBo.setSourceType(SourceType.UNINSTALL);
-        pluginBo.setDel(true);
-        eventService.sendEvent(new PluginChangeEvent(pluginBo));
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
-    }*/
 
 }

@@ -1,7 +1,7 @@
 package pers.masteryourself.lushstar.pagoda.client;
 
 
-import pers.masteryourself.lushstar.pagoda.client.po.Plugin;
+import pers.masteryourself.lushstar.pagoda.client.core.PluginChangeMetadata;
 
 /**
  * <p>description : PluginFactory
@@ -17,9 +17,9 @@ public interface PluginFactory {
     /**
      * 安装插件
      *
-     * @param plugin
+     * @param pluginChangeMetadata
      */
-    void install(Plugin plugin);
+    void install(PluginChangeMetadata pluginChangeMetadata);
 
     /**
      * 卸载插件

@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 import pers.masteryourself.lushstar.pagoda.client.PluginFactory;
-import pers.masteryourself.lushstar.pagoda.client.po.Plugin;
 import pers.masteryourself.lushstar.pagoda.client.util.HttpUtils;
 import pers.masteryourself.lushstar.pagoda.client.util.SimpleHttpResult;
 
@@ -67,31 +66,31 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
         if (result == null || "".equals(result)) {
             return;
         }
-        Plugin plugin = GSON.fromJson(result, Plugin.class);
-        this.notifyPlugin(plugin);
+        PluginChangeMetadata pluginChangeMetadata = GSON.fromJson(result, PluginChangeMetadata.class);
+        this.notifyPlugin(pluginChangeMetadata);
     }
 
     /**
      * 更改插件
      *
-     * @param plugin
+     * @param pluginChangeMetadata
      */
-    private void notifyPlugin(Plugin plugin) {
-        switch (plugin.getSourceType()) {
+    private void notifyPlugin(PluginChangeMetadata pluginChangeMetadata) {
+        switch (pluginChangeMetadata.getSourceType()) {
             case INSTALL:
-                pluginFactory.install(plugin);
+                pluginFactory.install(pluginChangeMetadata);
                 break;
             case ACTIVE:
-                pluginFactory.active(plugin.getId());
+                pluginFactory.active(pluginChangeMetadata.getId());
                 break;
             case DISABLE:
-                pluginFactory.disable(plugin.getId());
+                pluginFactory.disable(pluginChangeMetadata.getId());
                 break;
             case UNINSTALL:
-                pluginFactory.uninstall(plugin.getId());
+                pluginFactory.uninstall(pluginChangeMetadata.getId());
                 break;
             default:
-                log.warn("操作有问题, {}", plugin.getSourceType());
+                log.warn("操作有问题, {}", pluginChangeMetadata.getSourceType());
                 break;
         }
     }

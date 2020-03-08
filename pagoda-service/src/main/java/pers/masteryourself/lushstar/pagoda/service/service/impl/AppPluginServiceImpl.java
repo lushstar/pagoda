@@ -36,14 +36,8 @@ public class AppPluginServiceImpl implements AppPluginService {
     }
 
     @Override
-    @Transactional
     public AppPluginEntity findByAppIdAndPluginId(Long appId, Long pluginId) {
         return appPluginRepository.findByAppIdAndPluginId(appId, pluginId);
-    }
-
-    @Override
-    public int deleteAppPluginEntityByAppIdAndPluginId(Long appId, Long pluginId) {
-        return appPluginRepository.deleteAppPluginEntityByAppIdAndPluginId(appId, pluginId);
     }
 
 }

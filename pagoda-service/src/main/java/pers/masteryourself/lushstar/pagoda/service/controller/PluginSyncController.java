@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
+import pers.masteryourself.lushstar.pagoda.service.bo.PluginChangeMetadata;
 import pers.masteryourself.lushstar.pagoda.service.event.PluginContext;
 import pers.masteryourself.lushstar.pagoda.service.response.DeferredResultWrapper;
 
@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 public class PluginSyncController {
 
     @RequestMapping("sync/{appName}")
-    public DeferredResult<ResponseEntity<PluginBo>> poll(
+    public DeferredResult<ResponseEntity<PluginChangeMetadata>> poll(
             HttpServletRequest request,
             @PathVariable(value = "appName") String appName) {
         // todo appName 鉴权

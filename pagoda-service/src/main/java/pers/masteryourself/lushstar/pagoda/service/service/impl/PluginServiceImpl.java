@@ -1,13 +1,12 @@
 package pers.masteryourself.lushstar.pagoda.service.service.impl;
 
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.masteryourself.lushstar.pagoda.config.dal.PluginRepository;
 import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
-import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
 import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -39,6 +38,7 @@ public class PluginServiceImpl implements PluginService {
     }
 
     @Override
+    @Transactional
     public PluginEntity save(PluginEntity pluginEntity) {
         return pluginRepository.saveAndFlush(pluginEntity);
     }

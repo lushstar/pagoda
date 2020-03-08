@@ -1,4 +1,4 @@
-package pers.masteryourself.lushstar.pagoda.client.po;
+package pers.masteryourself.lushstar.pagoda.client.core;
 
 /**
  * <p>description : SourceType

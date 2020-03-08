@@ -41,6 +41,4 @@ public class PluginBo {
      */
     private String className;
 
-    private SourceType sourceType;
-
 }

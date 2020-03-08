@@ -1,6 +1,6 @@
 package pers.masteryourself.lushstar.pagoda.service.event;
 
-import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
+import pers.masteryourself.lushstar.pagoda.service.bo.PluginChangeMetadata;
 import pers.masteryourself.lushstar.pagoda.service.response.DeferredResultWrapper;
 
 import java.util.Map;
@@ -29,6 +29,6 @@ public class PluginContext {
      * key:appName
      * value:PluginChangeModel
      */
-    public static final Map<String, PluginBo> CACHE_CONFIGS = new ConcurrentHashMap<>();
+    public static final Map<String, PluginChangeMetadata> CACHE_CONFIGS = new ConcurrentHashMap<>();
 
 }

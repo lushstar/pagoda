@@ -8,7 +8,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import pers.masteryourself.lushstar.pagoda.client.PluginFactory;
-import pers.masteryourself.lushstar.pagoda.client.po.Plugin;
 import pers.masteryourself.lushstar.pagoda.client.util.ResourcesUtils;
 
 import java.io.File;
@@ -41,7 +40,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     /**
      * 存储所有的插件
      */
-    private Map<Long, Plugin> pluginCache = new ConcurrentHashMap<>();
+    private Map<Long, PluginChangeMetadata> pluginCache = new ConcurrentHashMap<>();
 
     private Map<Long, JarURLConnection> jarCache = new ConcurrentHashMap<>();
 
@@ -59,27 +58,27 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     }
 
     @Override
-    public void install(Plugin plugin) {
+    public void install(PluginChangeMetadata pluginChangeMetadata) {
         // 1. 判断插件是否已经激活
-        Plugin cachePlugin = pluginCache.get(plugin.getId());
+        PluginChangeMetadata cachePlugin = pluginCache.get(pluginChangeMetadata.getId());
         if (cachePlugin != null) {
             log.warn("plugin {} has been active, cancel install operation", cachePlugin);
             return;
         }
         // 2. 判断插件是否存在，不存在则下载插件
-        log.info("download plugin {} start", plugin);
-        this.download(plugin);
+        log.info("download plugin {} start", pluginChangeMetadata);
+        this.download(pluginChangeMetadata);
         // 3. 添加到插件列表中
         // todo temp solution
-        plugin.setActive(false);
-        pluginCache.putIfAbsent(plugin.getId(), plugin);
+        pluginChangeMetadata.setActive(false);
+        pluginCache.putIfAbsent(pluginChangeMetadata.getId(), pluginChangeMetadata);
     }
 
 
     @Override
     public void uninstall(Long id) {
         // 1. 判断插件是否存在
-        Plugin plugin = pluginCache.get(id);
+        PluginChangeMetadata plugin = pluginCache.get(id);
         if (plugin == null) {
             log.warn("plugin id {} is empty, cancel uninstall operation", id);
             return;
@@ -97,13 +96,13 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     @Override
     public void active(Long id) {
         // 1. 判断插件是否存在
-        Plugin plugin = pluginCache.get(id);
+        PluginChangeMetadata plugin = pluginCache.get(id);
         if (plugin == null) {
             log.warn("plugin id {} is empty, cancel active operation", id);
             return;
         }
         // 2. 判断插件是否激活
-        if (plugin.getActive()) {
+        if (plugin.isActive()) {
             log.warn("plugin id {} has been active", id);
             return;
         }
@@ -126,13 +125,13 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     @Override
     public void disable(Long id) {
         // 1. 判断插件是否存在
-        Plugin plugin = pluginCache.get(id);
+        PluginChangeMetadata plugin = pluginCache.get(id);
         if (plugin == null) {
             log.warn("plugin id {} is empty, cancel uninstall operation", id);
             return;
         }
         // 2. 判断插件是否禁用
-        if (!plugin.getActive()) {
+        if (!plugin.isActive()) {
             log.warn("plugin id {} has been active", id);
             return;
         }
@@ -156,14 +155,14 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     /**
      * 装载插件并实例化
      *
-     * @param plugin
+     * @param pluginChangeMetadata
      * @param classLoader
      * @return
      * @throws Exception
      */
-    private Advice loadAdviceClass(Plugin plugin, URLClassLoader classLoader) throws Exception {
+    private Advice loadAdviceClass(PluginChangeMetadata pluginChangeMetadata, URLClassLoader classLoader) throws Exception {
         // 获取插件类名
-        Class<?> pluginClass = classLoader.loadClass(plugin.getClassName());
+        Class<?> pluginClass = classLoader.loadClass(pluginChangeMetadata.getClassName());
         if (!Advice.class.isAssignableFrom(pluginClass)) {
             throw new RuntimeException("插件配置错误");
         }
@@ -173,13 +172,13 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     /**
      * 用 ClassLoader 加载资源文件
      *
-     * @param plugin
+     * @param pluginChangeMetadata
      * @return
      * @throws Exception
      */
-    private void localJarResource(URLClassLoader classLoader, Plugin plugin) throws Exception {
+    private void localJarResource(URLClassLoader classLoader, PluginChangeMetadata pluginChangeMetadata) throws Exception {
         // 1. 构建 jar file 协议
-        URL targetUrl = new URL("jar:file:/" + plugin.getLocalAddress() + "!/");
+        URL targetUrl = new URL("jar:file:/" + pluginChangeMetadata.getLocalAddress() + "!/");
         // 2. 判断是否已经加载过 jar 包
         URL[] clUrls = classLoader.getURLs();
         boolean exist = false;
@@ -196,9 +195,9 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
             method.setAccessible(true);
             method.invoke(classLoader, targetUrl);
             // 4. 缓存 url 资源
-            this.cacheUrlConnection(plugin.getId(), targetUrl);
+            this.cacheUrlConnection(pluginChangeMetadata.getId(), targetUrl);
         } else {
-            log.warn("plugin {} has been load", plugin.getLocalAddress());
+            log.warn("pluginChangeMetadata {} has been load", pluginChangeMetadata.getLocalAddress());
         }
     }
 
@@ -207,7 +206,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
      *
      * @param plugin
      */
-    private void deleteLocalPlugin(Plugin plugin) {
+    private void deleteLocalPlugin(PluginChangeMetadata plugin) {
         String localAddress = plugin.getLocalAddress();
         File file = new File(localAddress);
         if (file.exists()) {
@@ -221,10 +220,10 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
     /**
      * 下载插件
      *
-     * @param plugin
+     * @param pluginChangeMetadata
      */
-    private void download(Plugin plugin) {
-        String address = plugin.getAddress();
+    private void download(PluginChangeMetadata pluginChangeMetadata) {
+        String address = pluginChangeMetadata.getAddress();
         FileInputStream inputStream = null;
         FileChannel readChannel = null;
         FileOutputStream outputStream = null;
@@ -237,7 +236,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
             outputStream = new FileOutputStream(localAddress);
             writeChannel = outputStream.getChannel();
             writeChannel.transferFrom(readChannel, 0, readChannel.size());
-            plugin.setLocalAddress(localAddress);
+            pluginChangeMetadata.setLocalAddress(localAddress);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         } finally {
@@ -254,7 +253,7 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
      * @param plugin
      * @param advice
      */
-    private void modifyAdvisedAdvice(Plugin plugin, Advice advice) {
+    private void modifyAdvisedAdvice(PluginChangeMetadata plugin, Advice advice) {
         for (String name : applicationContext.getBeanDefinitionNames()) {
             Object bean = applicationContext.getBean(name);
             if (bean == this) {
@@ -328,12 +327,12 @@ public class DefaultSpringPluginFactory implements ApplicationContextAware, Plug
      */
     private void releaseJarResource(Long id) {
         try {
-            JarURLConnection jarURLConnection = jarCache.get(id);
-            if (jarURLConnection == null) {
-                log.warn("未找到插件 {} 对应的 jarURLConnection", pluginCache.get(id));
+            JarURLConnection jarurlconnection = jarCache.get(id);
+            if (jarurlconnection == null) {
+                log.warn("未找到插件 {} 对应的 jarurlconnection", pluginCache.get(id));
                 return;
             }
-            jarURLConnection.getJarFile().close();
+            jarurlconnection.getJarFile().close();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

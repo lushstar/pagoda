@@ -6,6 +6,7 @@ import pers.masteryourself.lushstar.pagoda.config.dal.AppRepository;
 import pers.masteryourself.lushstar.pagoda.config.model.AppEntity;
 import pers.masteryourself.lushstar.pagoda.service.service.AppService;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
+    @Transactional
     public AppEntity save(AppEntity appEntity) {
         return appRepository.saveAndFlush(appEntity);
     }

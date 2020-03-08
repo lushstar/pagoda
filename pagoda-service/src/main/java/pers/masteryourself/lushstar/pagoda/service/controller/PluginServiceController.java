@@ -2,6 +2,7 @@ package pers.masteryourself.lushstar.pagoda.service.controller;
 
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pers.masteryourself.lushstar.pagoda.config.model.PluginEntity;
 import pers.masteryourself.lushstar.pagoda.service.bo.PluginBo;
@@ -11,6 +12,7 @@ import pers.masteryourself.lushstar.pagoda.service.response.ServiceResponse;
 import pers.masteryourself.lushstar.pagoda.service.service.EventService;
 import pers.masteryourself.lushstar.pagoda.service.service.PluginService;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,13 +58,26 @@ public class PluginServiceController {
     @PostMapping(value = "update")
     public ServiceResponse<PluginBo> update(@RequestBody PluginBo pluginBo) {
         PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
-        pluginEntity.setName(pluginBo.getName());
-        pluginEntity.setDescription(pluginBo.getDescription());
-        pluginEntity.setClassName(pluginBo.getClassName());
-        pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
-        pluginEntity.setActive(pluginBo.isActive());
-        pluginBo.setSourceType(SourceType.ACTIVE);
-        eventService.sendEvent(new PluginChangeEvent(pluginBo));
+        if (!StringUtils.isEmpty(pluginBo.getName())) {
+            pluginEntity.setName(pluginBo.getName());
+        }
+        if (!StringUtils.isEmpty(pluginBo.getDescription())) {
+            pluginEntity.setDescription(pluginBo.getDescription());
+        }
+        if (!StringUtils.isEmpty(pluginBo.getClassName())) {
+            pluginEntity.setClassName(pluginBo.getClassName());
+        }
+        if (pluginBo.getUpdateTime() == null) {
+            pluginEntity.setUpdateTime(new Date());
+        } else {
+            pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
+        }
+        if (pluginBo.getDel() != null) {
+            pluginEntity.setDel(pluginBo.getDel());
+        }
+        if (pluginBo.getActive() != null) {
+            pluginEntity.setDel(pluginBo.getActive());
+        }
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }
 
@@ -100,6 +115,7 @@ public class PluginServiceController {
         PluginEntity pluginEntity = pluginService.findById(pluginBo.getId());
         pluginEntity.setUpdateTime(pluginBo.getUpdateTime());
         pluginBo.setSourceType(SourceType.UNINSTALL);
+        pluginBo.setDel(true);
         eventService.sendEvent(new PluginChangeEvent(pluginBo));
         return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginBo.class));
     }

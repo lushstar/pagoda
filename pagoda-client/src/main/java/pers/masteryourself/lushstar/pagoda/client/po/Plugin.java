@@ -25,7 +25,7 @@ public class Plugin {
     /**
      * 0 表示未删除
      */
-    private boolean del;
+    private Boolean del;
 
     private String name;
 
@@ -36,7 +36,7 @@ public class Plugin {
     /**
      * 是否激活
      */
-    private boolean active;
+    private Boolean active;
 
     /**
      * 插件类名

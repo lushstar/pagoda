@@ -5,7 +5,7 @@
     <parent>
         <artifactId>pagoda</artifactId>
         <groupId>pers.masteryourself.lushstar</groupId>
-        <version>1.0.0-RELEASE</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -22,7 +22,7 @@
             <dependency>
                 <groupId>pers.masteryourself.lushstar</groupId>
                 <artifactId>pagoda-client</artifactId>
-                <version>1.0.0-RELEASE</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

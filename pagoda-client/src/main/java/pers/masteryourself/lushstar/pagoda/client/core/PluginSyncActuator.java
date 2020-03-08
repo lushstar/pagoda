@@ -100,7 +100,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     public void setEnvironment(Environment environment) {
         // 从环境变量中解析参数
         appName = environment.getProperty("pagoda.app.name", "blank");
-        serviceUrl = environment.getProperty("pagoda.service.url", "http://127.0.0.1:7070");
+        serviceUrl = environment.getProperty("pagoda.service.url", "http://localhost:7070/service/plugin/sync/");
     }
 
     @Override

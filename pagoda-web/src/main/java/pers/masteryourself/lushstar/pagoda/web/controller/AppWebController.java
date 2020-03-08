@@ -1,14 +1,15 @@
 package pers.masteryourself.lushstar.pagoda.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import pers.masteryourself.lushstar.pagoda.web.remote.AppRemote;
+import pers.masteryourself.lushstar.pagoda.web.remote.PluginRemote;
 import pers.masteryourself.lushstar.pagoda.web.vo.AppVo;
-
-import java.util.List;
 
 /**
  * <p>description : AppWebController
@@ -19,19 +20,58 @@ import java.util.List;
  * @version : 1.0.0
  * @date : 2020/2/25 21:11
  */
-@RestController
+@Controller
 @RequestMapping(value = "web/app")
 public class AppWebController {
 
-    @Value("${pagoda.service.url}")
-    private String routeUrl;
+    @Autowired
+    private AppRemote appRemote;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private PluginRemote pluginRemote;
 
-    @GetMapping(value = "findAll")
-    public List<AppVo> findAll() {
-        return null;
+    @GetMapping(value = "list")
+    public String list(Model model) {
+        model.addAttribute("appVoList", appRemote.list());
+        return "app/list";
+    }
+
+    @GetMapping(value = "toAdd")
+    public String toAdd() {
+        return "app/add";
+    }
+
+    @PostMapping(value = "add")
+    public String add(AppVo appVo) {
+        appVo.setDel(false);
+        appRemote.add(appVo);
+        return "redirect:/web/app/list";
+    }
+
+    @GetMapping(value = "toEdit/{id}")
+    public String toEdit(@PathVariable Long id, Model model) {
+        model.addAttribute("appVo", appRemote.find(id));
+        return "app/edit";
+    }
+
+    @PostMapping(value = "edit")
+    public String edit(AppVo appVo) {
+        appRemote.update(appVo);
+        return "redirect:/web/app/list";
+    }
+
+    @GetMapping(value = "del/{id}")
+    public String del(@PathVariable Long id, Model model) {
+        AppVo appVo = AppVo.builder().id(id).del(true).build();
+        model.addAttribute("appVo", appRemote.update(appVo));
+        return "redirect:/web/app/list";
+    }
+
+    @GetMapping(value = "plugin/{id}")
+    public String plugin(@PathVariable Long id, Model model) {
+        model.addAttribute("pluginVoList", pluginRemote.list());
+        model.addAttribute("appId", id);
+        return "app/plugin/list";
     }
 
 }

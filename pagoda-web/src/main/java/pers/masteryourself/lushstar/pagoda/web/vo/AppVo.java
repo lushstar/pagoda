@@ -1,7 +1,10 @@
 package pers.masteryourself.lushstar.pagoda.web.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -15,6 +18,9 @@ import java.util.Date;
  * @date : 2020/2/25 21:11
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppVo {
 
     private Long id;
@@ -28,8 +34,16 @@ public class AppVo {
     /**
      * 0 表示未删除
      */
-    private boolean del;
+    private Boolean del;
 
+    /**
+     * 应用名称
+     */
     private String name;
+
+    /**
+     * 描述信息
+     */
+    private String description;
 
 }

@@ -16,8 +16,8 @@
 <script src="/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 
-<a href="/web/plugin/list">管理应用</a>
-<a href="/web/plugin/list">管理插件</a>
+<h3><a href="/web/app/list">管理应用</a></h3>
+<h3><a href="/web/plugin/list">管理插件</a></h3>
 
 </body>
 </html>

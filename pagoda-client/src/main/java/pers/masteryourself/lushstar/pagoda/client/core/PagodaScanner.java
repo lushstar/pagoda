@@ -21,13 +21,10 @@ import java.util.Set;
  */
 public class PagodaScanner extends ClassPathBeanDefinitionScanner {
 
-    private BeanDefinitionRegistry registry;
-
     private PagodaFactoryBean<?> pagodaFactoryBean = new PagodaFactoryBean<>();
 
     public PagodaScanner(BeanDefinitionRegistry registry) {
         super(registry);
-        this.registry = registry;
     }
 
     /**
@@ -60,8 +57,11 @@ public class PagodaScanner extends ClassPathBeanDefinitionScanner {
     private void registerBean(BeanDefinitionHolder beanDefinitionHolder) {
         BeanDefinition beanDefinition = beanDefinitionHolder.getBeanDefinition();
         GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinition;
+        // 添加构造参数
         definition.getConstructorArgumentValues().addGenericArgumentValue(beanDefinition.getBeanClassName());
+        // 设置 bean 的类型是 pagodaFactoryBean
         definition.setBeanClass(this.pagodaFactoryBean.getClass());
+        // 根据类型自动注入
         definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
     }
 

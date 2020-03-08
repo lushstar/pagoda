@@ -2,18 +2,14 @@ package pers.masteryourself.lushstar.pagoda.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import pers.masteryourself.lushstar.pagoda.web.remote.PluginRemote;
 import pers.masteryourself.lushstar.pagoda.web.vo.PluginVo;
-import pers.masteryourself.lushstar.pagoda.web.vo.WebResponse;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * <p>description : PluginWebController
@@ -29,21 +25,12 @@ import java.util.List;
 @Slf4j
 public class PluginWebController {
 
-    @Value("${pagoda.service.url}")
-    private String routeUrl;
-
-    private String prefix = "/service/plugin";
-
     @Autowired
-    private RestTemplate restTemplate;
+    private PluginRemote pluginRemote;
 
     @GetMapping(value = "list")
     public String list(Model model) {
-        ParameterizedTypeReference<WebResponse<List<PluginVo>>> typeRef = new ParameterizedTypeReference<WebResponse<List<PluginVo>>>() {
-        };
-        ResponseEntity<WebResponse<List<PluginVo>>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/list",
-                HttpMethod.GET, null, typeRef);
-        model.addAttribute("pluginVoList", responseEntity.getBody().getData());
+        model.addAttribute("pluginVoList", pluginRemote.list());
         return "plugin/list";
     }
 
@@ -53,77 +40,29 @@ public class PluginWebController {
     }
 
     @PostMapping(value = "add")
-    public String add(PluginVo pluginVo, Model model) {
-        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
-        };
-        RestTemplate restTemplate = new RestTemplate();
-        Date now = new Date();
-        pluginVo.setCreateTime(now);
-        pluginVo.setUpdateTime(now);
-        ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/add",
-                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
-        model.addAttribute("pluginVoList", responseEntity.getBody().getData());
+    public String add(PluginVo pluginVo) {
+        pluginVo.setDel(false);
+        pluginVo.setActive(false);
+        pluginRemote.add(pluginVo);
         return "redirect:/web/plugin/list";
     }
 
     @GetMapping(value = "toEdit/{id}")
     public String toEdit(@PathVariable Long id, Model model) {
-        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
-        };
-        ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/find/" + id,
-                HttpMethod.GET, null, typeRef);
-        model.addAttribute("pluginVo", responseEntity.getBody().getData());
+        model.addAttribute("pluginVo", pluginRemote.find(id));
         return "plugin/edit";
     }
 
     @PostMapping(value = "edit")
     public String edit(PluginVo pluginVo, Model model) {
-        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
-        };
-        pluginVo.setUpdateTime(new Date());
-        ResponseEntity<WebResponse<PluginVo>> responseEntity = restTemplate.exchange(routeUrl + prefix + "/update",
-                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
-        model.addAttribute("pluginVo", responseEntity.getBody().getData());
+        model.addAttribute("pluginVo", pluginRemote.update(pluginVo));
         return "redirect:/web/plugin/list";
     }
 
     @GetMapping(value = "{action}/{id}")
     public String action(@PathVariable String action,
-                         @PathVariable Long id, Model model) {
-        ParameterizedTypeReference<WebResponse<PluginVo>> typeRef = new ParameterizedTypeReference<WebResponse<PluginVo>>() {
-        };
-        ResponseEntity<WebResponse<PluginVo>> findResponseEntity = restTemplate.exchange(routeUrl + prefix + "/find/" + id,
-                HttpMethod.GET, null, typeRef);
-        PluginVo pluginVo = findResponseEntity.getBody().getData();
-        String op;
-        switch (action) {
-            case "install":
-                op = "install";
-                break;
-            case "active":
-                pluginVo.setActive(true);
-                op = "active";
-                break;
-            case "disable":
-                pluginVo.setActive(false);
-                op = "disable";
-                break;
-            case "uninstall":
-                op = "uninstall";
-                break;
-            default:
-                log.warn("操作有问题 {}", action);
-                op = null;
-                break;
-        }
-        if (op == null) {
-            log.warn("操作有问题 {}, 请求取消", action);
-            return "redirect:/web/plugin/list";
-        }
-        pluginVo.setUpdateTime(new Date());
-        ResponseEntity<WebResponse<PluginVo>> updateResponseEntity = restTemplate.exchange(routeUrl + prefix + "/" + op,
-                HttpMethod.POST, new HttpEntity<>(pluginVo), typeRef);
-        model.addAttribute("pluginVo", updateResponseEntity.getBody().getData());
+                         @PathVariable Long id) {
+        pluginRemote.update(id, action);
         return "redirect:/web/plugin/list";
     }
 

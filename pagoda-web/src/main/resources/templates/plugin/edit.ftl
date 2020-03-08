@@ -21,10 +21,11 @@
 
 <form class="form-horizontal" action="/web/plugin/edit" method="post" style="width: 80%;text-align: center">
     <input type="hidden" name="id" value="${pluginVo.id}">
+    <input type="hidden" name="del" value="${pluginVo.del?string("1","0")}">
     <div class="form-group">
         <label class="col-sm-2 control-label">name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="请输入名称" name="name" value="${pluginVo.name!""}"
+            <input type="text" class="form-control" placeholder="请输入插件名称" name="name" value="${pluginVo.name!""}"
                    disabled>
         </div>
     </div>

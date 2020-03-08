@@ -28,8 +28,16 @@ public class AppBo {
     /**
      * 0 表示未删除
      */
-    private boolean del;
+    private Boolean del;
 
+    /**
+     * 应用名称
+     */
     private String name;
+
+    /**
+     * 描述信息
+     */
+    private String description;
 
 }

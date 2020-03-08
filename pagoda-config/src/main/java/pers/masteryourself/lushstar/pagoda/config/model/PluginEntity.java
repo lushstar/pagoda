@@ -25,37 +25,46 @@ public class PluginEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "create_time")
+    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'")
     private Date createTime;
 
-    @Column(name = "update_time")
+    @Column(name = "update_time", columnDefinition = "datetime COMMENT '修改时间'")
     private Date updateTime;
 
     /**
      * 0 表示未删除
      */
-    @Column
+    @Column(columnDefinition = "bit(1) COMMENT '是否删除，0、false 表示未删除'")
     private boolean del;
 
-    @Column
+    /**
+     * 插件名称
+     */
+    @Column(unique = true, columnDefinition = "varchar(100) COMMENT '插件名称'")
     private String name;
 
-    @Column
+    /**
+     * 插件描述
+     */
+    @Column(columnDefinition = "varchar(5000) COMMENT '插件描述'")
     private String description;
 
-    @Column
+    /**
+     * 插件地址
+     */
+    @Column(columnDefinition = "varchar(5000) COMMENT '插件地址'")
     private String address;
 
     /**
      * 是否激活
      */
-    @Column
+    @Column(columnDefinition = "bit(1) COMMENT '是否激活，0、false 表示未激活'")
     private boolean active;
 
     /**
      * 插件类名
      */
-    @Column(name = "class_name")
+    @Column(name = "class_name", unique = true, columnDefinition = "varchar(100) COMMENT '插件类名'")
     private String className;
 
 }

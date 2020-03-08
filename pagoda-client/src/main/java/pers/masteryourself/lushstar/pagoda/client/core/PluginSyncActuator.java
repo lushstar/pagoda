@@ -52,7 +52,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     public void initScheduleSync() {
         if (initFlag.compareAndSet(false, true)) {
             log.info("init sync thread");
-            //initPartIncrementThread();
+            initPartIncrementThread();
             initFullInIncrementThread();
         }
     }

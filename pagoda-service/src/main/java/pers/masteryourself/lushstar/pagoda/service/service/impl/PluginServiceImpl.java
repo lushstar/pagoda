@@ -21,9 +21,6 @@ import java.util.List;
 @Service
 public class PluginServiceImpl implements PluginService {
 
-    /*@Autowired
-    private MapperFacade mapperFacade;*/
-
     @Autowired
     private PluginRepository pluginRepository;
 

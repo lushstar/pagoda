@@ -52,7 +52,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     public void initScheduleSync() {
         if (initFlag.compareAndSet(false, true)) {
             log.info("init sync thread");
-            //initPartIncrementThread();
+            initPartIncrementThread();
             initFullInIncrementThread();
         }
     }
@@ -71,7 +71,6 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
      * 第一次有 5s 延时，防止初始化未完成, 每隔 60s 同步一次全量信息, 从数据库中查询数据，直接返回
      */
     private void initFullInIncrementThread() {
-        // 第一次有 5s 延时，防止初始化未完成, 每隔 3s 同步一次信息, 每次同步信息最大有 60s 延时
         ScheduledExecutorService pool = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "full-increment-plugin-sync-thread"));
         pool.scheduleWithFixedDelay(this::fullSyncPluginInfo, 5, 60, TimeUnit.SECONDS);
     }

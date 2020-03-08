@@ -17,4 +17,14 @@
         <module>pagoda-embed-plugin</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>pers.masteryourself.lushstar</groupId>
+                <artifactId>pagoda-client</artifactId>
+                <version>1.0.0-RELEASE</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

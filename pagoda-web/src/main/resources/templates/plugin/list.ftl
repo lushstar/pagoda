@@ -27,7 +27,6 @@
         <td>类名</td>
         <td>插件描述</td>
         <td>插件地址</td>
-        <td>插件状态</td>
         <td>创建时间</td>
         <td>修改时间</td>
         <td>操作</td>
@@ -39,7 +38,6 @@
             <td>${pluginVo.className!""}</td>
             <td>${pluginVo.description!""}</td>
             <td>${pluginVo.address!""}</td>
-            <td>${pluginVo.active?string("开启","关闭")!}</td>
             <td>${pluginVo.createTime?datetime!}</td>
             <td>${pluginVo.updateTime?datetime!}</td>
             <td>

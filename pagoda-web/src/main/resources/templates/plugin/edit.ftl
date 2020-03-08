@@ -65,18 +65,6 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">appName</label>
-        <div class="col-sm-10">
-            <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-success">修改</button>
         </div>

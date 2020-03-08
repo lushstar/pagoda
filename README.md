@@ -15,12 +15,9 @@
 
 # 数据库脚本
 
-- 远程站点目录需要自己更改
+- 详细见 `doc/init.sql`
 
-```sql
-INSERT INTO `plugin`(`id`, `active`, `address`, `class_name`, `create_time`, `del`, `description`, `name`, `update_time`) VALUES (1, b'1', 'D:\\workspace\\github-lushstar\\pagoda\\site\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'pers.masteryourself.lushstar.pagoda.sample.embed.plugin.ReturnPlugin', '2020-03-07 22:03:52', b'0', '打印返回值信息', 'ReturnPlugin', '2020-03-07 23:30:07');
-INSERT INTO `plugin`(`id`, `active`, `address`, `class_name`, `create_time`, `del`, `description`, `name`, `update_time`) VALUES (2, b'1', 'D:\\workspace\\github-lushstar\\pagoda\\site\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'pers.masteryourself.lushstar.pagoda.sample.embed.plugin.ParamPlugin', '2020-03-07 23:01:50', b'0', '打印入参信息', 'ParamPlugin', '2020-03-07 23:30:08');
-```
+- 注意 `plugin` 中 `address` 字段地址需要修改
 
 # 启动顺序
 

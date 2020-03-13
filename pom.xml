@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pers.masteryourself.lushstar</groupId>
-    <artifactId>pagoda</artifactId>
+    <groupId>com.lushstar.pagoda</groupId>
+    <artifactId>pagoda-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <modules>
         <module>pagoda-web</module>
         <module>pagoda-service</module>
-        <module>pagoda-config</module>
+        <module>pagoda-dal</module>
         <module>pagoda-client</module>
         <module>pagoda-samples</module>
     </modules>
@@ -25,6 +25,16 @@
                 <version>2.1.4.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.lushstar.pagoda</groupId>
+                <artifactId>pagoda-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lushstar.pagoda</groupId>
+                <artifactId>pagoda-dal</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -42,8 +42,8 @@ CREATE TABLE `plugin`  (
 -- ----------------------------
 -- Records of plugin
 -- ----------------------------
-INSERT INTO `plugin` VALUES (1, 'D:\\\\workspace\\\\github-lushstar\\\\pagoda\\\\site\\\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'pers.masteryourself.lushstar.pagoda.sample.embed.plugin.ReturnPlugin', '2020-03-08 14:32:53', b'0', '打印返回值信息', 'ReturnPlugin', '2020-03-08 16:36:25');
-INSERT INTO `plugin` VALUES (2, 'D:\\\\workspace\\\\github-lushstar\\\\pagoda\\\\site\\\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'pers.masteryourself.lushstar.pagoda.sample.embed.plugin.ParamPlugin', '2020-03-08 14:33:34', b'0', '打印入参信息', 'ParamPlugin', '2020-03-08 14:42:27');
+INSERT INTO `plugin` VALUES (1, 'D:\\\\workspace\\\\github-lushstar\\\\pagoda\\\\site\\\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'ReturnPlugin', '2020-03-08 14:32:53', b'0', '打印返回值信息', 'ReturnPlugin', '2020-03-08 16:36:25');
+INSERT INTO `plugin` VALUES (2, 'D:\\\\workspace\\\\github-lushstar\\\\pagoda\\\\site\\\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'ParamPlugin', '2020-03-08 14:33:34', b'0', '打印入参信息', 'ParamPlugin', '2020-03-08 14:42:27');
 
 -- ----------------------------
 -- Table structure for app_plugin

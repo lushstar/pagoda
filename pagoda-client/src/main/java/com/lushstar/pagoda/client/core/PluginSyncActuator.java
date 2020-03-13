@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
-import com.lushstar.pagoda.client.PluginFactory;
+import com.lushstar.pagoda.client.PluginManager;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -39,7 +39,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     private static AtomicBoolean initFlag = new AtomicBoolean(false);
 
-    private PluginFactory pluginFactory;
+    private PluginManager pluginFactory;
 
     String appName;
 
@@ -157,7 +157,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        pluginFactory = applicationContext.getBean(PluginFactory.class);
+        pluginFactory = applicationContext.getBean(PluginManager.class);
     }
 
 }

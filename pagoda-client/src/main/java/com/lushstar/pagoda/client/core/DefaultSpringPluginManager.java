@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.client.core;
 
-import com.lushstar.pagoda.client.PluginFactory;
+import com.lushstar.pagoda.client.PluginManager;
 import com.lushstar.pagoda.client.util.ResourcesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * <p>description : DefaultSpringPluginFactory
+ * <p>description : DefaultSpringPluginManager
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date : 2020/2/25 22:10
  */
 @Slf4j
-public class DefaultSpringPluginFactory implements ApplicationContextAware, PluginFactory {
+public class DefaultSpringPluginManager implements ApplicationContextAware, PluginManager {
 
     private ApplicationContext applicationContext;
 

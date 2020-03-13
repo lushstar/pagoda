@@ -1,22 +1,23 @@
 package com.lushstar.pagoda.client.annotation;
 
+import com.lushstar.pagoda.client.core.DefaultSpringPluginManager;
+import com.lushstar.pagoda.client.core.PagodaScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.StringUtils;
-import com.lushstar.pagoda.client.core.DefaultSpringPluginFactory;
-import com.lushstar.pagoda.client.core.PagodaScanner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * <p>description : PagodaRegistrar, 动态向项目中注入 {@link DefaultSpringPluginFactory}
+ * <p>description : PagodaRegistrar, 动态向项目中注入 {@link DefaultSpringPluginManager}
  *
  * <p>blog : https://Blog.csdn.net/masteryourself
  *
@@ -27,28 +28,13 @@ import java.util.List;
 @Slf4j
 public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
 
-    public static final String PLUGIN_FACTORY_BEAN_NAME =
-            "DefaultSpringPluginFactory";
+    private static final String BASE_PACKAGES = "basePackages";
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        String[] beanDefinitionNames = registry.getBeanDefinitionNames();
-        boolean flag = false;
-        for (String beanDefinitionName : beanDefinitionNames) {
-            BeanDefinition beanDefinition = registry.getBeanDefinition(beanDefinitionName);
-            if (beanDefinition.getBeanClassName().equals(PLUGIN_FACTORY_BEAN_NAME)) {
-                flag = true;
-                break;
-            }
-        }
-        if (flag) {
-            log.info("current project has been inject {}", PLUGIN_FACTORY_BEAN_NAME);
-        } else {
-            // register DefaultSpringPluginFactory
-            registry.registerBeanDefinition("defaultSpringPluginFactory", new RootBeanDefinition(DefaultSpringPluginFactory.class));
-            log.info("current project inject {}", PLUGIN_FACTORY_BEAN_NAME);
-        }
-        // scan
+        // 注册 DefaultSpringPluginManager 类
+        this.registerBeanDefinitionIfNotExists(registry, DefaultSpringPluginManager.class);
+        // 包扫描, 把添加 @EnablePagoda 注解的类都扫描到容器环境中, 做增强
         this.doScanner(importingClassMetadata, registry);
     }
 
@@ -58,9 +44,12 @@ public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
     private void doScanner(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes annotationAttrs = AnnotationAttributes.fromMap(
                 importingClassMetadata.getAnnotationAttributes(EnablePagoda.class.getName()));
+        if (annotationAttrs == null) {
+            return;
+        }
         PagodaScanner scanner = new PagodaScanner(registry);
         List<String> basePackages = new ArrayList<>();
-        for (String pkg : annotationAttrs.getStringArray("basePackages")) {
+        for (String pkg : annotationAttrs.getStringArray(BASE_PACKAGES)) {
             if (StringUtils.hasText(pkg)) {
                 basePackages.add(pkg);
             }
@@ -71,6 +60,33 @@ public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
         }
         scanner.addIncludeFilter(new AnnotationTypeFilter(Pagoda.class));
         scanner.doScan(StringUtils.toStringArray(basePackages));
+    }
+
+    /**
+     * 向容器中注入 bean, 只有容器不存在这个 bean 或者这个类型才会注入
+     *
+     * @param registry  bean 注册器
+     * @param beanClass bean 的类型
+     */
+    private void registerBeanDefinitionIfNotExists(BeanDefinitionRegistry registry, Class<?> beanClass) {
+        String beanName = beanClass.getName();
+        // 判断 beanName
+        if (registry.containsBeanDefinition(beanName)) {
+            log.info("current project has been inject {}", beanName);
+            return;
+        }
+        // 判断 bean 类型
+        for (String candidate : registry.getBeanDefinitionNames()) {
+            BeanDefinition beanDefinition = registry.getBeanDefinition(candidate);
+            if (Objects.equals(beanDefinition.getBeanClassName(), beanClass.getName())) {
+                log.info("current project has been inject {}", beanName);
+                return;
+            }
+        }
+        // 给容器中注入 beanClass
+        BeanDefinition beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(beanClass).getBeanDefinition();
+        registry.registerBeanDefinition(beanName, beanDefinition);
+        log.info("current project inject a bean, bean name is {}", beanName);
     }
 
 }

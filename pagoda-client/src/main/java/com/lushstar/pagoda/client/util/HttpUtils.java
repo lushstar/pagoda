@@ -2,6 +2,7 @@ package com.lushstar.pagoda.client.util;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.lushstar.pagoda.client.core.SimpleHttpResult;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -21,6 +22,13 @@ import java.util.Map;
  */
 public class HttpUtils {
 
+    /**
+     * TODO 使用 HttpURLConnection 发送请求, 应该有优化点
+     *
+     * @param url    请求地址
+     * @param params 请求参数
+     * @return 响应结果
+     */
     public static SimpleHttpResult doGet(String url, JsonObject params) {
         InputStream in = null;
         ByteArrayOutputStream byteArrayOutputStream = null;
@@ -61,6 +69,13 @@ public class HttpUtils {
         }
     }
 
+    /**
+     * 封装请求参数
+     *
+     * @param params 请求参数
+     * @return 封装后的结果
+     * @throws UnsupportedEncodingException 异常信息
+     */
     private static String getQueryString(JsonObject params) throws UnsupportedEncodingException {
         StringBuilder queryString = new StringBuilder();
         if (params != null) {

@@ -20,7 +20,7 @@ public class ResourcesUtils {
     /**
      * 释放资源
      *
-     * @param closeable
+     * @param closeable 可以关闭的资源
      */
     public static void close(Closeable closeable) {
         try {

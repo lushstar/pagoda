@@ -2,6 +2,7 @@ package com.lushstar.pagoda.client.annotation;
 
 import com.lushstar.pagoda.client.core.DefaultSpringPluginManager;
 import com.lushstar.pagoda.client.core.PagodaScanner;
+import com.lushstar.pagoda.client.core.PluginSyncActuator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -32,8 +33,10 @@ public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        // 注册 DefaultSpringPluginManager 类
+        // 注册 DefaultSpringPluginManager 类, 提供 pluginManager 的增删改查
         this.registerBeanDefinitionIfNotExists(registry, DefaultSpringPluginManager.class);
+        // 注册 PluginSyncActuator 类, 同于同步且更新 pluginManager
+        this.registerBeanDefinitionIfNotExists(registry, PluginSyncActuator.class);
         // 包扫描, 把添加 @EnablePagoda 注解的类都扫描到容器环境中, 做增强
         this.doScanner(importingClassMetadata, registry);
     }

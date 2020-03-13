@@ -3,7 +3,6 @@ package com.lushstar.pagoda.client.core;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lushstar.pagoda.client.util.HttpUtils;
-import com.lushstar.pagoda.client.util.SimpleHttpResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -41,15 +40,18 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     private PluginManager pluginFactory;
 
-    String appName;
+    private String appName;
 
-    String serviceUrl;
+    private String serviceUrl;
 
     public PluginSyncActuator() {
         this.initScheduleSync();
     }
 
-    public void initScheduleSync() {
+    /**
+     * 开启同步任务执行器
+     */
+    private void initScheduleSync() {
         if (initFlag.compareAndSet(false, true)) {
             log.info("init sync thread");
             initPartIncrementThread();
@@ -58,7 +60,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     }
 
     /**
-     * 初始化增量同步线程
+     * 增量同步执行器
      * 第一次有 5s 延时，防止初始化未完成, 每隔 3s 同步一次信息, 每次同步信息最大有 60s 延时
      */
     private void initPartIncrementThread() {
@@ -67,7 +69,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     }
 
     /**
-     * 初始化全量同步线程
+     * 全量同步执行器
      * 第一次有 5s 延时，防止初始化未完成, 每隔 60s 同步一次全量信息, 从数据库中查询数据，直接返回
      */
     private void initFullInIncrementThread() {
@@ -75,6 +77,9 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
         pool.scheduleWithFixedDelay(this::fullSyncPluginInfo, 5, 60, TimeUnit.SECONDS);
     }
 
+    /**
+     * 增量同步逻辑
+     */
     private void partSyncPluginInfo() {
         log.info("{} plugin info sync start", Thread.currentThread().getName());
         SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + PART_PLUGIN_SYNC_URL + appName, null);
@@ -94,6 +99,9 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
         this.notifyPlugin(pluginChangeMetadata);
     }
 
+    /**
+     * 全量同步逻辑
+     */
     private void fullSyncPluginInfo() {
         log.info("{} plugin info sync start", Thread.currentThread().getName());
         SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + FULL_PLUGIN_SYNC_URL + appName, null);
@@ -126,7 +134,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     /**
      * 更改插件
      *
-     * @param pluginChangeMetadata
+     * @param pluginChangeMetadata 插件元数据
      */
     private void notifyPlugin(PluginChangeMetadata pluginChangeMetadata) {
         switch (pluginChangeMetadata.getSourceType()) {
@@ -157,6 +165,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        // 从容器中获取 PluginManager 实现类
         pluginFactory = applicationContext.getBean(PluginManager.class);
     }
 

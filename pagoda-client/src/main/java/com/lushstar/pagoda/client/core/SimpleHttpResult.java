@@ -1,4 +1,4 @@
-package com.lushstar.pagoda.client.util;
+package com.lushstar.pagoda.client.core;
 
 import lombok.Data;
 

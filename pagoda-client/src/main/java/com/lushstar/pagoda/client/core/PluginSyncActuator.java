@@ -1,16 +1,15 @@
-package pers.masteryourself.lushstar.pagoda.client.core;
+package com.lushstar.pagoda.client.core;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lushstar.pagoda.client.PluginManager;
+import com.lushstar.pagoda.client.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
-import pers.masteryourself.lushstar.pagoda.client.PluginFactory;
-import pers.masteryourself.lushstar.pagoda.client.util.HttpUtils;
-import pers.masteryourself.lushstar.pagoda.client.util.SimpleHttpResult;
 
 import java.net.HttpURLConnection;
 import java.util.List;
@@ -39,7 +38,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     private static AtomicBoolean initFlag = new AtomicBoolean(false);
 
-    private PluginFactory pluginFactory;
+    private PluginManager pluginManager;
 
     String appName;
 
@@ -112,7 +111,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
             SourceType oldSourceType = pluginChangeMetadata.getSourceType();
             if (oldSourceType == SourceType.ACTIVE || oldSourceType == SourceType.DISABLE) {
                 // 这里如果是 ACTIVE、DISABLE 类型，要先判断插件缓存是否有次插件，没有插件就下载
-                if (!pluginFactory.hasPlugin(pluginChangeMetadata.getId())) {
+                if (!pluginManager.hasPlugin(pluginChangeMetadata.getId())) {
                     log.warn("plugin id {} is empty, begin download", pluginChangeMetadata.getId());
                     pluginChangeMetadata.setSourceType(SourceType.INSTALL);
                     this.notifyPlugin(pluginChangeMetadata);
@@ -132,16 +131,16 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     private void notifyPlugin(PluginChangeMetadata pluginChangeMetadata) {
         switch (pluginChangeMetadata.getSourceType()) {
             case INSTALL:
-                pluginFactory.install(pluginChangeMetadata);
+                pluginManager.install(pluginChangeMetadata);
                 break;
             case ACTIVE:
-                pluginFactory.active(pluginChangeMetadata.getId());
+                pluginManager.active(pluginChangeMetadata.getId());
                 break;
             case DISABLE:
-                pluginFactory.disable(pluginChangeMetadata.getId());
+                pluginManager.disable(pluginChangeMetadata.getId());
                 break;
             case UNINSTALL:
-                pluginFactory.uninstall(pluginChangeMetadata.getId());
+                pluginManager.uninstall(pluginChangeMetadata.getId());
                 break;
             default:
                 log.warn("操作有问题, {}", pluginChangeMetadata.getSourceType());
@@ -158,7 +157,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        pluginFactory = applicationContext.getBean(PluginFactory.class);
+        pluginManager = applicationContext.getBean(PluginManager.class);
     }
 
 }

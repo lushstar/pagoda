@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * <p>description : PluginSyncController, 同步插件信息
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

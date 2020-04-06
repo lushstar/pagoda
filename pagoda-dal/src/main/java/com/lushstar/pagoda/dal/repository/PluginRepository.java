@@ -6,7 +6,7 @@ import com.lushstar.pagoda.dal.model.PluginEntity;
 /**
  * <p>description : PluginRepository
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

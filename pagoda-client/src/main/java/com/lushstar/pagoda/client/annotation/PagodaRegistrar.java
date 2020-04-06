@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * <p>description : PagodaRegistrar, 动态向项目中注入 {@link DefaultSpringPluginManager}
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

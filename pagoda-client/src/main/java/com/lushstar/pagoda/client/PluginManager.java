@@ -6,7 +6,7 @@ import com.lushstar.pagoda.client.core.PluginChangeMetadata;
 /**
  * <p>description : PluginManager
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

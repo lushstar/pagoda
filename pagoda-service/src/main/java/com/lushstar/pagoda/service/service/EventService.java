@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationEvent;
 /**
  * <p>description : EventService
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

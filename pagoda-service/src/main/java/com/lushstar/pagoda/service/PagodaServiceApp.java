@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * <p>{@link EnableJpaRepositories} 表示扫描 JPA 的 Repository
  * <p>{@link EntityScan} 表示扫描 @Entity 注解
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * <p>description : AppService
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

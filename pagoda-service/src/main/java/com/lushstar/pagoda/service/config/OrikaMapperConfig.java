@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * <p>description : OrikaMapperConfig
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

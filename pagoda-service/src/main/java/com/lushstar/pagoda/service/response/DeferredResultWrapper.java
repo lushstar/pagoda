@@ -8,7 +8,7 @@ import com.lushstar.pagoda.service.bo.PluginChangeMetadata;
 /**
  * <p>description : DeferredResultWrapper
  *
- * <p>blog : https://Blog.csdn.net/masteryourself
+ * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0

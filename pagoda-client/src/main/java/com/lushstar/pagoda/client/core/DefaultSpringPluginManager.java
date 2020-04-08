@@ -1,7 +1,7 @@
 package com.lushstar.pagoda.client.core;
 
+import cn.hutool.core.io.IoUtil;
 import com.lushstar.pagoda.client.PluginManager;
-import com.lushstar.pagoda.client.util.ResourcesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
@@ -244,10 +244,10 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         } finally {
-            ResourcesUtils.close(inputStream);
-            ResourcesUtils.close(readChannel);
-            ResourcesUtils.close(outputStream);
-            ResourcesUtils.close(writeChannel);
+            IoUtil.close(inputStream);
+            IoUtil.close(readChannel);
+            IoUtil.close(outputStream);
+            IoUtil.close(writeChannel);
         }
     }
 
@@ -320,7 +320,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
                 jarCache.put(id, (JarURLConnection) uc);
             }
         } catch (Exception e) {
-            System.err.println("Failed to cache plugin JAR url: " + url.toExternalForm());
+            log.error("Failed to cache plugin JAR url {}", url.toExternalForm());
         }
     }
 

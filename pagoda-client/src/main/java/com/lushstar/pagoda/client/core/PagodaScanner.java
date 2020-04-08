@@ -36,7 +36,6 @@ public class PagodaScanner extends ClassPathBeanDefinitionScanner {
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
-
         if (beanDefinitions.isEmpty()) {
             logger.warn("No Pagoda bean was found in '" + Arrays.toString(basePackages) + "' package. Please check your configuration.");
         } else {

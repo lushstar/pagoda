@@ -12,8 +12,20 @@ package com.lushstar.pagoda.client.core;
 public enum SourceType {
 
     /**
-     * 事件类型
+     * 安装事件
      */
-    INSTALL, ACTIVE, DISABLE, UNINSTALL;
+    INSTALL,
+    /**
+     * 激活事件
+     */
+    ACTIVE,
+    /**
+     * 禁用事件
+     */
+    DISABLE,
+    /**
+     * 卸载事件
+     */
+    UNINSTALL;
 
 }

@@ -1,9 +1,11 @@
 package com.lushstar.pagoda.client.core;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import cn.hutool.core.lang.TypeReference;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.lushstar.pagoda.client.PluginManager;
-import com.lushstar.pagoda.client.util.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
 
+import javax.annotation.PostConstruct;
 import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -34,20 +37,15 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
 
     private static final String FULL_PLUGIN_SYNC_URL = "/service/plugin/sync/full/";
 
-    private static final Gson GSON = new Gson();
-
     private static AtomicBoolean initFlag = new AtomicBoolean(false);
 
     private PluginManager pluginManager;
 
-    String appName;
+    private String appName;
 
-    String serviceUrl;
+    private String serviceUrl;
 
-    public PluginSyncActuator() {
-        this.initScheduleSync();
-    }
-
+    @PostConstruct
     public void initScheduleSync() {
         if (initFlag.compareAndSet(false, true)) {
             log.info("init sync thread");
@@ -76,33 +74,23 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     }
 
     private void partSyncPluginInfo() {
-        log.info("{} plugin info sync start", Thread.currentThread().getName());
-        SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + PART_PLUGIN_SYNC_URL + appName, null);
-        if (HttpURLConnection.HTTP_NOT_MODIFIED == httpResult.getCode()) {
-            log.info("poll config 304 no change");
+        log.info("{} plugin info part sync start", Thread.currentThread().getName());
+        String result = this.syncPluginInfo(serviceUrl + PART_PLUGIN_SYNC_URL + appName);
+        if (StrUtil.isEmpty(result)) {
             return;
         }
-        if (HttpURLConnection.HTTP_OK != httpResult.getCode()) {
-            log.info("poll config error >>> {} >>> {}", httpResult.getCode(), httpResult.getMsg());
-            return;
-        }
-        String result = httpResult.getData();
-        if (result == null || "".equals(result)) {
-            return;
-        }
-        PluginChangeMetadata pluginChangeMetadata = GSON.fromJson(result, PluginChangeMetadata.class);
+        PluginChangeMetadata pluginChangeMetadata = JSONUtil.toBean(result, PluginChangeMetadata.class);
         this.notifyPlugin(pluginChangeMetadata);
     }
 
     private void fullSyncPluginInfo() {
-        log.info("{} plugin info sync start", Thread.currentThread().getName());
-        SimpleHttpResult httpResult = HttpUtils.doGet(serviceUrl + FULL_PLUGIN_SYNC_URL + appName, null);
-        String result = httpResult.getData();
-        if (result == null || "".equals(result)) {
+        log.info("{} plugin info full sync start", Thread.currentThread().getName());
+        String result = this.syncPluginInfo(serviceUrl + FULL_PLUGIN_SYNC_URL + appName);
+        if (StrUtil.isEmpty(result)) {
             return;
         }
-        BizResponse<List<PluginChangeMetadata>> bizResponse = GSON.fromJson(result, new TypeToken<BizResponse<List<PluginChangeMetadata>>>() {
-        }.getType());
+        BizResponse<List<PluginChangeMetadata>> bizResponse = JSONUtil.toBean(result, new TypeReference<BizResponse<List<PluginChangeMetadata>>>() {
+        }.getType(), false);
         List<PluginChangeMetadata> pluginChangeMetadataList = bizResponse.getData();
         if (pluginChangeMetadataList == null) {
             return;
@@ -158,6 +146,33 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         pluginManager = applicationContext.getBean(PluginManager.class);
+    }
+
+    private String syncPluginInfo(String url) {
+        HttpResponse response = null;
+        try {
+            response = HttpUtil.createGet(url)
+                    .setConnectionTimeout(3 * 1000)
+                    .setReadTimeout(3 * 1000)
+                    .execute();
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+        int status = response.getStatus();
+        if (HttpURLConnection.HTTP_NOT_MODIFIED == status) {
+            log.info("poll config 304 no change");
+            return null;
+        }
+        String result = response.body();
+        if (HttpURLConnection.HTTP_OK != status) {
+            log.info("poll config error >>> {} >>> {}", status, result);
+            return null;
+        }
+        if (StrUtil.isEmpty(result)) {
+            return null;
+        }
+        return result;
     }
 
 }

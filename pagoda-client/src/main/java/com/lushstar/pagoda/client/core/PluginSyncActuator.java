@@ -153,7 +153,7 @@ public class PluginSyncActuator implements EnvironmentAware, ApplicationContextA
         try {
             response = HttpUtil.createGet(url)
                     .setConnectionTimeout(3 * 1000)
-                    .setReadTimeout(3 * 1000)
+                    .setReadTimeout(100 * 1000)
                     .execute();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

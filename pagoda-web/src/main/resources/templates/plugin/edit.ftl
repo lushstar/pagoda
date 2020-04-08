@@ -19,7 +19,8 @@
 <script src="/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 
-<form class="form-horizontal" action="/web/plugin/edit" method="post" style="width: 80%;text-align: center">
+<form class="form-horizontal" action="/web/plugin/edit" enctype="multipart/form-data" method="post"
+      style="width: 80%;text-align: center">
     <input type="hidden" name="id" value="${pluginVo.id}">
     <input type="hidden" name="del" value="${pluginVo.del?string("1","0")}">
     <div class="form-group">
@@ -46,8 +47,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">address</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="请输入地址" name="address"
-                   value="${pluginVo.address!""}">
+            <input type="file" placeholder="请输入地址" name="jarFile">
         </div>
     </div>
     <div class="form-group">

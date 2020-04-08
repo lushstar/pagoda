@@ -29,7 +29,7 @@
 
 # 实验顺序
 
-- 先对 `pagoda-samples/pagoda-embed-plugin` 工程打包，然后把包移动到 site 目录下，当做远程站点目录
+- 先对 `pagoda-samples/pagoda-embed-plugin` 工程打包，上传插件时可以用此工程提供的 jar 包
 
 - 启动 `pagoda-sample-spring-boot` 工程，访问 `localhost:7777/test` 测试地址
 

@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * <p>description : TestController
  *
@@ -22,7 +24,7 @@ public class TestController {
 
     @GetMapping(value = "test")
     public String test() {
-        return userService.say();
+        return userService.test(UUID.randomUUID().toString().substring(0, 5));
     }
 
 }

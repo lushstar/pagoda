@@ -35,9 +35,9 @@ public class PagodaRegistrar implements ImportBeanDefinitionRegistrar {
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         // 注册 DefaultSpringPluginManager 类, 提供 pluginManager 的增删改查
         this.registerBeanDefinitionIfNotExists(registry, DefaultSpringPluginManager.class);
-        // 注册 PluginSyncActuator 类, 同于同步且更新 pluginManager
+        // 注册 PluginSyncActuator 类, 用于同步更新本地的 pluginManager
         this.registerBeanDefinitionIfNotExists(registry, PluginSyncActuator.class);
-        // 包扫描, 把添加 @EnablePagoda 注解的类都扫描到容器环境中, 做增强
+        // 包扫描, 把加上 @Pagoda 注解的类都扫描到容器环境中, 做 proxy 代理
         this.doScanner(importingClassMetadata, registry);
     }
 

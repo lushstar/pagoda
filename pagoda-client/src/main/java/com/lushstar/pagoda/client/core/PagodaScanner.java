@@ -7,7 +7,9 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,6 +24,8 @@ import java.util.Set;
 public class PagodaScanner extends ClassPathBeanDefinitionScanner {
 
     private PagodaFactoryBean<?> pagodaFactoryBean = new PagodaFactoryBean<>();
+
+    public static List<String> pagodaBeanNames = new ArrayList<>();
 
     public PagodaScanner(BeanDefinitionRegistry registry) {
         super(registry);
@@ -45,7 +49,10 @@ public class PagodaScanner extends ClassPathBeanDefinitionScanner {
     }
 
     private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {
-        beanDefinitions.forEach(this::registerBean);
+        beanDefinitions.forEach(beanDefinitionHolder -> {
+            this.registerBean(beanDefinitionHolder);
+            pagodaBeanNames.add(beanDefinitionHolder.getBeanName());
+        });
     }
 
     /**

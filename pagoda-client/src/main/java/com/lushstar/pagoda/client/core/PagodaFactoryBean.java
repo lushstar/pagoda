@@ -14,29 +14,25 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class PagodaFactoryBean<T> implements FactoryBean<T> {
 
-    private Class<T> beanInterface;
+    private Class<T> proxyBeanInterface;
 
     public PagodaFactoryBean() {
     }
 
-    public PagodaFactoryBean(Class<T> beanInterface) {
-        this.beanInterface = beanInterface;
+    public PagodaFactoryBean(Class<T> proxyBeanInterface) {
+        this.proxyBeanInterface = proxyBeanInterface;
     }
 
     @Override
     public T getObject() throws Exception {
-        T target = this.beanInterface.newInstance();
+        T target = this.proxyBeanInterface.newInstance();
         AspectJProxyFactory proxyFactory = new AspectJProxyFactory(target);
         return proxyFactory.getProxy();
     }
 
     @Override
     public Class<?> getObjectType() {
-        return this.beanInterface;
-    }
-
-    public void setBeanInterface(Class<T> beanInterface) {
-        this.beanInterface = beanInterface;
+        return this.proxyBeanInterface;
     }
 
 }

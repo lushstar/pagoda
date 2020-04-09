@@ -2,6 +2,7 @@ package com.lushstar.pagoda.client.core;
 
 import cn.hutool.core.io.IoUtil;
 import com.lushstar.pagoda.client.PluginManager;
+import com.lushstar.pagoda.client.annotation.Pagoda;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
@@ -252,21 +253,24 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     }
 
     /**
-     * 修改 spring proxy bean 的 advice
+     * 为标注了 {@link Pagoda} 注解的 bean 添加通知 advice
      *
-     * @param plugin
-     * @param advice
+     * @param pluginChangeMetadata {@link PluginChangeMetadata}
+     * @param advice               {@link Advice}
      */
-    private void modifyAdvisedAdvice(PluginChangeMetadata plugin, Advice advice) {
-        for (String name : applicationContext.getBeanDefinitionNames()) {
-            Object bean = applicationContext.getBean(name);
+    private void modifyAdvisedAdvice(PluginChangeMetadata pluginChangeMetadata, Advice advice) {
+        for (String pagodaBeanName : PagodaScanner.pagodaBeanNames) {
+            if (log.isDebugEnabled()) {
+                log.debug("modify {} bean advice start", pagodaBeanName);
+            }
+            Object bean = applicationContext.getBean(pagodaBeanName);
             if (bean == this) {
                 continue;
             }
             if (!(bean instanceof Advised)) {
                 continue;
             }
-            String className = plugin.getClassName();
+            String className = pluginChangeMetadata.getClassName();
             if (advice != null) {
                 // 判断是否装载过
                 Advice candidateAdvice = this.findAdvice(className, (Advised) bean);
@@ -308,16 +312,16 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     /**
      * 缓存 jar 资源
      *
-     * @param id
+     * @param pluginId
      * @param url
      */
-    private void cacheUrlConnection(Long id, URL url) {
+    private void cacheUrlConnection(Long pluginId, URL url) {
         try {
             // 打开并缓存 url 连接
             URLConnection uc = url.openConnection();
             if (uc instanceof JarURLConnection) {
                 uc.setUseCaches(true);
-                jarCache.put(id, (JarURLConnection) uc);
+                jarCache.put(pluginId, (JarURLConnection) uc);
             }
         } catch (Exception e) {
             log.error("Failed to cache plugin JAR url {}", url.toExternalForm());
@@ -327,13 +331,13 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     /**
      * 释放 jar 包资源
      *
-     * @param id
+     * @param pluginId 插件id
      */
-    private void releaseJarResource(Long id) {
+    private void releaseJarResource(Long pluginId) {
         try {
-            JarURLConnection jarurlconnection = jarCache.get(id);
+            JarURLConnection jarurlconnection = jarCache.get(pluginId);
             if (jarurlconnection == null) {
-                log.warn("未找到插件 {} 对应的 jarurlconnection", pluginCache.get(id));
+                log.warn("未找到插件 {} 对应的 JarURLConnection", pluginCache.get(pluginId));
                 return;
             }
             jarurlconnection.getJarFile().close();

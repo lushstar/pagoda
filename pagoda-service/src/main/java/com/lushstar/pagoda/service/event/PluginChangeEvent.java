@@ -1,7 +1,7 @@
 package com.lushstar.pagoda.service.event;
 
+import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
 import org.springframework.context.ApplicationEvent;
-import com.lushstar.pagoda.service.bo.PluginChangeMetadata;
 
 /**
  * <p>description : PluginChangeEvent, 插件信息修改事件

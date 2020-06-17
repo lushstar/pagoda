@@ -20,13 +20,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>com.lushstar.pagoda</groupId>
-            <artifactId>pagoda-client</artifactId>
-        </dependency>-->
         <dependency>
             <groupId>com.lushstar.pagoda</groupId>
             <artifactId>pagoda-dal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.lushstar.pagoda</groupId>
+            <artifactId>pagoda-api</artifactId>
         </dependency>
         <dependency>
             <groupId>ma.glasnost.orika</groupId>

@@ -1,7 +1,7 @@
 package com.lushstar.pagoda.service.event;
 
+import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
 import com.lushstar.pagoda.service.response.DeferredResultWrapper;
-import com.lushstar.pagoda.service.bo.PluginChangeMetadata;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

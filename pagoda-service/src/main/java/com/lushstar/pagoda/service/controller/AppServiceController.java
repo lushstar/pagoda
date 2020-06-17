@@ -1,13 +1,14 @@
 package com.lushstar.pagoda.service.controller;
 
+import com.lushstar.pagoda.api.bo.AppDto;
+import com.lushstar.pagoda.api.remote.AppRemote;
+import com.lushstar.pagoda.api.response.ServiceResponse;
+import com.lushstar.pagoda.dal.model.AppEntity;
+import com.lushstar.pagoda.service.service.AppService;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import com.lushstar.pagoda.dal.model.AppEntity;
-import com.lushstar.pagoda.service.bo.AppBo;
-import com.lushstar.pagoda.service.response.ServiceResponse;
-import com.lushstar.pagoda.service.service.AppService;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "service/app")
-public class AppServiceController {
+public class AppServiceController implements AppRemote {
 
     @Autowired
     private AppService appService;
@@ -31,39 +32,43 @@ public class AppServiceController {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Override
     @GetMapping(value = "list")
-    public ServiceResponse<List<AppBo>> list() {
+    public ServiceResponse<List<AppDto>> list() {
         List<AppEntity> appEntityList = appService.list();
-        return ServiceResponse.success(mapperFacade.mapAsList(appEntityList, AppBo.class));
+        return ServiceResponse.success(mapperFacade.mapAsList(appEntityList, AppDto.class));
     }
 
+    @Override
     @PostMapping(value = "add")
-    public ServiceResponse<AppBo> add(@RequestBody AppBo appBo) {
-        AppEntity appEntity = appService.save(mapperFacade.map(appBo, AppEntity.class));
-        return ServiceResponse.success(mapperFacade.map(appEntity, AppBo.class));
+    public ServiceResponse<AppDto> add(@RequestBody AppDto appDto) {
+        AppEntity appEntity = appService.save(mapperFacade.map(appDto, AppEntity.class));
+        return ServiceResponse.success(mapperFacade.map(appEntity, AppDto.class));
     }
 
+    @Override
     @GetMapping(value = "find/{id}")
-    public ServiceResponse<AppBo> findById(@PathVariable Long id) {
+    public ServiceResponse<AppDto> find(@PathVariable Long id) {
         AppEntity appEntity = appService.findById(id);
-        return ServiceResponse.success(mapperFacade.map(appEntity, AppBo.class));
+        return ServiceResponse.success(mapperFacade.map(appEntity, AppDto.class));
     }
 
+    @Override
     @PostMapping(value = "update")
-    public ServiceResponse<AppBo> update(@RequestBody AppBo appBo) {
-        AppEntity appEntity = appService.findById(appBo.getId());
-        if (!StringUtils.isEmpty(appBo.getDescription())) {
-            appEntity.setDescription(appBo.getDescription());
+    public ServiceResponse<AppDto> update(@RequestBody AppDto appDto) {
+        AppEntity appEntity = appService.findById(appDto.getId());
+        if (!StringUtils.isEmpty(appDto.getDescription())) {
+            appEntity.setDescription(appDto.getDescription());
         }
-        if (appBo.getUpdateTime() == null) {
+        if (appDto.getUpdateTime() == null) {
             appEntity.setUpdateTime(new Date());
         } else {
-            appEntity.setUpdateTime(appBo.getUpdateTime());
+            appEntity.setUpdateTime(appDto.getUpdateTime());
         }
-        if (appBo.getDel() != null) {
-            appEntity.setDel(appBo.getDel());
+        if (appDto.getDel() != null) {
+            appEntity.setDel(appDto.getDel());
         }
-        return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppBo.class));
+        return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppDto.class));
     }
 
 }

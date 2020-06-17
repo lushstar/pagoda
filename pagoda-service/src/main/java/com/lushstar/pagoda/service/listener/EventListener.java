@@ -1,10 +1,10 @@
 package com.lushstar.pagoda.service.listener;
 
-import org.springframework.context.ApplicationEvent;
-import org.springframework.stereotype.Component;
-import com.lushstar.pagoda.service.bo.PluginChangeMetadata;
+import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
 import com.lushstar.pagoda.service.event.PluginChangeEvent;
 import com.lushstar.pagoda.service.event.PluginContext;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>description : EventListener

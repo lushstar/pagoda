@@ -1,8 +1,11 @@
 package com.lushstar.pagoda.web.controller;
 
-import com.lushstar.pagoda.web.remote.PluginRemote;
+import com.lushstar.pagoda.api.bo.PluginDto;
+import com.lushstar.pagoda.api.response.ServiceResponse;
+import com.lushstar.pagoda.web.feign.PluginRemoteFeign;
 import com.lushstar.pagoda.web.vo.PluginVo;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -28,14 +31,17 @@ import java.util.Date;
 public class PluginWebController {
 
     @Autowired
-    private PluginRemote pluginRemote;
+    private PluginRemoteFeign pluginRemoteFeign;
+
+    @Autowired
+    private MapperFacade mapperFacade;
 
     @Value("${pagoda.plugin.site}")
     private String site;
 
     @GetMapping(value = "list")
     public String list(Model model) {
-        model.addAttribute("pluginVoList", pluginRemote.list());
+        model.addAttribute("pluginVoList", pluginRemoteFeign.list());
         return "plugin/list";
     }
 
@@ -51,34 +57,42 @@ public class PluginWebController {
         String destFile = site + File.separator + jarFile.getOriginalFilename();
         jarFile.transferTo(new File(destFile));
         pluginVo.setAddress(destFile);
-        pluginRemote.add(pluginVo);
+        Date now = new Date();
+        pluginVo.setCreateTime(now);
+        pluginVo.setUpdateTime(now);
+        pluginVo.setDel(false);
+        pluginRemoteFeign.add(mapperFacade.map(pluginVo, PluginDto.class));
         return "redirect:/web/plugin/list";
     }
 
     @GetMapping(value = "toEdit/{id}")
     public String toEdit(@PathVariable Long id, Model model) {
-        model.addAttribute("pluginVo", pluginRemote.find(id));
+        model.addAttribute("pluginVo", pluginRemoteFeign.find(id));
         return "plugin/edit";
     }
 
     @PostMapping(value = "edit")
     public String edit(PluginVo pluginVo, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
-        String oldAddress = pluginRemote.find(pluginVo.getId()).getAddress();
+        ServiceResponse<PluginDto> serviceResponse = pluginRemoteFeign.find(pluginVo.getId());
+        String oldAddress = serviceResponse.getData().getAddress();
         log.info("{} 原插件文件是否删除成功：{}", oldAddress, new File(oldAddress).delete());
         String destFile = site + File.separator + jarFile.getOriginalFilename();
         jarFile.transferTo(new File(destFile));
         pluginVo.setAddress(destFile);
-        pluginRemote.update(pluginVo);
+        pluginVo.setUpdateTime(new Date());
+        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginDto.class));
         return "redirect:/web/plugin/list";
     }
 
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
-        PluginVo pluginVo = pluginRemote.find(id);
+        PluginDto pluginDto = pluginRemoteFeign.find(id).getData();
+        PluginVo pluginVo = mapperFacade.map(pluginDto, PluginVo.class);
         log.info("{} 插件文件是否删除成功：{}", pluginVo.getAddress(), new File(pluginVo.getAddress()).delete());
         pluginVo.setUpdateTime(new Date());
         pluginVo.setDel(true);
-        pluginRemote.update(pluginVo);
+        pluginVo.setUpdateTime(new Date());
+        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginDto.class));
         return "redirect:/web/plugin/list";
     }
 

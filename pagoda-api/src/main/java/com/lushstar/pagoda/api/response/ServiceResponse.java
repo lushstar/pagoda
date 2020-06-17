@@ -1,4 +1,4 @@
-package com.lushstar.pagoda.service.response;
+package com.lushstar.pagoda.api.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

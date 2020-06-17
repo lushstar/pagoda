@@ -15,6 +15,7 @@
         <module>pagoda-dal</module>
         <module>pagoda-client</module>
         <module>pagoda-samples</module>
+        <module>pagoda-api</module>
     </modules>
 
     <dependencyManagement>
@@ -27,6 +28,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Greenwich.SR6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.lushstar.pagoda</groupId>
                 <artifactId>pagoda-client</artifactId>
                 <version>${project.version}</version>
@@ -34,6 +42,11 @@
             <dependency>
                 <groupId>com.lushstar.pagoda</groupId>
                 <artifactId>pagoda-dal</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lushstar.pagoda</groupId>
+                <artifactId>pagoda-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

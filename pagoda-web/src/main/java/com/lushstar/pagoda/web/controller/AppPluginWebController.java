@@ -1,17 +1,18 @@
 package com.lushstar.pagoda.web.controller;
 
+import com.lushstar.pagoda.web.feign.AppPluginRemoteFeign;
+import com.lushstar.pagoda.web.feign.AppRemoteFeign;
+import com.lushstar.pagoda.web.feign.PluginRemoteFeign;
+import com.lushstar.pagoda.web.vo.AppPluginVo;
+import com.lushstar.pagoda.web.vo.PluginVo;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.lushstar.pagoda.web.remote.AppPluginRemote;
-import com.lushstar.pagoda.web.remote.AppRemote;
-import com.lushstar.pagoda.web.remote.PluginRemote;
-import com.lushstar.pagoda.web.vo.AppPluginVo;
-import com.lushstar.pagoda.web.vo.PluginVo;
 
 import java.util.List;
 
@@ -30,20 +31,23 @@ import java.util.List;
 public class AppPluginWebController {
 
     @Autowired
-    private AppRemote appRemote;
+    private AppRemoteFeign appRemoteFeign;
 
     @Autowired
-    private AppPluginRemote appPluginRemote;
+    private AppPluginRemoteFeign appPluginRemoteFeign;
 
     @Autowired
-    private PluginRemote pluginRemote;
+    private PluginRemoteFeign pluginRemoteFeign;
+
+    @Autowired
+    private MapperFacade mapperFacade;
 
     @GetMapping(value = "{appId}")
     public String plugin(@PathVariable Long appId, Model model) {
-        List<PluginVo> pluginVoList = pluginRemote.list();
-        List<AppPluginVo> appPluginVoList = appPluginRemote.findByAppId(appId);
+        List<PluginVo> pluginVoList = mapperFacade.mapAsList(pluginRemoteFeign.list().getData(), PluginVo.class);
+        List<AppPluginVo> appPluginVoList = mapperFacade.mapAsList(appPluginRemoteFeign.findByAppId(appId).getData(), AppPluginVo.class);
         model.addAttribute("pluginVoList", pluginVoList);
-        model.addAttribute("appVo", appRemote.find(appId));
+        model.addAttribute("appVo", appRemoteFeign.find(appId));
         pluginVoList.forEach(pluginVo -> {
             appPluginVoList.forEach(appPluginVo -> {
                 if (appPluginVo.getPluginId().equals(pluginVo.getId())) {
@@ -61,16 +65,16 @@ public class AppPluginWebController {
     public String action(@PathVariable String action, @PathVariable Long appId, @PathVariable Long pluginId) {
         switch (action) {
             case "install":
-                appPluginRemote.install(appId, pluginId);
+                appPluginRemoteFeign.install(appId, pluginId);
                 break;
             case "active":
-                appPluginRemote.active(appId, pluginId);
+                appPluginRemoteFeign.active(appId, pluginId);
                 break;
             case "disable":
-                appPluginRemote.disable(appId, pluginId);
+                appPluginRemoteFeign.disable(appId, pluginId);
                 break;
             case "uninstall":
-                appPluginRemote.uninstall(appId, pluginId);
+                appPluginRemoteFeign.uninstall(appId, pluginId);
                 break;
             default:
                 log.warn("操作有问题 {}", action);

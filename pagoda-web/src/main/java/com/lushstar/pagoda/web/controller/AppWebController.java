@@ -1,5 +1,9 @@
 package com.lushstar.pagoda.web.controller;
 
+import com.lushstar.pagoda.api.bo.AppDto;
+import com.lushstar.pagoda.web.feign.AppRemoteFeign;
+import com.lushstar.pagoda.web.vo.AppVo;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,8 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import com.lushstar.pagoda.web.remote.AppRemote;
-import com.lushstar.pagoda.web.vo.AppVo;
+
+import java.util.Date;
 
 /**
  * <p>description : AppWebController
@@ -24,11 +28,14 @@ import com.lushstar.pagoda.web.vo.AppVo;
 public class AppWebController {
 
     @Autowired
-    private AppRemote appRemote;
+    private AppRemoteFeign appRemoteFeign;
+
+    @Autowired
+    private MapperFacade mapperFacade;
 
     @GetMapping(value = "list")
     public String list(Model model) {
-        model.addAttribute("appVoList", appRemote.list());
+        model.addAttribute("appVoList", appRemoteFeign.list());
         return "app/list";
     }
 
@@ -40,19 +47,24 @@ public class AppWebController {
     @PostMapping(value = "add")
     public String add(AppVo appVo) {
         appVo.setDel(false);
-        appRemote.add(appVo);
+        Date now = new Date();
+        appVo.setCreateTime(now);
+        appVo.setUpdateTime(now);
+        appVo.setDel(false);
+        appRemoteFeign.add(mapperFacade.map(appVo, AppDto.class));
         return "redirect:/web/app/list";
     }
 
     @GetMapping(value = "toEdit/{id}")
     public String toEdit(@PathVariable Long id, Model model) {
-        model.addAttribute("appVo", appRemote.find(id));
+        model.addAttribute("appVo", appRemoteFeign.find(id));
         return "app/edit";
     }
 
     @PostMapping(value = "edit")
     public String edit(AppVo appVo) {
-        appRemote.update(appVo);
+        appVo.setUpdateTime(new Date());
+        appRemoteFeign.update(mapperFacade.map(appVo, AppDto.class));
         return "redirect:/web/app/list";
     }
 
@@ -61,7 +73,7 @@ public class AppWebController {
         AppVo appVo = new AppVo();
         appVo.setId(id);
         appVo.setDel(true);
-        appRemote.update(appVo);
+        appRemoteFeign.update(mapperFacade.map(appVo, AppDto.class));
         return "redirect:/web/app/list";
     }
 

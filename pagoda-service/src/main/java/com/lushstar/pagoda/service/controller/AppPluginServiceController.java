@@ -1,23 +1,23 @@
 package com.lushstar.pagoda.service.controller;
 
-import ma.glasnost.orika.MapperFacade;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.lushstar.pagoda.api.bo.AppPluginDto;
+import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
+import com.lushstar.pagoda.api.bo.SourceType;
+import com.lushstar.pagoda.api.remote.AppPluginRemote;
+import com.lushstar.pagoda.api.response.ServiceResponse;
 import com.lushstar.pagoda.dal.model.AppEntity;
 import com.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.lushstar.pagoda.dal.model.PluginEntity;
-import com.lushstar.pagoda.service.bo.AppPluginBo;
-import com.lushstar.pagoda.service.bo.PluginChangeMetadata;
-import com.lushstar.pagoda.service.bo.SourceType;
 import com.lushstar.pagoda.service.event.PluginChangeEvent;
-import com.lushstar.pagoda.service.response.ServiceResponse;
 import com.lushstar.pagoda.service.service.AppPluginService;
 import com.lushstar.pagoda.service.service.AppService;
 import com.lushstar.pagoda.service.service.EventService;
 import com.lushstar.pagoda.service.service.PluginService;
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "service/app/plugin")
-public class AppPluginServiceController {
+public class AppPluginServiceController implements AppPluginRemote {
 
     @Autowired
     private AppPluginService appPluginService;
@@ -50,14 +50,16 @@ public class AppPluginServiceController {
     @Autowired
     private EventService eventService;
 
+    @Override
     @GetMapping(value = "findByAppId/{appId}")
-    public ServiceResponse<List<AppPluginBo>> findByAppId(@PathVariable Long appId) {
+    public ServiceResponse<List<AppPluginDto>> findByAppId(Long appId) {
         List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appId);
-        return ServiceResponse.success(mapperFacade.mapAsList(appPluginEntityList, AppPluginBo.class));
+        return ServiceResponse.success(mapperFacade.mapAsList(appPluginEntityList, AppPluginDto.class));
     }
 
+    @Override
     @GetMapping(value = "install/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginBo> install(@PathVariable Long appId, @PathVariable Long pluginId) {
+    public ServiceResponse<AppPluginDto> install(Long appId, Long pluginId) {
         Date now = new Date();
         AppPluginEntity oldAppPluginEntity = new AppPluginEntity();
         oldAppPluginEntity.setAppId(appId);
@@ -68,38 +70,40 @@ public class AppPluginServiceController {
         oldAppPluginEntity.setActive(false);
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.INSTALL);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginBo.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
     }
 
-
+    @Override
     @GetMapping(value = "active/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginBo> active(@PathVariable Long appId, @PathVariable Long pluginId) {
+    public ServiceResponse<AppPluginDto> active(Long appId, Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setActive(true);
         oldAppPluginEntity.setUpdateTime(new Date());
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.ACTIVE);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginBo.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
     }
 
+    @Override
     @GetMapping(value = "disable/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginBo> disable(@PathVariable Long appId, @PathVariable Long pluginId) {
+    public ServiceResponse<AppPluginDto> disable(Long appId, Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setActive(false);
         oldAppPluginEntity.setUpdateTime(new Date());
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.DISABLE);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginBo.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
     }
 
+    @Override
     @GetMapping(value = "uninstall/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginBo> uninstall(@PathVariable Long appId, @PathVariable Long pluginId) {
+    public ServiceResponse<AppPluginDto> uninstall(Long appId, Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setDel(true);
         oldAppPluginEntity.setUpdateTime(new Date());
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.UNINSTALL);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginBo.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
     }
 
     /**
@@ -120,5 +124,4 @@ public class AppPluginServiceController {
         pluginChangeMetadata.setAppName(appEntity.getName());
         eventService.sendEvent(new PluginChangeEvent(pluginChangeMetadata));
     }
-
 }

@@ -1,5 +1,17 @@
 package com.lushstar.pagoda.service.controller;
 
+import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
+import com.lushstar.pagoda.api.bo.SourceType;
+import com.lushstar.pagoda.api.remote.PluginSyncRemote;
+import com.lushstar.pagoda.api.response.ServiceResponse;
+import com.lushstar.pagoda.dal.model.AppEntity;
+import com.lushstar.pagoda.dal.model.AppPluginEntity;
+import com.lushstar.pagoda.dal.model.PluginEntity;
+import com.lushstar.pagoda.service.event.PluginContext;
+import com.lushstar.pagoda.service.response.DeferredResultWrapper;
+import com.lushstar.pagoda.service.service.AppPluginService;
+import com.lushstar.pagoda.service.service.AppService;
+import com.lushstar.pagoda.service.service.PluginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,19 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-import com.lushstar.pagoda.dal.model.AppEntity;
-import com.lushstar.pagoda.dal.model.AppPluginEntity;
-import com.lushstar.pagoda.dal.model.PluginEntity;
-import com.lushstar.pagoda.service.bo.PluginChangeMetadata;
-import com.lushstar.pagoda.service.bo.SourceType;
-import com.lushstar.pagoda.service.event.PluginContext;
-import com.lushstar.pagoda.service.response.DeferredResultWrapper;
-import com.lushstar.pagoda.service.response.ServiceResponse;
-import com.lushstar.pagoda.service.service.AppPluginService;
-import com.lushstar.pagoda.service.service.AppService;
-import com.lushstar.pagoda.service.service.PluginService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +35,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "service/plugin/sync")
 @Slf4j
-public class PluginSyncController {
+public class PluginSyncController implements PluginSyncRemote {
 
     @Autowired
     private AppPluginService appPluginService;
@@ -46,8 +46,9 @@ public class PluginSyncController {
     @Autowired
     private PluginService pluginService;
 
+    @Override
     @RequestMapping("part/{appName}")
-    public DeferredResult<ResponseEntity<PluginChangeMetadata>> partSync(HttpServletRequest request, @PathVariable(value = "appName") String appName) {
+    public DeferredResult<ResponseEntity<PluginChangeMetadata>> partSync(@PathVariable(value = "appName") String appName) {
         // 判断是否已经缓存, 如果有了, 则直接响应结果
         if (PluginContext.CACHE_CONFIGS.containsKey(appName)) {
             DeferredResultWrapper deferredResult = new DeferredResultWrapper();
@@ -73,8 +74,9 @@ public class PluginSyncController {
         return deferredResult.getResult();
     }
 
+    @Override
     @RequestMapping("full/{appName}")
-    public ServiceResponse<List<PluginChangeMetadata>> fullSync(HttpServletRequest request, @PathVariable(value = "appName") String appName) {
+    public ServiceResponse<List<PluginChangeMetadata>> fullSync(@PathVariable(value = "appName") String appName) {
         AppEntity appEntity = appService.findByName(appName);
         List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appEntity.getId());
         List<PluginChangeMetadata> result = new ArrayList<>();

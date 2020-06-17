@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
- * <p>description : PagodaServiceApp, service 服务提供层，也可以与第三方系统进行交互
+ * <p>description : PagodaServiceApplication, service 服务提供层，也可以与第三方系统进行交互
  * <p>{@link EnableJpaRepositories} 表示扫描 JPA 的 Repository
  * <p>{@link EntityScan} 表示扫描 @Entity 注解
  *
@@ -19,10 +19,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "com.lushstar.pagoda.dal.repository")
 @EntityScan(basePackages = "com.lushstar.pagoda.dal.model")
-public class PagodaServiceApp {
+public class PagodaServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PagodaServiceApp.class, args);
+        SpringApplication.run(PagodaServiceApplication.class, args);
     }
 
 }

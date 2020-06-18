@@ -1,4 +1,4 @@
-package com.lushstar.pagoda.api.bo;
+package com.lushstar.pagoda.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

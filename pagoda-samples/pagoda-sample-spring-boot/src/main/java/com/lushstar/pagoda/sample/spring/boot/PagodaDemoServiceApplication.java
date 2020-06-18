@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.lushstar.pagoda.client.annotation.EnablePagoda;
 
 /**
- * <p>description : PagodaDemoServiceApp
+ * <p>description : PagodaDemoServiceApplication
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -15,10 +15,10 @@ import com.lushstar.pagoda.client.annotation.EnablePagoda;
  */
 @SpringBootApplication
 @EnablePagoda
-public class PagodaDemoServiceApp {
+public class PagodaDemoServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PagodaDemoServiceApp.class, args);
+        SpringApplication.run(PagodaDemoServiceApplication.class, args);
     }
 
 }

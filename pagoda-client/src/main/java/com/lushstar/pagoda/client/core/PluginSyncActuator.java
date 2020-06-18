@@ -5,6 +5,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
+import com.lushstar.pagoda.api.dto.PluginChangeMetadata;
+import com.lushstar.pagoda.api.dto.SourceType;
 import com.lushstar.pagoda.client.PluginManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;

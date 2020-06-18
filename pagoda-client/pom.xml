@@ -36,6 +36,10 @@
             <version>5.2.5</version>
         </dependency>
         <dependency>
+            <groupId>com.lushstar.pagoda</groupId>
+            <artifactId>pagoda-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>

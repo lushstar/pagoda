@@ -1,7 +1,7 @@
 package com.lushstar.pagoda.service.controller;
 
-import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
-import com.lushstar.pagoda.api.bo.SourceType;
+import com.lushstar.pagoda.api.dto.PluginChangeMetadata;
+import com.lushstar.pagoda.api.dto.SourceType;
 import com.lushstar.pagoda.api.remote.PluginSyncRemote;
 import com.lushstar.pagoda.api.response.ServiceResponse;
 import com.lushstar.pagoda.dal.model.AppEntity;

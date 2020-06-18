@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.service.listener;
 
-import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
+import com.lushstar.pagoda.api.dto.PluginChangeMetadata;
 import com.lushstar.pagoda.service.event.PluginChangeEvent;
 import com.lushstar.pagoda.service.event.PluginContext;
 import org.springframework.context.ApplicationEvent;

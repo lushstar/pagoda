@@ -1,4 +1,4 @@
-package com.lushstar.pagoda.api.bo;
+package com.lushstar.pagoda.api.dto;
 
 import lombok.Data;
 
@@ -28,5 +28,11 @@ public class PluginChangeMetadata {
      * 0、false 表示禁用
      */
     private boolean active;
+
+    /**
+     * 临时变量，仅用于客户端
+     * 表示下载后的缓存地址
+     */
+    private String localAddress;
 
 }

@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.api.remote;
 
-import com.lushstar.pagoda.api.bo.PluginDto;
+import com.lushstar.pagoda.api.dto.PluginDto;
 import com.lushstar.pagoda.api.response.ServiceResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

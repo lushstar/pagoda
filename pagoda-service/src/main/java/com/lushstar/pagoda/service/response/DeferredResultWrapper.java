@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.service.response;
 
-import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
+import com.lushstar.pagoda.api.dto.PluginChangeMetadata;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;

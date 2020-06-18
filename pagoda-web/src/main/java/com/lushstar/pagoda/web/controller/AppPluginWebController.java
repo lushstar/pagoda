@@ -47,7 +47,7 @@ public class AppPluginWebController {
         List<PluginVo> pluginVoList = mapperFacade.mapAsList(pluginRemoteFeign.list().getData(), PluginVo.class);
         List<AppPluginVo> appPluginVoList = mapperFacade.mapAsList(appPluginRemoteFeign.findByAppId(appId).getData(), AppPluginVo.class);
         model.addAttribute("pluginVoList", pluginVoList);
-        model.addAttribute("appVo", appRemoteFeign.find(appId));
+        model.addAttribute("appVo", appRemoteFeign.find(appId).getData());
         pluginVoList.forEach(pluginVo -> {
             appPluginVoList.forEach(appPluginVo -> {
                 if (appPluginVo.getPluginId().equals(pluginVo.getId())) {

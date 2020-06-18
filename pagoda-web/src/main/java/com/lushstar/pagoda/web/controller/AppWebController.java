@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.web.controller;
 
-import com.lushstar.pagoda.api.bo.AppDto;
+import com.lushstar.pagoda.api.dto.AppDto;
 import com.lushstar.pagoda.web.feign.AppRemoteFeign;
 import com.lushstar.pagoda.web.vo.AppVo;
 import ma.glasnost.orika.MapperFacade;
@@ -35,7 +35,7 @@ public class AppWebController {
 
     @GetMapping(value = "list")
     public String list(Model model) {
-        model.addAttribute("appVoList", appRemoteFeign.list());
+        model.addAttribute("appVoList", appRemoteFeign.list().getData());
         return "app/list";
     }
 
@@ -57,7 +57,7 @@ public class AppWebController {
 
     @GetMapping(value = "toEdit/{id}")
     public String toEdit(@PathVariable Long id, Model model) {
-        model.addAttribute("appVo", appRemoteFeign.find(id));
+        model.addAttribute("appVo", appRemoteFeign.find(id).getData());
         return "app/edit";
     }
 

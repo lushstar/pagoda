@@ -1,6 +1,7 @@
 package com.lushstar.pagoda.client.core;
 
 import cn.hutool.core.io.IoUtil;
+import com.lushstar.pagoda.api.dto.PluginChangeMetadata;
 import com.lushstar.pagoda.client.PluginManager;
 import com.lushstar.pagoda.client.annotation.Pagoda;
 import lombok.extern.slf4j.Slf4j;

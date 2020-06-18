@@ -1,4 +1,4 @@
-package com.lushstar.pagoda.client.core;
+package com.lushstar.pagoda.api.dto;
 
 /**
  * <p>description : SourceType

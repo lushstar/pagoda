@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.web.controller;
 
-import com.lushstar.pagoda.api.bo.PluginDto;
+import com.lushstar.pagoda.api.dto.PluginDto;
 import com.lushstar.pagoda.api.response.ServiceResponse;
 import com.lushstar.pagoda.web.feign.PluginRemoteFeign;
 import com.lushstar.pagoda.web.vo.PluginVo;
@@ -41,7 +41,7 @@ public class PluginWebController {
 
     @GetMapping(value = "list")
     public String list(Model model) {
-        model.addAttribute("pluginVoList", pluginRemoteFeign.list());
+        model.addAttribute("pluginVoList", pluginRemoteFeign.list().getData());
         return "plugin/list";
     }
 
@@ -67,7 +67,7 @@ public class PluginWebController {
 
     @GetMapping(value = "toEdit/{id}")
     public String toEdit(@PathVariable Long id, Model model) {
-        model.addAttribute("pluginVo", pluginRemoteFeign.find(id));
+        model.addAttribute("pluginVo", pluginRemoteFeign.find(id).getData());
         return "plugin/edit";
     }
 

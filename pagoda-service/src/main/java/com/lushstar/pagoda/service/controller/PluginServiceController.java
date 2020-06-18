@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.service.controller;
 
-import com.lushstar.pagoda.api.bo.PluginDto;
+import com.lushstar.pagoda.api.dto.PluginDto;
 import com.lushstar.pagoda.api.remote.PluginRemote;
 import com.lushstar.pagoda.api.response.ServiceResponse;
 import com.lushstar.pagoda.dal.model.PluginEntity;

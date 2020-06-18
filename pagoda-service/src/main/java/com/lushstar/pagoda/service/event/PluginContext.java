@@ -1,6 +1,6 @@
 package com.lushstar.pagoda.service.event;
 
-import com.lushstar.pagoda.api.bo.PluginChangeMetadata;
+import com.lushstar.pagoda.api.dto.PluginChangeMetadata;
 import com.lushstar.pagoda.service.response.DeferredResultWrapper;
 
 import java.util.Map;

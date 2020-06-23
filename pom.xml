@@ -16,6 +16,7 @@
         <module>pagoda-client</module>
         <module>pagoda-samples</module>
         <module>pagoda-api</module>
+        <module>pagoda-common</module>
     </modules>
 
     <dependencyManagement>
@@ -47,6 +48,11 @@
             <dependency>
                 <groupId>com.lushstar.pagoda</groupId>
                 <artifactId>pagoda-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lushstar.pagoda</groupId>
+                <artifactId>pagoda-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

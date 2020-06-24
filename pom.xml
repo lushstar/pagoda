@@ -10,17 +10,18 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>pagoda-web</module>
-        <module>pagoda-service</module>
-        <module>pagoda-dal</module>
-        <module>pagoda-client</module>
-        <module>pagoda-samples</module>
-        <module>pagoda-api</module>
         <module>pagoda-common</module>
+        <module>pagoda-client</module>
+        <module>pagoda-dal</module>
+        <module>pagoda-api</module>
+        <module>pagoda-service</module>
+        <module>pagoda-web</module>
+        <module>pagoda-samples</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <!-- other dependencies bom -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -36,6 +37,20 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>com.github.lushstar.ladder</groupId>
+                <artifactId>ladder-bom</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- pagoda dependencies -->
+            <dependency>
+                <groupId>com.lushstar.pagoda</groupId>
+                <artifactId>pagoda-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.lushstar.pagoda</groupId>
                 <artifactId>pagoda-client</artifactId>
                 <version>${project.version}</version>
@@ -48,11 +63,6 @@
             <dependency>
                 <groupId>com.lushstar.pagoda</groupId>
                 <artifactId>pagoda-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.lushstar.pagoda</groupId>
-                <artifactId>pagoda-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

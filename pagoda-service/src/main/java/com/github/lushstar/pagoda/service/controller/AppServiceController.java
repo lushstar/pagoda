@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.service.controller;
 
-import com.github.lushstar.pagoda.api.dto.AppDto;
+import com.github.lushstar.pagoda.api.request.AppRequest;
+import com.github.lushstar.pagoda.api.response.AppResponse;
 import com.github.lushstar.pagoda.api.remote.AppRemote;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
@@ -34,41 +35,41 @@ public class AppServiceController implements AppRemote {
 
     @Override
     @GetMapping(value = "list")
-    public ServiceResponse<List<AppDto>> list() {
+    public ServiceResponse<List<AppResponse>> list() {
         List<AppEntity> appEntityList = appService.list();
-        return ServiceResponse.success(mapperFacade.mapAsList(appEntityList, AppDto.class));
+        return ServiceResponse.success(mapperFacade.mapAsList(appEntityList, AppResponse.class));
     }
 
     @Override
     @PostMapping(value = "add")
-    public ServiceResponse<AppDto> add(@RequestBody AppDto appDto) {
-        AppEntity appEntity = appService.save(mapperFacade.map(appDto, AppEntity.class));
-        return ServiceResponse.success(mapperFacade.map(appEntity, AppDto.class));
+    public ServiceResponse<AppResponse> add(@RequestBody AppRequest appRequest) {
+        AppEntity appEntity = appService.save(mapperFacade.map(appRequest, AppEntity.class));
+        return ServiceResponse.success(mapperFacade.map(appEntity, AppResponse.class));
     }
 
     @Override
     @GetMapping(value = "find/{id}")
-    public ServiceResponse<AppDto> find(@PathVariable Long id) {
+    public ServiceResponse<AppResponse> find(@PathVariable Long id) {
         AppEntity appEntity = appService.findById(id);
-        return ServiceResponse.success(mapperFacade.map(appEntity, AppDto.class));
+        return ServiceResponse.success(mapperFacade.map(appEntity, AppResponse.class));
     }
 
     @Override
     @PostMapping(value = "update")
-    public ServiceResponse<AppDto> update(@RequestBody AppDto appDto) {
-        AppEntity appEntity = appService.findById(appDto.getId());
-        if (!StringUtils.isEmpty(appDto.getDescription())) {
-            appEntity.setDescription(appDto.getDescription());
+    public ServiceResponse<AppResponse> update(@RequestBody AppRequest appRequest) {
+        AppEntity appEntity = appService.findById(appRequest.getId());
+        if (!StringUtils.isEmpty(appRequest.getDescription())) {
+            appEntity.setDescription(appRequest.getDescription());
         }
-        if (appDto.getUpdateTime() == null) {
+        if (appRequest.getUpdateTime() == null) {
             appEntity.setUpdateTime(new Date());
         } else {
-            appEntity.setUpdateTime(appDto.getUpdateTime());
+            appEntity.setUpdateTime(appRequest.getUpdateTime());
         }
-        if (appDto.getDel() != null) {
-            appEntity.setDel(appDto.getDel());
+        if (appRequest.getDel() != null) {
+            appEntity.setDel(appRequest.getDel());
         }
-        return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppDto.class));
+        return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppResponse.class));
     }
 
 }

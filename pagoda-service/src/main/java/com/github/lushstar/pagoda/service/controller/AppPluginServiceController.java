@@ -1,10 +1,10 @@
 package com.github.lushstar.pagoda.service.controller;
 
-import com.github.lushstar.pagoda.api.dto.AppPluginDto;
-import com.github.lushstar.pagoda.api.dto.PluginChangeMetadata;
-import com.github.lushstar.pagoda.api.dto.SourceType;
 import com.github.lushstar.pagoda.api.remote.AppPluginRemote;
+import com.github.lushstar.pagoda.api.response.AppPluginResponse;
+import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
+import com.github.lushstar.pagoda.common.enums.SourceType;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
@@ -52,14 +52,14 @@ public class AppPluginServiceController implements AppPluginRemote {
 
     @Override
     @GetMapping(value = "findByAppId/{appId}")
-    public ServiceResponse<List<AppPluginDto>> findByAppId(Long appId) {
+    public ServiceResponse<List<AppPluginResponse>> findByAppId(Long appId) {
         List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appId);
-        return ServiceResponse.success(mapperFacade.mapAsList(appPluginEntityList, AppPluginDto.class));
+        return ServiceResponse.success(mapperFacade.mapAsList(appPluginEntityList, AppPluginResponse.class));
     }
 
     @Override
     @GetMapping(value = "install/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginDto> install(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> install(Long appId, Long pluginId) {
         Date now = new Date();
         AppPluginEntity oldAppPluginEntity = new AppPluginEntity();
         oldAppPluginEntity.setAppId(appId);
@@ -70,40 +70,40 @@ public class AppPluginServiceController implements AppPluginRemote {
         oldAppPluginEntity.setActive(false);
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.INSTALL);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginResponse.class));
     }
 
     @Override
     @GetMapping(value = "active/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginDto> active(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> active(Long appId, Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setActive(true);
         oldAppPluginEntity.setUpdateTime(new Date());
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.ACTIVE);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginResponse.class));
     }
 
     @Override
     @GetMapping(value = "disable/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginDto> disable(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> disable(Long appId, Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setActive(false);
         oldAppPluginEntity.setUpdateTime(new Date());
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.DISABLE);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginResponse.class));
     }
 
     @Override
     @GetMapping(value = "uninstall/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginDto> uninstall(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> uninstall(Long appId, Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setDel(true);
         oldAppPluginEntity.setUpdateTime(new Date());
         AppPluginEntity appPluginEntity = appPluginService.save(oldAppPluginEntity);
         this.sendPluginChangeEvent(appPluginEntity, SourceType.UNINSTALL);
-        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginDto.class));
+        return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginResponse.class));
     }
 
     /**

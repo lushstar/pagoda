@@ -23,7 +23,7 @@ import java.util.Set;
  */
 public class PagodaScanner extends ClassPathBeanDefinitionScanner {
 
-    private PagodaFactoryBean<?> pagodaFactoryBean = new PagodaFactoryBean<>();
+    private final PagodaFactoryBean<?> pagodaFactoryBean = new PagodaFactoryBean<>();
 
     public static List<String> pagodaBeanNames = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.web.controller;
 
-import com.github.lushstar.pagoda.api.dto.PluginDto;
+import com.github.lushstar.pagoda.api.request.PluginRequest;
+import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.web.feign.PluginRemoteFeign;
 import com.github.lushstar.pagoda.web.vo.PluginVo;
@@ -61,7 +62,7 @@ public class PluginWebController {
         pluginVo.setCreateTime(now);
         pluginVo.setUpdateTime(now);
         pluginVo.setDel(false);
-        pluginRemoteFeign.add(mapperFacade.map(pluginVo, PluginDto.class));
+        pluginRemoteFeign.add(mapperFacade.map(pluginVo, PluginRequest.class));
         return "redirect:/web/plugin/list";
     }
 
@@ -73,26 +74,26 @@ public class PluginWebController {
 
     @PostMapping(value = "edit")
     public String edit(PluginVo pluginVo, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
-        ServiceResponse<PluginDto> serviceResponse = pluginRemoteFeign.find(pluginVo.getId());
+        ServiceResponse<PluginResponse> serviceResponse = pluginRemoteFeign.find(pluginVo.getId());
         String oldAddress = serviceResponse.getData().getAddress();
         log.info("{} 原插件文件是否删除成功：{}", oldAddress, new File(oldAddress).delete());
         String destFile = site + File.separator + jarFile.getOriginalFilename();
         jarFile.transferTo(new File(destFile));
         pluginVo.setAddress(destFile);
         pluginVo.setUpdateTime(new Date());
-        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginDto.class));
+        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginRequest.class));
         return "redirect:/web/plugin/list";
     }
 
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
-        PluginDto pluginDto = pluginRemoteFeign.find(id).getData();
+        PluginResponse pluginDto = pluginRemoteFeign.find(id).getData();
         PluginVo pluginVo = mapperFacade.map(pluginDto, PluginVo.class);
         log.info("{} 插件文件是否删除成功：{}", pluginVo.getAddress(), new File(pluginVo.getAddress()).delete());
         pluginVo.setUpdateTime(new Date());
         pluginVo.setDel(true);
         pluginVo.setUpdateTime(new Date());
-        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginDto.class));
+        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginRequest.class));
         return "redirect:/web/plugin/list";
     }
 

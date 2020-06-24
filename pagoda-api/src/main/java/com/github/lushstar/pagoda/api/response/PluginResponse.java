@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.api.dto;
+package com.github.lushstar.pagoda.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * <p>description : AppBo
+ * <p>description : PluginBo
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -15,7 +15,7 @@ import java.util.Date;
  * @date : 2020/2/25 21:44
  */
 @Data
-public class AppDto {
+public class PluginResponse {
 
     private Long id;
 
@@ -30,14 +30,15 @@ public class AppDto {
      */
     private Boolean del;
 
-    /**
-     * 应用名称
-     */
     private String name;
 
-    /**
-     * 描述信息
-     */
     private String description;
+
+    private String address;
+
+    /**
+     * 插件类名
+     */
+    private String className;
 
 }

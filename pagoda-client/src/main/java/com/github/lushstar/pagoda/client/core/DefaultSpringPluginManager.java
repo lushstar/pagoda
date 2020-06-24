@@ -1,7 +1,7 @@
 package com.github.lushstar.pagoda.client.core;
 
 import cn.hutool.core.io.IoUtil;
-import com.github.lushstar.pagoda.api.dto.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 import com.github.lushstar.pagoda.client.PluginManager;
 import com.github.lushstar.pagoda.client.annotation.Pagoda;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +42,9 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     /**
      * 存储所有的插件
      */
-    private Map<Long, PluginChangeMetadata> pluginCache = new ConcurrentHashMap<>();
+    private final Map<Long, PluginChangeMetadata> pluginCache = new ConcurrentHashMap<>();
 
-    private Map<Long, JarURLConnection> jarCache = new ConcurrentHashMap<>();
+    private final Map<Long, JarURLConnection> jarCache = new ConcurrentHashMap<>();
 
     /**
      * 本地插件位置
@@ -148,14 +148,14 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     }
 
     /**
-     * 注入 applicationContext
+     * 注入 context
      *
-     * @param applicationContext
-     * @throws BeansException
+     * @param context {@link ApplicationContext}
+     * @throws BeansException 异常
      */
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        this.applicationContext = context;
     }
 
     /**
@@ -178,7 +178,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     /**
      * 用 ClassLoader 加载资源文件
      *
-     * @param pluginChangeMetadata
+     * @param pluginChangeMetadata {@link PluginChangeMetadata}
      * @return
      * @throws Exception
      */
@@ -210,10 +210,10 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     /**
      * 删除本地插件 jar 包
      *
-     * @param plugin
+     * @param pluginChangeMetadata {@link PluginChangeMetadata}
      */
-    private void deleteLocalPlugin(PluginChangeMetadata plugin) {
-        String localAddress = plugin.getLocalAddress();
+    private void deleteLocalPlugin(PluginChangeMetadata pluginChangeMetadata) {
+        String localAddress = pluginChangeMetadata.getLocalAddress();
         File file = new File(localAddress);
         if (file.exists()) {
             boolean flag = file.delete();
@@ -226,7 +226,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     /**
      * 下载插件
      *
-     * @param pluginChangeMetadata
+     * @param pluginChangeMetadata {@link PluginChangeMetadata}
      */
     private void download(PluginChangeMetadata pluginChangeMetadata) {
         String address = pluginChangeMetadata.getAddress();

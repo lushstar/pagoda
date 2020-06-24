@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.api.dto;
+package com.github.lushstar.pagoda.api.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * <p>description : AppPluginBo
+ * <p>description : AppPluginResponse
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -15,14 +15,20 @@ import java.util.Date;
  * @date : 2020/3/8 15:08
  */
 @Data
-public class AppPluginDto {
+public class AppPluginResponse {
 
     private Long id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    /**
+     * {@link JsonFormat} 用于序列化成 json 数据展示
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    /**
+     * {@link JsonFormat} 用于序列化成 json 数据展示
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     private boolean del;

@@ -1,5 +1,6 @@
-package com.github.lushstar.pagoda.api.dto;
+package com.github.lushstar.pagoda.api.response;
 
+import com.github.lushstar.pagoda.common.enums.SourceType;
 import lombok.Data;
 
 /**

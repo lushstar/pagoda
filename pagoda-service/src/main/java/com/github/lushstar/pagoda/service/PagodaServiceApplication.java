@@ -17,8 +17,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @date : 2020/2/25 14:07
  */
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.lushstar.pagoda.dal.repository")
-@EntityScan(basePackages = "com.lushstar.pagoda.dal.model")
+@EnableJpaRepositories(basePackages = "com.github.lushstar.pagoda.dal.repository")
+@EntityScan(basePackages = "com.github.lushstar.pagoda.dal.model")
 public class PagodaServiceApplication {
 
     public static void main(String[] args) {

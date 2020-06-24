@@ -1,7 +1,7 @@
 package com.github.lushstar.pagoda.api.remote;
 
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
-import com.github.lushstar.pagoda.api.dto.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

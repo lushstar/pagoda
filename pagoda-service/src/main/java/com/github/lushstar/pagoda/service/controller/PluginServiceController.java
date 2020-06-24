@@ -1,7 +1,8 @@
 package com.github.lushstar.pagoda.service.controller;
 
-import com.github.lushstar.pagoda.api.dto.PluginDto;
 import com.github.lushstar.pagoda.api.remote.PluginRemote;
+import com.github.lushstar.pagoda.api.request.PluginRequest;
+import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
 import com.github.lushstar.pagoda.service.service.PluginService;
@@ -34,47 +35,47 @@ public class PluginServiceController implements PluginRemote {
 
     @Override
     @GetMapping(value = "list")
-    public ServiceResponse<List<PluginDto>> list() {
+    public ServiceResponse<List<PluginResponse>> list() {
         List<PluginEntity> pluginEntityList = pluginService.list();
-        return ServiceResponse.success(mapperFacade.mapAsList(pluginEntityList, PluginDto.class));
+        return ServiceResponse.success(mapperFacade.mapAsList(pluginEntityList, PluginResponse.class));
     }
 
     @Override
     @PostMapping(value = "add")
-    public ServiceResponse<PluginDto> add(@RequestBody PluginDto pluginBo) {
-        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginBo, PluginEntity.class));
-        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginDto.class));
+    public ServiceResponse<PluginResponse> add(@RequestBody PluginRequest pluginRequest) {
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
+        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
 
     @Override
     @GetMapping(value = "find/{id}")
-    public ServiceResponse<PluginDto> find(@PathVariable Long id) {
+    public ServiceResponse<PluginResponse> find(@PathVariable Long id) {
         PluginEntity pluginEntity = pluginService.findById(id);
-        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginDto.class));
+        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
 
     @Override
     @PostMapping(value = "update")
-    public ServiceResponse<PluginDto> update(@RequestBody PluginDto pluginDto) {
-        PluginEntity pluginEntity = pluginService.findById(pluginDto.getId());
-        if (!StringUtils.isEmpty(pluginDto.getName())) {
-            pluginEntity.setName(pluginDto.getName());
+    public ServiceResponse<PluginResponse> update(@RequestBody PluginRequest pluginRequest) {
+        PluginEntity pluginEntity = pluginService.findById(pluginRequest.getId());
+        if (!StringUtils.isEmpty(pluginRequest.getName())) {
+            pluginEntity.setName(pluginRequest.getName());
         }
-        if (!StringUtils.isEmpty(pluginDto.getDescription())) {
-            pluginEntity.setDescription(pluginDto.getDescription());
+        if (!StringUtils.isEmpty(pluginRequest.getDescription())) {
+            pluginEntity.setDescription(pluginRequest.getDescription());
         }
-        if (!StringUtils.isEmpty(pluginDto.getClassName())) {
-            pluginEntity.setClassName(pluginDto.getClassName());
+        if (!StringUtils.isEmpty(pluginRequest.getClassName())) {
+            pluginEntity.setClassName(pluginRequest.getClassName());
         }
-        if (pluginDto.getUpdateTime() == null) {
+        if (pluginRequest.getUpdateTime() == null) {
             pluginEntity.setUpdateTime(new Date());
         } else {
-            pluginEntity.setUpdateTime(pluginDto.getUpdateTime());
+            pluginEntity.setUpdateTime(pluginRequest.getUpdateTime());
         }
-        if (pluginDto.getDel() != null) {
-            pluginEntity.setDel(pluginDto.getDel());
+        if (pluginRequest.getDel() != null) {
+            pluginEntity.setDel(pluginRequest.getDel());
         }
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginDto.class));
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginResponse.class));
     }
 
 }

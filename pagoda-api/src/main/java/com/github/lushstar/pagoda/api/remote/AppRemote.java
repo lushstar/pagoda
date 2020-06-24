@@ -1,7 +1,8 @@
 package com.github.lushstar.pagoda.api.remote;
 
+import com.github.lushstar.pagoda.api.request.AppRequest;
+import com.github.lushstar.pagoda.api.response.AppResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
-import com.github.lushstar.pagoda.api.dto.AppDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,14 +22,14 @@ import java.util.List;
 public interface AppRemote {
 
     @GetMapping(value = "list")
-    ServiceResponse<List<AppDto>> list();
+    ServiceResponse<List<AppResponse>> list();
 
     @PostMapping(value = "add")
-    ServiceResponse<AppDto> add(@RequestBody AppDto appBo);
+    ServiceResponse<AppResponse> add(@RequestBody AppRequest appRequest);
 
     @GetMapping(value = "find/{id}")
-    ServiceResponse<AppDto> find(@PathVariable(value = "id") Long id);
+    ServiceResponse<AppResponse> find(@PathVariable(value = "id") Long id);
 
     @PostMapping(value = "update")
-    ServiceResponse<AppDto> update(@RequestBody AppDto appBo);
+    ServiceResponse<AppResponse> update(@RequestBody AppRequest appRequest);
 }

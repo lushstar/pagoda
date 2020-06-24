@@ -1,7 +1,8 @@
 package com.github.lushstar.pagoda.api.remote;
 
+import com.github.lushstar.pagoda.api.request.PluginRequest;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
-import com.github.lushstar.pagoda.api.dto.PluginDto;
+import com.github.lushstar.pagoda.api.response.PluginResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,15 +22,15 @@ import java.util.List;
 public interface PluginRemote {
 
     @GetMapping(value = "list")
-    ServiceResponse<List<PluginDto>> list();
+    ServiceResponse<List<PluginResponse>> list();
 
     @PostMapping(value = "add")
-    ServiceResponse<PluginDto> add(@RequestBody PluginDto pluginBo);
+    ServiceResponse<PluginResponse> add(@RequestBody PluginRequest pluginRequest);
 
     @GetMapping(value = "find/{id}")
-    ServiceResponse<PluginDto> find(@PathVariable(value = "id") Long id);
+    ServiceResponse<PluginResponse> find(@PathVariable(value = "id") Long id);
 
     @PostMapping(value = "update")
-    ServiceResponse<PluginDto> update(@RequestBody PluginDto pluginBo);
+    ServiceResponse<PluginResponse> update(@RequestBody PluginRequest pluginRequest);
 
 }

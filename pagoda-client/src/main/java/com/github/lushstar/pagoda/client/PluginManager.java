@@ -1,6 +1,6 @@
 package com.github.lushstar.pagoda.client;
 
-import com.github.lushstar.pagoda.api.dto.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 
 /**
  * <p>description : PluginManager

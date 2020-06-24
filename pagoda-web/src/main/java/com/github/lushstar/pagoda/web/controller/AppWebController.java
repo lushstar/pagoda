@@ -1,6 +1,6 @@
 package com.github.lushstar.pagoda.web.controller;
 
-import com.github.lushstar.pagoda.api.dto.AppDto;
+import com.github.lushstar.pagoda.api.request.AppRequest;
 import com.github.lushstar.pagoda.web.feign.AppRemoteFeign;
 import com.github.lushstar.pagoda.web.vo.AppVo;
 import ma.glasnost.orika.MapperFacade;
@@ -51,7 +51,7 @@ public class AppWebController {
         appVo.setCreateTime(now);
         appVo.setUpdateTime(now);
         appVo.setDel(false);
-        appRemoteFeign.add(mapperFacade.map(appVo, AppDto.class));
+        appRemoteFeign.add(mapperFacade.map(appVo, AppRequest.class));
         return "redirect:/web/app/list";
     }
 
@@ -64,7 +64,7 @@ public class AppWebController {
     @PostMapping(value = "edit")
     public String edit(AppVo appVo) {
         appVo.setUpdateTime(new Date());
-        appRemoteFeign.update(mapperFacade.map(appVo, AppDto.class));
+        appRemoteFeign.update(mapperFacade.map(appVo, AppRequest.class));
         return "redirect:/web/app/list";
     }
 
@@ -73,7 +73,7 @@ public class AppWebController {
         AppVo appVo = new AppVo();
         appVo.setId(id);
         appVo.setDel(true);
-        appRemoteFeign.update(mapperFacade.map(appVo, AppDto.class));
+        appRemoteFeign.update(mapperFacade.map(appVo, AppRequest.class));
         return "redirect:/web/app/list";
     }
 

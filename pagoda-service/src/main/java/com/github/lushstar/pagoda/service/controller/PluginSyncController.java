@@ -1,17 +1,17 @@
 package com.github.lushstar.pagoda.service.controller;
 
-import com.github.lushstar.pagoda.api.dto.PluginChangeMetadata;
-import com.github.lushstar.pagoda.api.dto.SourceType;
 import com.github.lushstar.pagoda.api.remote.PluginSyncRemote;
+import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
+import com.github.lushstar.pagoda.common.enums.SourceType;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
 import com.github.lushstar.pagoda.service.event.PluginContext;
+import com.github.lushstar.pagoda.service.response.DeferredResultWrapper;
 import com.github.lushstar.pagoda.service.service.AppPluginService;
 import com.github.lushstar.pagoda.service.service.AppService;
 import com.github.lushstar.pagoda.service.service.PluginService;
-import com.github.lushstar.pagoda.service.response.DeferredResultWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.api.dto;
+package com.github.lushstar.pagoda.common.enums;
 
 /**
  * <p>description : SourceType

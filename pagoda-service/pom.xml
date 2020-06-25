@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.lushstar.pagoda</groupId>
+        <groupId>com.github.lushstar.pagoda</groupId>
         <artifactId>pagoda-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
@@ -21,8 +21,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lushstar.pagoda</groupId>
+            <groupId>com.github.lushstar.pagoda</groupId>
             <artifactId>pagoda-dal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.lushstar.pagoda</groupId>
+            <artifactId>pagoda-api</artifactId>
         </dependency>
         <dependency>
             <groupId>ma.glasnost.orika</groupId>

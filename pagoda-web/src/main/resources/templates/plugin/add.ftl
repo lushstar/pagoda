@@ -19,7 +19,8 @@
 <script src="/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 
-<form class="form-horizontal" action="/web/plugin/add" method="post" style="width: 80%;text-align: center">
+<form class="form-horizontal" action="/web/plugin/add" enctype="multipart/form-data" method="post"
+      style="width: 80%;text-align: center">
     <div class="form-group">
         <label class="col-sm-2 control-label">name</label>
         <div class="col-sm-10">
@@ -41,19 +42,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">address</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="请输入地址" name="address">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">appName</label>
-        <div class="col-sm-10">
-            <select class="form-control">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
+            <input type="file" placeholder="请输入地址" name="jarFile">
         </div>
     </div>
     <div class="form-group">

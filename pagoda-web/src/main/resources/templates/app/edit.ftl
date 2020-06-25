@@ -13,7 +13,7 @@
 <body style="text-align: center">
 <h1>
     <button type="button" class="btn btn-primary" onclick="history.go(-1)">回退</button>
-    <span>pagoda 插件修改</span>
+    <span>pagoda 应用修改</span>
 </h1>
 
 <script src="/jquery-3.4.1/jquery-3.4.1.min.js"></script>

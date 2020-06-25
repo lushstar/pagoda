@@ -40,12 +40,6 @@ CREATE TABLE `plugin`  (
 ) ENGINE = MyISAM AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of plugin
--- ----------------------------
-INSERT INTO `plugin` VALUES (1, 'D:\\\\workspace\\\\github-lushstar\\\\pagoda\\\\site\\\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'ReturnPlugin', '2020-03-08 14:32:53', b'0', '打印返回值信息', 'ReturnPlugin', '2020-03-08 16:36:25');
-INSERT INTO `plugin` VALUES (2, 'D:\\\\workspace\\\\github-lushstar\\\\pagoda\\\\site\\\\pagoda-embed-plugin-1.0.0-SNAPSHOT.jar', 'ParamPlugin', '2020-03-08 14:33:34', b'0', '打印入参信息', 'ParamPlugin', '2020-03-08 14:42:27');
-
--- ----------------------------
 -- Table structure for app_plugin
 -- ----------------------------
 DROP TABLE IF EXISTS `app_plugin`;
@@ -59,11 +53,5 @@ CREATE TABLE `app_plugin`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Fixed;
-
--- ----------------------------
--- Records of app_plugin
--- ----------------------------
-INSERT INTO `app_plugin` VALUES (1, b'1', 1, '2020-03-08 18:49:02', b'0', 1, '2020-03-08 18:51:07');
-INSERT INTO `app_plugin` VALUES (2, b'1', 1, '2020-03-08 18:49:03', b'0', 2, '2020-03-08 18:49:16');
 
 SET FOREIGN_KEY_CHECKS = 1;

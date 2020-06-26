@@ -25,7 +25,7 @@ import java.util.Date;
  */
 @Controller
 @RequestMapping(value = "web/app")
-public class AppWebController {
+public class WebAppController {
 
     @Autowired
     private AppRemoteFeign appRemoteFeign;

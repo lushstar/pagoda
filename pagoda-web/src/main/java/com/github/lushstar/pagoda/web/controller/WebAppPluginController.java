@@ -28,7 +28,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "web/app/plugin")
 @Slf4j
-public class AppPluginWebController {
+public class WebAppPluginController {
 
     @Autowired
     private AppRemoteFeign appRemoteFeign;

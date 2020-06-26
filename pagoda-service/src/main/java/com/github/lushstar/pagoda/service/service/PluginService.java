@@ -21,7 +21,7 @@ public interface PluginService {
 
     PluginEntity save(PluginEntity pluginEntity);
 
-    List<PluginEntity> findByName(String name);
+    PluginEntity findByName(String name);
 
-    List<PluginEntity> findByClassName(String className);
+    PluginEntity findByClassName(String className);
 }

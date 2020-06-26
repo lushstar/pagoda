@@ -43,6 +43,7 @@ public class PluginServiceController implements PluginRemote {
     @Override
     @PostMapping(value = "add")
     public ServiceResponse<PluginResponse> add(@RequestBody @Validated PluginRequest pluginRequest) {
+        // 属性校验
         this.check(pluginRequest, false);
         // 保存
         PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
@@ -60,32 +61,31 @@ public class PluginServiceController implements PluginRemote {
     @Override
     @PostMapping(value = "update")
     public ServiceResponse<PluginResponse> update(@RequestBody @Validated PluginRequest pluginRequest) {
+        // 属性校验
         this.check(pluginRequest, true);
-        // 创建时间不更改
-//        PluginEntity oldPluginEntity = pluginService.findById(pluginRequest.getId());
-//        PluginEntity newPluginEntity = mapperFacade.map(pluginRequest, PluginEntity.class);
-//        newPluginEntity.setCreateTime(oldPluginEntity.getCreateTime());
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class)), PluginResponse.class));
+        // 更新
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
+        return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
 
     private void check(PluginRequest pluginRequest, boolean update) {
         // 判断名称是否重复
-        List<PluginEntity> pluginEntityListByName = pluginService.findByName(pluginRequest.getName());
+        PluginEntity pluginEntityByName = pluginService.findByName(pluginRequest.getName());
         if (update) {
-            if (pluginEntityListByName != null && pluginEntityListByName.size() == 1) {
-                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityListByName.get(0).getId().equals(pluginRequest.getId()), "插件名称");
+            if (pluginEntityByName != null) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityByName.getId().equals(pluginRequest.getId()), "插件名称");
             }
         } else {
-            PagodaExceptionEnum.PARAM_REPEAT.isEmpty(pluginEntityListByName, "插件名称");
+            PagodaExceptionEnum.PARAM_REPEAT.isNull(pluginEntityByName, "插件名称");
         }
         // 判断类名是否重复
-        List<PluginEntity> pluginEntityListByClassName = pluginService.findByClassName(pluginRequest.getClassName());
+        PluginEntity pluginEntityByClassName = pluginService.findByClassName(pluginRequest.getClassName());
         if (update) {
-            if (pluginEntityListByClassName != null && pluginEntityListByClassName.size() == 1) {
-                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityListByClassName.get(0).getId().equals(pluginRequest.getId()), "类名");
+            if (pluginEntityByClassName != null) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityByClassName.getId().equals(pluginRequest.getId()), "类名");
             }
         } else {
-            PagodaExceptionEnum.PARAM_REPEAT.isEmpty(pluginEntityListByClassName, "类名");
+            PagodaExceptionEnum.PARAM_REPEAT.isNull(pluginEntityByClassName, "类名");
         }
     }
 

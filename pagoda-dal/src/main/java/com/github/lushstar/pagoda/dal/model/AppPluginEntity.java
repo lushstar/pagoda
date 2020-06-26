@@ -25,7 +25,7 @@ public class AppPluginEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'")
+    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'", updatable = false)
     private Date createTime;
 
     @Column(name = "update_time", columnDefinition = "datetime COMMENT '修改时间'")

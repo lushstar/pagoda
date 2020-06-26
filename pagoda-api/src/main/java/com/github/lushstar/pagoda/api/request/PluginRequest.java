@@ -23,11 +23,20 @@ public class PluginRequest {
      */
     private Boolean del;
 
+    /**
+     * 插件名称
+     */
     @NotBlank(message = "插件名称不能为空")
     private String name;
 
+    /**
+     * 描述信息
+     */
     private String description;
 
+    /**
+     * 插件地址
+     */
     private String address;
 
     /**

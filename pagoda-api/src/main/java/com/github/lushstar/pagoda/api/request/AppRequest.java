@@ -2,8 +2,6 @@ package com.github.lushstar.pagoda.api.request;
 
 import lombok.Data;
 
-import java.util.Date;
-
 /**
  * <p>description : AppRequest
  *
@@ -17,10 +15,6 @@ import java.util.Date;
 public class AppRequest {
 
     private Long id;
-
-    private Date createTime;
-
-    private Date updateTime;
 
     /**
      * 0 表示未删除

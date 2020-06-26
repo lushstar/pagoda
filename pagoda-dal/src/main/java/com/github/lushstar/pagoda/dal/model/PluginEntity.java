@@ -27,7 +27,7 @@ public class PluginEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'",updatable = false)
+    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'", updatable = false)
     @CreationTimestamp
     private Date createTime;
 

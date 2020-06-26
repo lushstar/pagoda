@@ -33,7 +33,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping(value = "web/plugin")
 @Slf4j
-public class PluginWebController {
+public class WebPluginController {
 
     @Autowired
     private PluginRemoteFeign pluginRemoteFeign;

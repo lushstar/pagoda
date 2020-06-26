@@ -41,12 +41,12 @@ public class PluginServiceImpl implements PluginService {
     }
 
     @Override
-    public List<PluginEntity> findByName(String name) {
+    public PluginEntity findByName(String name) {
         return pluginRepository.findByName(name);
     }
 
     @Override
-    public List<PluginEntity> findByClassName(String className) {
+    public PluginEntity findByClassName(String className) {
         return pluginRepository.findByClassName(className);
     }
 

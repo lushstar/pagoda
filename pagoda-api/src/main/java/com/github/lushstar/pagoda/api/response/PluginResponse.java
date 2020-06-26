@@ -19,9 +19,15 @@ public class PluginResponse {
 
     private Long id;
 
+    /**
+     * 创建时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    /**
+     * 修改时间
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
@@ -30,15 +36,36 @@ public class PluginResponse {
      */
     private Boolean del;
 
+    /**
+     * 插件名称
+     */
     private String name;
 
+    /**
+     * 描述信息
+     */
     private String description;
 
+    /**
+     * 插件地址
+     */
     private String address;
 
     /**
      * 插件类名
      */
     private String className;
+
+    /**
+     * 临时变量, 需要业务自己判断
+     * true 表示已经激活
+     */
+    private boolean active = false;
+
+    /**
+     * 临时变量, 需要业务自己判断
+     * true 表示已安装
+     */
+    private boolean install;
 
 }

@@ -1,12 +1,12 @@
 package com.github.lushstar.pagoda.web.controller;
 
+import com.github.lushstar.pagoda.api.response.AppPluginResponse;
+import com.github.lushstar.pagoda.api.response.AppResponse;
+import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.web.feign.AppPluginRemoteFeign;
 import com.github.lushstar.pagoda.web.feign.AppRemoteFeign;
 import com.github.lushstar.pagoda.web.feign.PluginRemoteFeign;
-import com.github.lushstar.pagoda.web.vo.AppPluginVo;
-import com.github.lushstar.pagoda.web.vo.PluginVo;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,17 +39,17 @@ public class WebAppPluginController {
     @Autowired
     private PluginRemoteFeign pluginRemoteFeign;
 
-    @Autowired
-    private MapperFacade mapperFacade;
-
     @GetMapping(value = "{appId}")
     public String plugin(@PathVariable Long appId, Model model) {
-        List<PluginVo> pluginVoList = mapperFacade.mapAsList(pluginRemoteFeign.list().getData(), PluginVo.class);
-        List<AppPluginVo> appPluginVoList = mapperFacade.mapAsList(appPluginRemoteFeign.findByAppId(appId).getData(), AppPluginVo.class);
-        model.addAttribute("pluginVoList", pluginVoList);
-        model.addAttribute("appVo", appRemoteFeign.find(appId).getData());
-        pluginVoList.forEach(pluginVo -> {
-            appPluginVoList.forEach(appPluginVo -> {
+        // 查询所有的插件
+        List<PluginResponse> pluginResponseList = pluginRemoteFeign.list().getData();
+        // 查询此应用对应的所有插件
+        List<AppPluginResponse> appPluginResponseList = appPluginRemoteFeign.findByAppId(appId).getData();
+        // 查询应用信息
+        AppResponse appResponse = appRemoteFeign.find(appId).getData();
+        // 判断是否安装/激活
+        pluginResponseList.forEach(pluginVo -> {
+            appPluginResponseList.forEach(appPluginVo -> {
                 if (appPluginVo.getPluginId().equals(pluginVo.getId())) {
                     // 表示已经安装过
                     pluginVo.setInstall(true);
@@ -58,6 +58,8 @@ public class WebAppPluginController {
                 }
             });
         });
+        model.addAttribute("pluginVoList", pluginResponseList);
+        model.addAttribute("appVo", appResponse);
         return "app/plugin/list";
     }
 

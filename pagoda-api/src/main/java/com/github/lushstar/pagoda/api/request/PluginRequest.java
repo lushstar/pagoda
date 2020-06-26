@@ -2,6 +2,7 @@ package com.github.lushstar.pagoda.api.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -27,15 +28,18 @@ public class PluginRequest {
      */
     private Boolean del;
 
+    @NotBlank(message = "插件名称不能为空")
     private String name;
 
     private String description;
 
+    @NotBlank(message = "插件 jar 包不能为空")
     private String address;
 
     /**
      * 插件类名
      */
+    @NotBlank(message = "插件类名不能为空")
     private String className;
 
 }

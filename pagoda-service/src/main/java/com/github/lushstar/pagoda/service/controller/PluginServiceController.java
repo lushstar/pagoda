@@ -4,6 +4,7 @@ import com.github.lushstar.pagoda.api.remote.PluginRemote;
 import com.github.lushstar.pagoda.api.request.PluginRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
+import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
 import com.github.lushstar.pagoda.service.service.PluginService;
 import ma.glasnost.orika.MapperFacade;
@@ -43,6 +44,13 @@ public class PluginServiceController implements PluginRemote {
     @Override
     @PostMapping(value = "add")
     public ServiceResponse<PluginResponse> add(@RequestBody PluginRequest pluginRequest) {
+        // 判断名称是否重复
+        List<PluginEntity> pluginEntityListByName = pluginService.findByName(pluginRequest.getName());
+        PagodaExceptionEnum.PARAM_REPEAT.notNull(pluginEntityListByName, "插件名称");
+        // 判断类名是否重复
+        List<PluginEntity> pluginEntityListByClassName = pluginService.findByClassName(pluginRequest.getName());
+        PagodaExceptionEnum.PARAM_REPEAT.notNull(pluginEntityListByClassName, "类名");
+        // 保存
         PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }

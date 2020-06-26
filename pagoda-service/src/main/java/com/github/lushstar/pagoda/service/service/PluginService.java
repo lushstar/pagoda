@@ -20,4 +20,8 @@ public interface PluginService {
     PluginEntity findById(Long id);
 
     PluginEntity save(PluginEntity pluginEntity);
+
+    List<PluginEntity> findByName(String name);
+
+    List<PluginEntity> findByClassName(String className);
 }

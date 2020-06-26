@@ -1,7 +1,9 @@
 package com.github.lushstar.pagoda.dal.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * <p>description : PluginRepository
@@ -13,4 +15,9 @@ import com.github.lushstar.pagoda.dal.model.PluginEntity;
  * @date : 2020/2/25 21:28
  */
 public interface PluginRepository extends JpaRepository<PluginEntity, Long> {
+
+    List<PluginEntity> findByName(String name);
+
+    List<PluginEntity> findByClassName(String className);
+
 }

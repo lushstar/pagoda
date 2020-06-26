@@ -3,7 +3,9 @@ package com.github.lushstar.pagoda.web.controller;
 import com.github.lushstar.pagoda.api.request.PluginRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
+import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.web.feign.PluginRemoteFeign;
+import com.github.lushstar.pagoda.web.request.WebPluginRequest;
 import com.github.lushstar.pagoda.web.vo.PluginVo;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -52,17 +55,11 @@ public class PluginWebController {
     }
 
     @PostMapping(value = "add")
-    public String add(PluginVo pluginVo, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
-        pluginVo.setDel(false);
-        pluginVo.setActive(false);
-        String destFile = site + File.separator + jarFile.getOriginalFilename();
-        jarFile.transferTo(new File(destFile));
-        pluginVo.setAddress(destFile);
-        Date now = new Date();
-        pluginVo.setCreateTime(now);
-        pluginVo.setUpdateTime(now);
-        pluginVo.setDel(false);
-        pluginRemoteFeign.add(mapperFacade.map(pluginVo, PluginRequest.class));
+    public String add(WebPluginRequest webPluginRequest, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
+        // 校验
+        PagodaExceptionEnum.PARAM_EMPTY.hasText(jarFile.getOriginalFilename(), "jar 包文件路径");
+        // 保存
+        this.savePlugin(webPluginRequest, jarFile);
         return "redirect:/web/plugin/list";
     }
 
@@ -95,6 +92,16 @@ public class PluginWebController {
         pluginVo.setUpdateTime(new Date());
         pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginRequest.class));
         return "redirect:/web/plugin/list";
+    }
+
+    private void savePlugin(WebPluginRequest webPluginRequest, MultipartFile jarFile) throws IOException {
+        PluginRequest pluginRequest = mapperFacade.map(webPluginRequest, PluginRequest.class);
+        pluginRequest.setDel(false);
+        String destFile = site + File.separator + jarFile.getOriginalFilename();
+        jarFile.transferTo(new File(destFile));
+        pluginRequest.setAddress(destFile);
+        pluginRequest.setDel(false);
+        pluginRemoteFeign.add(pluginRequest);
     }
 
 }

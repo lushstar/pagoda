@@ -40,4 +40,14 @@ public class PluginServiceImpl implements PluginService {
         return pluginRepository.saveAndFlush(pluginEntity);
     }
 
+    @Override
+    public List<PluginEntity> findByName(String name) {
+        return pluginRepository.findByName(name);
+    }
+
+    @Override
+    public List<PluginEntity> findByClassName(String className) {
+        return pluginRepository.findByClassName(className);
+    }
+
 }

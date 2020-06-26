@@ -49,7 +49,6 @@ public class AppServiceController implements AppRemote {
         return ServiceResponse.success(mapperFacade.map(appEntity, AppResponse.class));
     }
 
-
     @Override
     @GetMapping(value = "find/{id}")
     public ServiceResponse<AppResponse> find(@PathVariable Long id) {
@@ -71,7 +70,7 @@ public class AppServiceController implements AppRemote {
         AppEntity appEntity = appService.findByName(appRequest.getName());
         if (update) {
             if (appEntity != null) {
-                PagodaExceptionEnum.PARAM_REPEAT.isTrue(appEntity.getId().equals(appEntity.getId()), "应用名称");
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(appEntity.getId().equals(appRequest.getId()), "应用名称");
             }
         } else {
             PagodaExceptionEnum.PARAM_REPEAT.isNull(appEntity, "应用名称");

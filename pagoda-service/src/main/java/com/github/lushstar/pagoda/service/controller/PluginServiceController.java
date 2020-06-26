@@ -7,11 +7,13 @@ import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
 import com.github.lushstar.pagoda.service.service.PluginService;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "service/plugin")
+@Slf4j
 public class PluginServiceController implements PluginRemote {
 
     @Autowired
@@ -65,6 +68,10 @@ public class PluginServiceController implements PluginRemote {
         this.check(pluginRequest, true);
         // 更新
         PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
+        // 判断是否需要删除插件
+        if(pluginEntity.isDel()){
+            log.info("{} 插件文件是否删除成功：{}", pluginEntity.getAddress(), new File(pluginEntity.getAddress()).delete());
+        }
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
 

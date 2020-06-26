@@ -2,6 +2,8 @@ package com.github.lushstar.pagoda.web.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p>description : WebAppRequest
  *
@@ -24,6 +26,7 @@ public class WebAppRequest {
     /**
      * 应用名称
      */
+    @NotBlank(message = "应用名称不能为空")
     private String name;
 
     /**

@@ -20,14 +20,14 @@ public class WebPluginRequest {
 
     private Boolean del;
 
-    @NotBlank
+    @NotBlank(message = "插件名称不能为空")
     private String name;
 
     private String description;
 
     private String address;
 
-    @NotBlank
+    @NotBlank(message = "插件类名不能为空")
     private String className;
 
 }

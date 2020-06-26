@@ -6,7 +6,6 @@ import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.web.feign.PluginRemoteFeign;
 import com.github.lushstar.pagoda.web.request.WebPluginRequest;
-import com.github.lushstar.pagoda.web.vo.PluginVo;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +74,7 @@ public class WebPluginController {
     public String edit(@Validated WebPluginRequest webPluginRequest, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
         // 先查询
         PluginRequest pluginRequest = mapperFacade.map(pluginRemoteFeign.find(webPluginRequest.getId()).getData(), PluginRequest.class);
+        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(pluginRequest, webPluginRequest.getId());
         // 判断是否上传了新的插件
         if (StringUtils.hasText(jarFile.getOriginalFilename())) {
             // 删除原来的 jar 包插件
@@ -93,11 +93,12 @@ public class WebPluginController {
 
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
-        PluginResponse pluginDto = pluginRemoteFeign.find(id).getData();
-        PluginVo pluginVo = mapperFacade.map(pluginDto, PluginVo.class);
-        log.info("{} 插件文件是否删除成功：{}", pluginVo.getAddress(), new File(pluginVo.getAddress()).delete());
-        pluginVo.setDel(true);
-        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginRequest.class));
+        // 先查询
+        PluginRequest pluginRequest = mapperFacade.map(pluginRemoteFeign.find(id).getData(), PluginRequest.class);
+        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(pluginRequest, id);
+        // 删除
+        pluginRequest.setDel(true);
+        pluginRemoteFeign.update(pluginRequest);
         return "redirect:/web/plugin/list";
     }
 

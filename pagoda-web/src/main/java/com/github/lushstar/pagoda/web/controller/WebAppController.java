@@ -1,18 +1,18 @@
 package com.github.lushstar.pagoda.web.controller;
 
 import com.github.lushstar.pagoda.api.request.AppRequest;
+import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.web.feign.AppRemoteFeign;
-import com.github.lushstar.pagoda.web.vo.AppVo;
+import com.github.lushstar.pagoda.web.request.WebAppRequest;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Date;
 
 /**
  * <p>description : AppWebController
@@ -45,13 +45,10 @@ public class WebAppController {
     }
 
     @PostMapping(value = "add")
-    public String add(AppVo appVo) {
-        appVo.setDel(false);
-        Date now = new Date();
-        appVo.setCreateTime(now);
-        appVo.setUpdateTime(now);
-        appVo.setDel(false);
-        appRemoteFeign.add(mapperFacade.map(appVo, AppRequest.class));
+    public String add(@Validated WebAppRequest webAppRequest) {
+        AppRequest appRequest = mapperFacade.map(webAppRequest, AppRequest.class);
+        appRequest.setDel(false);
+        appRemoteFeign.add(appRequest).log();
         return "redirect:/web/app/list";
     }
 
@@ -62,18 +59,23 @@ public class WebAppController {
     }
 
     @PostMapping(value = "edit")
-    public String edit(AppVo appVo) {
-        appVo.setUpdateTime(new Date());
-        appRemoteFeign.update(mapperFacade.map(appVo, AppRequest.class));
+    public String edit(@Validated WebAppRequest webAppRequest) {
+        // 先查询
+        AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(webAppRequest.getId()).getData(), AppRequest.class);
+        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(appRequest, webAppRequest.getId());
+        // 更新
+        appRemoteFeign.update(appRequest);
         return "redirect:/web/app/list";
     }
 
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
-        AppVo appVo = new AppVo();
-        appVo.setId(id);
-        appVo.setDel(true);
-        appRemoteFeign.update(mapperFacade.map(appVo, AppRequest.class));
+        // 先查询
+        AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(id).getData(), AppRequest.class);
+        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(appRequest, id);
+        // 删除
+        appRequest.setDel(true);
+        appRemoteFeign.update(appRequest);
         return "redirect:/web/app/list";
     }
 

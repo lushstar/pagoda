@@ -28,15 +28,15 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">description</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="请输入详细描述" name="description">
-        </div>
-    </div>
-    <div class="form-group">
         <label class="col-sm-2 control-label">className</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" placeholder="请输入类名" name="className">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">description</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="请输入详细描述" name="description">
         </div>
     </div>
     <div class="form-group">

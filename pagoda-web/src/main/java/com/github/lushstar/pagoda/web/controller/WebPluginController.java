@@ -87,6 +87,8 @@ public class WebPluginController {
             pluginRequest.setAddress(destFile);
         }
         // 更新
+        pluginRequest.setClassName(webPluginRequest.getClassName());
+        pluginRequest.setDescription(webPluginRequest.getDescription());
         pluginRemoteFeign.update(pluginRequest);
         return "redirect:/web/plugin/list";
     }

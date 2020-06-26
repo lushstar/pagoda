@@ -22,6 +22,7 @@
 <form class="form-horizontal" action="/web/app/edit" method="post" style="width: 80%;text-align: center">
     <input type="hidden" name="id" value="${appVo.id}">
     <input type="hidden" name="del" value="${appVo.del?string("1","0")}">
+    <input type="hidden" name="name" value="${appVo.name!""}">
     <div class="form-group">
         <label class="col-sm-2 control-label">name</label>
         <div class="col-sm-10">

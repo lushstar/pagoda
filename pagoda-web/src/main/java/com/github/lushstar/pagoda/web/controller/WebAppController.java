@@ -63,6 +63,7 @@ public class WebAppController {
         // 先查询
         AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(webAppRequest.getId()).getData(), AppRequest.class);
         PagodaExceptionEnum.ID_DATA_REPEAT.notNull(appRequest, webAppRequest.getId());
+        appRequest.setDescription(webAppRequest.getDescription());
         // 更新
         appRemoteFeign.update(appRequest);
         return "redirect:/web/app/list";

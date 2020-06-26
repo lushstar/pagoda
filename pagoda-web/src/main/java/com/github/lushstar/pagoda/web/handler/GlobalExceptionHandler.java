@@ -1,13 +1,14 @@
 package com.github.lushstar.pagoda.web.handler;
 
+import com.github.lushstar.ladder.commons.exceptions.BizException;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
+import com.github.lushstar.pagoda.web.vo.WebResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import com.github.lushstar.pagoda.web.vo.WebResponse;
-
-import javax.validation.ValidationException;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>description : GlobalExceptionHandler
@@ -22,13 +23,22 @@ import javax.validation.ValidationException;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(BindException.class)
+    @ResponseBody
     public ServiceResponse<String> validationException(Exception e) {
         log.error(e.getMessage(), e);
         return ServiceResponse.error(PagodaExceptionEnum.VALID_ERROR.getCode().intValue(), e.getMessage());
     }
 
+    @ExceptionHandler(BizException.class)
+    @ResponseBody
+    public ServiceResponse<String> bizExceptionHandler(BizException e) {
+        log.error(e.getMessage(), e);
+        return ServiceResponse.error(e.getCode().intValue(), e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
+    @ResponseBody
     public WebResponse<String> customException(Exception e) {
         log.error("GlobalExceptionHandler catch exception", e);
         return WebResponse.error(e.getMessage());

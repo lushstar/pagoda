@@ -3,7 +3,6 @@ package com.github.lushstar.pagoda.api.request;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 /**
  * <p>description : PluginRequest
@@ -19,10 +18,6 @@ public class PluginRequest {
 
     private Long id;
 
-    private Date createTime;
-
-    private Date updateTime;
-
     /**
      * 0 表示未删除
      */
@@ -33,7 +28,6 @@ public class PluginRequest {
 
     private String description;
 
-    @NotBlank(message = "插件 jar 包不能为空")
     private String address;
 
     /**

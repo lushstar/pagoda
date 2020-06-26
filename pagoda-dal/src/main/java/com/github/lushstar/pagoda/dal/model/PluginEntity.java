@@ -1,6 +1,8 @@
 package com.github.lushstar.pagoda.dal.model;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -25,10 +27,12 @@ public class PluginEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'")
+    @Column(name = "create_time", columnDefinition = "datetime COMMENT '创建时间'",updatable = false)
+    @CreationTimestamp
     private Date createTime;
 
     @Column(name = "update_time", columnDefinition = "datetime COMMENT '修改时间'")
+    @UpdateTimestamp
     private Date updateTime;
 
     @Column(columnDefinition = "bit(1) COMMENT '是否删除，0、false 表示未删除'")

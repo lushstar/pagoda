@@ -25,7 +25,6 @@ public class WebPluginRequest {
 
     private String description;
 
-    @NotBlank
     private String address;
 
     @NotBlank

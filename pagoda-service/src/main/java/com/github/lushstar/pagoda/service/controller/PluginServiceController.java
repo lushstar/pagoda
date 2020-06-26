@@ -9,10 +9,9 @@ import com.github.lushstar.pagoda.dal.model.PluginEntity;
 import com.github.lushstar.pagoda.service.service.PluginService;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,17 +42,13 @@ public class PluginServiceController implements PluginRemote {
 
     @Override
     @PostMapping(value = "add")
-    public ServiceResponse<PluginResponse> add(@RequestBody PluginRequest pluginRequest) {
-        // 判断名称是否重复
-        List<PluginEntity> pluginEntityListByName = pluginService.findByName(pluginRequest.getName());
-        PagodaExceptionEnum.PARAM_REPEAT.notNull(pluginEntityListByName, "插件名称");
-        // 判断类名是否重复
-        List<PluginEntity> pluginEntityListByClassName = pluginService.findByClassName(pluginRequest.getName());
-        PagodaExceptionEnum.PARAM_REPEAT.notNull(pluginEntityListByClassName, "类名");
+    public ServiceResponse<PluginResponse> add(@RequestBody @Validated PluginRequest pluginRequest) {
+        this.check(pluginRequest, false);
         // 保存
         PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
+
 
     @Override
     @GetMapping(value = "find/{id}")
@@ -64,26 +59,34 @@ public class PluginServiceController implements PluginRemote {
 
     @Override
     @PostMapping(value = "update")
-    public ServiceResponse<PluginResponse> update(@RequestBody PluginRequest pluginRequest) {
-        PluginEntity pluginEntity = pluginService.findById(pluginRequest.getId());
-        if (!StringUtils.isEmpty(pluginRequest.getName())) {
-            pluginEntity.setName(pluginRequest.getName());
-        }
-        if (!StringUtils.isEmpty(pluginRequest.getDescription())) {
-            pluginEntity.setDescription(pluginRequest.getDescription());
-        }
-        if (!StringUtils.isEmpty(pluginRequest.getClassName())) {
-            pluginEntity.setClassName(pluginRequest.getClassName());
-        }
-        if (pluginRequest.getUpdateTime() == null) {
-            pluginEntity.setUpdateTime(new Date());
+    public ServiceResponse<PluginResponse> update(@RequestBody @Validated PluginRequest pluginRequest) {
+        this.check(pluginRequest, true);
+        // 创建时间不更改
+//        PluginEntity oldPluginEntity = pluginService.findById(pluginRequest.getId());
+//        PluginEntity newPluginEntity = mapperFacade.map(pluginRequest, PluginEntity.class);
+//        newPluginEntity.setCreateTime(oldPluginEntity.getCreateTime());
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class)), PluginResponse.class));
+    }
+
+    private void check(PluginRequest pluginRequest, boolean update) {
+        // 判断名称是否重复
+        List<PluginEntity> pluginEntityListByName = pluginService.findByName(pluginRequest.getName());
+        if (update) {
+            if (pluginEntityListByName != null && pluginEntityListByName.size() == 1) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityListByName.get(0).getId().equals(pluginRequest.getId()), "插件名称");
+            }
         } else {
-            pluginEntity.setUpdateTime(pluginRequest.getUpdateTime());
+            PagodaExceptionEnum.PARAM_REPEAT.isEmpty(pluginEntityListByName, "插件名称");
         }
-        if (pluginRequest.getDel() != null) {
-            pluginEntity.setDel(pluginRequest.getDel());
+        // 判断类名是否重复
+        List<PluginEntity> pluginEntityListByClassName = pluginService.findByClassName(pluginRequest.getClassName());
+        if (update) {
+            if (pluginEntityListByClassName != null && pluginEntityListByClassName.size() == 1) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityListByClassName.get(0).getId().equals(pluginRequest.getId()), "类名");
+            }
+        } else {
+            PagodaExceptionEnum.PARAM_REPEAT.isEmpty(pluginEntityListByClassName, "类名");
         }
-        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginResponse.class));
     }
 
 }

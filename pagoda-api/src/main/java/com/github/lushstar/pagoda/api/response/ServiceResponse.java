@@ -3,6 +3,7 @@ package com.github.lushstar.pagoda.api.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 
@@ -18,6 +19,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class ServiceResponse<T> implements Serializable {
 
     private boolean success;
@@ -48,6 +50,14 @@ public class ServiceResponse<T> implements Serializable {
         response.setCode(code);
         response.setMessage(message);
         return response;
+    }
+
+    public void log() {
+        if (this.isSuccess()) {
+            log.info("响应成功, {}", this.getData());
+        } else {
+            log.error("响应失败出错, code: {}, message:{}", this.getCode(), this.getMessage());
+        }
     }
 
 }

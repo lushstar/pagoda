@@ -13,12 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 /**
  * <p>description : PluginWebController
@@ -55,11 +56,12 @@ public class PluginWebController {
     }
 
     @PostMapping(value = "add")
-    public String add(WebPluginRequest webPluginRequest, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
-        // 校验
+    public String add(@Validated WebPluginRequest webPluginRequest, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
+        // 校验文件
         PagodaExceptionEnum.PARAM_EMPTY.hasText(jarFile.getOriginalFilename(), "jar 包文件路径");
         // 保存
-        this.savePlugin(webPluginRequest, jarFile);
+        PluginRequest pluginRequest = this.buildPluginRequest(webPluginRequest, jarFile);
+        pluginRemoteFeign.add(pluginRequest).log();
         return "redirect:/web/plugin/list";
     }
 
@@ -70,15 +72,22 @@ public class PluginWebController {
     }
 
     @PostMapping(value = "edit")
-    public String edit(PluginVo pluginVo, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
-        ServiceResponse<PluginResponse> serviceResponse = pluginRemoteFeign.find(pluginVo.getId());
-        String oldAddress = serviceResponse.getData().getAddress();
-        log.info("{} 原插件文件是否删除成功：{}", oldAddress, new File(oldAddress).delete());
-        String destFile = site + File.separator + jarFile.getOriginalFilename();
-        jarFile.transferTo(new File(destFile));
-        pluginVo.setAddress(destFile);
-        pluginVo.setUpdateTime(new Date());
-        pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginRequest.class));
+    public String edit(@Validated WebPluginRequest webPluginRequest, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
+        // 先查询
+        PluginRequest pluginRequest = mapperFacade.map(pluginRemoteFeign.find(webPluginRequest.getId()).getData(), PluginRequest.class);
+        // 判断是否上传了新的插件
+        if (StringUtils.hasText(jarFile.getOriginalFilename())) {
+            // 删除原来的 jar 包插件
+            ServiceResponse<PluginResponse> serviceResponse = pluginRemoteFeign.find(webPluginRequest.getId());
+            String oldAddress = serviceResponse.getData().getAddress();
+            log.info("{} 原插件文件是否删除成功：{}", oldAddress, new File(oldAddress).delete());
+            // 保存新的 jar 包插件
+            String destFile = site + File.separator + jarFile.getOriginalFilename();
+            jarFile.transferTo(new File(destFile));
+            pluginRequest.setAddress(destFile);
+        }
+        // 更新
+        pluginRemoteFeign.update(pluginRequest);
         return "redirect:/web/plugin/list";
     }
 
@@ -87,21 +96,19 @@ public class PluginWebController {
         PluginResponse pluginDto = pluginRemoteFeign.find(id).getData();
         PluginVo pluginVo = mapperFacade.map(pluginDto, PluginVo.class);
         log.info("{} 插件文件是否删除成功：{}", pluginVo.getAddress(), new File(pluginVo.getAddress()).delete());
-        pluginVo.setUpdateTime(new Date());
         pluginVo.setDel(true);
-        pluginVo.setUpdateTime(new Date());
         pluginRemoteFeign.update(mapperFacade.map(pluginVo, PluginRequest.class));
         return "redirect:/web/plugin/list";
     }
 
-    private void savePlugin(WebPluginRequest webPluginRequest, MultipartFile jarFile) throws IOException {
+    private PluginRequest buildPluginRequest(WebPluginRequest webPluginRequest, MultipartFile jarFile) throws IOException {
         PluginRequest pluginRequest = mapperFacade.map(webPluginRequest, PluginRequest.class);
         pluginRequest.setDel(false);
         String destFile = site + File.separator + jarFile.getOriginalFilename();
         jarFile.transferTo(new File(destFile));
         pluginRequest.setAddress(destFile);
         pluginRequest.setDel(false);
-        pluginRemoteFeign.add(pluginRequest);
+        return pluginRequest;
     }
 
 }

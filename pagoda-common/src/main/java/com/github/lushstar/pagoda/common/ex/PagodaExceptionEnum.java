@@ -22,8 +22,8 @@ public enum PagodaExceptionEnum implements BizExceptionAssert {
      */
     SYSTEM_ERROR(100000L, "系统内部异常"),
     VALID_ERROR(100001L, "校验异常"),
-    PARAM_EMPTY(100002L, "{0} 不能为空"),
-    PARAM_REPEAT(100003L, "{0} 不能重复"),
+    PARAM_EMPTY(100002L, "{0}不能为空"),
+    PARAM_REPEAT(100003L, "{0}不能重复"),
     ;
 
     private final Long code;

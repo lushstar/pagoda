@@ -1,10 +1,12 @@
 package com.github.lushstar.pagoda.service.handler;
 
+import com.github.lushstar.ladder.commons.exceptions.BizException;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.ValidationException;
 
@@ -25,6 +27,13 @@ public class GlobalExceptionHandler {
     public ServiceResponse<String> validationException(Exception e) {
         log.error(e.getMessage(), e);
         return ServiceResponse.error(PagodaExceptionEnum.VALID_ERROR.getCode().intValue(), e.getMessage());
+    }
+
+    @ExceptionHandler(BizException.class)
+    @ResponseBody
+    public ServiceResponse<String> bizExceptionHandler(BizException e) {
+        log.error(e.getMessage(), e);
+        return ServiceResponse.error(e.getCode().intValue(), e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

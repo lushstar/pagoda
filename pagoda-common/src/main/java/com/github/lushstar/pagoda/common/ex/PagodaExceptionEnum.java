@@ -24,7 +24,7 @@ public enum PagodaExceptionEnum implements BizExceptionAssert {
     VALID_ERROR(100001L, "校验异常"),
     PARAM_EMPTY(100002L, "{0}不能为空"),
     PARAM_REPEAT(100003L, "{0}不能重复"),
-    ID_DATA_REPEAT(100004L, "[id={0}]的数据查询为空"),
+    ID_DATA_NULL(100004L, "[id={0}]的数据查询为空"),
     ;
 
     private final Long code;

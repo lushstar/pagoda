@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * <p>description : PluginWebController
+ * <p>description : WebPluginController
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -74,7 +74,7 @@ public class WebPluginController {
     public String edit(@Validated WebPluginRequest webPluginRequest, @RequestParam("jarFile") MultipartFile jarFile) throws Exception {
         // 先查询
         PluginRequest pluginRequest = mapperFacade.map(pluginRemoteFeign.find(webPluginRequest.getId()).getData(), PluginRequest.class);
-        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(pluginRequest, webPluginRequest.getId());
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginRequest, webPluginRequest.getId());
         // 判断是否上传了新的插件
         if (StringUtils.hasText(jarFile.getOriginalFilename())) {
             // 删除原来的 jar 包插件
@@ -97,7 +97,7 @@ public class WebPluginController {
     public String del(@PathVariable Long id) {
         // 先查询
         PluginRequest pluginRequest = mapperFacade.map(pluginRemoteFeign.find(id).getData(), PluginRequest.class);
-        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(pluginRequest, id);
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginRequest, id);
         // 删除
         pluginRequest.setDel(true);
         pluginRemoteFeign.update(pluginRequest);

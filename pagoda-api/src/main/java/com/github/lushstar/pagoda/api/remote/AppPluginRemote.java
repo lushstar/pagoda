@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 /**
- * <p>description : AppPlugin
+ * <p>description : AppPluginRemote
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *

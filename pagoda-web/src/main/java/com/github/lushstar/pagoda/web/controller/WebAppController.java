@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * <p>description : AppWebController
+ * <p>description : WebAppController
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -62,7 +62,7 @@ public class WebAppController {
     public String edit(@Validated WebAppRequest webAppRequest) {
         // 先查询
         AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(webAppRequest.getId()).getData(), AppRequest.class);
-        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(appRequest, webAppRequest.getId());
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(appRequest, webAppRequest.getId());
         appRequest.setDescription(webAppRequest.getDescription());
         // 更新
         appRemoteFeign.update(appRequest);
@@ -73,7 +73,7 @@ public class WebAppController {
     public String del(@PathVariable Long id) {
         // 先查询
         AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(id).getData(), AppRequest.class);
-        PagodaExceptionEnum.ID_DATA_REPEAT.notNull(appRequest, id);
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(appRequest, id);
         // 删除
         appRequest.setDel(true);
         appRemoteFeign.update(appRequest);

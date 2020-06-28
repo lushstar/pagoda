@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 /**
- * <p>description : AppPluginWebController
+ * <p>description : WebAppPluginController
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *

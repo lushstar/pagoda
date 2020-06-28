@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.lushstar.pagoda.dal.repository.PluginRepository;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public class PluginServiceImpl implements PluginService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public PluginEntity save(PluginEntity pluginEntity) {
         return pluginRepository.saveAndFlush(pluginEntity);
     }

@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * <p>description : PluginServiceController
+ * <p>description : ServicePluginController
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -28,7 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "service/plugin")
 @Slf4j
-public class PluginServiceController implements PluginRemote {
+public class ServicePluginController implements PluginRemote {
 
     @Autowired
     private PluginService pluginService;

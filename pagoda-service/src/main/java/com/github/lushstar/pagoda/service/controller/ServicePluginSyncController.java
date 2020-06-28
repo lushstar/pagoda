@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>description : PluginSyncController, 同步插件信息
+ * <p>description : ServicePluginSyncController, 同步插件信息
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -35,7 +35,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "service/plugin/sync")
 @Slf4j
-public class PluginSyncController implements PluginSyncRemote {
+public class ServicePluginSyncController implements PluginSyncRemote {
 
     @Autowired
     private AppPluginService appPluginService;

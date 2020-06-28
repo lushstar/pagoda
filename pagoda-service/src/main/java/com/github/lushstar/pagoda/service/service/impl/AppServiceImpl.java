@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.lushstar.pagoda.dal.repository.AppRepository;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public AppEntity save(AppEntity appEntity) {
         return appRepository.saveAndFlush(appEntity);
     }

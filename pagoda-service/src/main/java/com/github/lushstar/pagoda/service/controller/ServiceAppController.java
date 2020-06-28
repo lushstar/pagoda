@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * <p>description : AppServiceController
+ * <p>description : ServiceAppController
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "service/app")
-public class AppServiceController implements AppRemote {
+public class ServiceAppController implements AppRemote {
 
     @Autowired
     private AppService appService;

@@ -1,12 +1,12 @@
 package com.github.lushstar.pagoda.service.service.impl;
 
+import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
+import com.github.lushstar.pagoda.dal.repository.AppPluginRepository;
 import com.github.lushstar.pagoda.service.service.AppPluginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.github.lushstar.pagoda.dal.repository.AppPluginRepository;
-import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class AppPluginServiceImpl implements AppPluginService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public AppPluginEntity save(AppPluginEntity appPluginEntity) {
         return appPluginRepository.save(appPluginEntity);
     }

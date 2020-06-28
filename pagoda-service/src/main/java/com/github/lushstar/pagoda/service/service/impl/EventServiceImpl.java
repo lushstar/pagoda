@@ -2,8 +2,8 @@ package com.github.lushstar.pagoda.service.service.impl;
 
 import com.github.lushstar.pagoda.service.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,11 +19,11 @@ import org.springframework.stereotype.Service;
 public class EventServiceImpl implements EventService {
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public void sendEvent(ApplicationEvent event) {
-        applicationContext.publishEvent(event);
+        eventPublisher.publishEvent(event);
     }
 
 }

@@ -16,6 +16,7 @@ import com.github.lushstar.pagoda.service.service.PluginService;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * <p>description : AppPluginServiceController
+ * <p>description : ServiceAppPluginController
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
@@ -33,7 +34,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "service/app/plugin")
-public class AppPluginServiceController implements AppPluginRemote {
+public class ServiceAppPluginController implements AppPluginRemote {
 
     @Autowired
     private AppPluginService appPluginService;
@@ -59,7 +60,7 @@ public class AppPluginServiceController implements AppPluginRemote {
 
     @Override
     @GetMapping(value = "install/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginResponse> install(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> install(@PathVariable Long appId, @PathVariable Long pluginId) {
         Date now = new Date();
         AppPluginEntity oldAppPluginEntity = new AppPluginEntity();
         oldAppPluginEntity.setAppId(appId);
@@ -75,7 +76,7 @@ public class AppPluginServiceController implements AppPluginRemote {
 
     @Override
     @GetMapping(value = "active/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginResponse> active(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> active(@PathVariable Long appId, @PathVariable Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setActive(true);
         oldAppPluginEntity.setUpdateTime(new Date());
@@ -86,7 +87,7 @@ public class AppPluginServiceController implements AppPluginRemote {
 
     @Override
     @GetMapping(value = "disable/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginResponse> disable(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> disable(@PathVariable Long appId, @PathVariable Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setActive(false);
         oldAppPluginEntity.setUpdateTime(new Date());
@@ -97,7 +98,7 @@ public class AppPluginServiceController implements AppPluginRemote {
 
     @Override
     @GetMapping(value = "uninstall/{appId}/{pluginId}")
-    public ServiceResponse<AppPluginResponse> uninstall(Long appId, Long pluginId) {
+    public ServiceResponse<AppPluginResponse> uninstall(@PathVariable Long appId, @PathVariable Long pluginId) {
         AppPluginEntity oldAppPluginEntity = appPluginService.findByAppIdAndPluginId(appId, pluginId);
         oldAppPluginEntity.setDel(true);
         oldAppPluginEntity.setUpdateTime(new Date());
@@ -106,12 +107,6 @@ public class AppPluginServiceController implements AppPluginRemote {
         return ServiceResponse.success(mapperFacade.map(appPluginEntity, AppPluginResponse.class));
     }
 
-    /**
-     * 事件通知
-     *
-     * @param appPluginEntity
-     * @param sourceType
-     */
     private void sendPluginChangeEvent(AppPluginEntity appPluginEntity, SourceType sourceType) {
         AppEntity appEntity = appService.findById(appPluginEntity.getAppId());
         PluginEntity pluginEntity = pluginService.findById(appPluginEntity.getPluginId());

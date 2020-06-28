@@ -20,7 +20,7 @@ public class DeferredResultWrapper {
 
     private static final ResponseEntity<PluginChangeMetadata> NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
-    private DeferredResult<ResponseEntity<PluginChangeMetadata>> result;
+    private final DeferredResult<ResponseEntity<PluginChangeMetadata>> result;
 
     public DeferredResultWrapper() {
         result = new DeferredResult<>(TIMEOUT, NOT_MODIFIED_RESPONSE);

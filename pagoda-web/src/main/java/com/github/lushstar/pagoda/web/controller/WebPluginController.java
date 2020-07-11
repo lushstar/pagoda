@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.web.controller;
 
-import com.github.lushstar.pagoda.api.request.PluginRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginAddRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginUpdateRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
@@ -59,8 +60,8 @@ public class WebPluginController {
         // 校验文件
         PagodaExceptionEnum.PARAM_EMPTY.hasText(jarFile.getOriginalFilename(), "jar 包文件路径");
         // 保存
-        PluginRequest pluginRequest = this.buildPluginRequest(webPluginRequest, jarFile);
-        pluginRemoteFeign.add(pluginRequest).log();
+        PluginAddRequest request = this.buildPluginRequest(webPluginRequest, jarFile);
+        pluginRemoteFeign.add(request).log();
         return "redirect:/web/plugin/list";
     }
 
@@ -75,7 +76,7 @@ public class WebPluginController {
         // 先查询
         PluginResponse pluginResponse = pluginRemoteFeign.find(webPluginRequest.getId()).getData();
         PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginResponse, webPluginRequest.getId());
-        PluginRequest pluginRequest = mapperFacade.map(pluginResponse, PluginRequest.class);
+        PluginUpdateRequest request = mapperFacade.map(pluginResponse, PluginUpdateRequest.class);
         // 判断是否上传了新的插件
         if (StringUtils.hasText(jarFile.getOriginalFilename())) {
             // 删除原来的 jar 包插件
@@ -85,12 +86,12 @@ public class WebPluginController {
             // 保存新的 jar 包插件
             String destFile = site + File.separator + jarFile.getOriginalFilename();
             jarFile.transferTo(new File(destFile));
-            pluginRequest.setAddress(destFile);
+            request.setAddress(destFile);
         }
         // 更新
-        pluginRequest.setClassName(webPluginRequest.getClassName());
-        pluginRequest.setDescription(webPluginRequest.getDescription());
-        pluginRemoteFeign.update(pluginRequest);
+        request.setClassName(webPluginRequest.getClassName());
+        request.setDescription(webPluginRequest.getDescription());
+        pluginRemoteFeign.update(request);
         return "redirect:/web/plugin/list";
     }
 
@@ -99,21 +100,19 @@ public class WebPluginController {
         // 先查询
         PluginResponse pluginResponse = pluginRemoteFeign.find(id).getData();
         PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginResponse, id);
-        PluginRequest pluginRequest = mapperFacade.map(pluginResponse, PluginRequest.class);
+        PluginUpdateRequest request = mapperFacade.map(pluginResponse, PluginUpdateRequest.class);
         // 删除
-        pluginRequest.setDel(true);
-        pluginRemoteFeign.update(pluginRequest);
+        request.setDel(true);
+        pluginRemoteFeign.update(request);
         return "redirect:/web/plugin/list";
     }
 
-    private PluginRequest buildPluginRequest(WebPluginRequest webPluginRequest, MultipartFile jarFile) throws IOException {
-        PluginRequest pluginRequest = mapperFacade.map(webPluginRequest, PluginRequest.class);
-        pluginRequest.setDel(false);
+    private PluginAddRequest buildPluginRequest(WebPluginRequest webPluginRequest, MultipartFile jarFile) throws IOException {
+        PluginAddRequest request = mapperFacade.map(webPluginRequest, PluginAddRequest.class);
         String destFile = site + File.separator + jarFile.getOriginalFilename();
         jarFile.transferTo(new File(destFile));
-        pluginRequest.setAddress(destFile);
-        pluginRequest.setDel(false);
-        return pluginRequest;
+        request.setAddress(destFile);
+        return request;
     }
 
 }

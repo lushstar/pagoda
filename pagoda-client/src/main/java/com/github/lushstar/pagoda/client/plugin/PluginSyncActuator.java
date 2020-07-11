@@ -53,6 +53,8 @@ public class PluginSyncActuator {
 
     private String serviceUrl;
 
+    private String instanceId;
+
     public PluginSyncActuator(PagodaProperties pagodaProperties, PluginManager pluginManager) {
         this.pagodaProperties = pagodaProperties;
         this.pluginManager = pluginManager;
@@ -80,6 +82,7 @@ public class PluginSyncActuator {
         }
         this.serviceUrl = pagodaProperties.getServiceUrl();
         this.appName = pagodaProperties.getAppName();
+        this.instanceId = pagodaProperties.getInstanceId();
     }
 
     /**
@@ -129,7 +132,7 @@ public class PluginSyncActuator {
      */
     private void partSyncPluginInfo() {
         log.info("{} plugin info part sync start", Thread.currentThread().getName());
-        String result = this.syncPluginInfo(serviceUrl + PART_PLUGIN_SYNC_URL + appName);
+        String result = this.syncPluginInfo(serviceUrl + PART_PLUGIN_SYNC_URL + appName + instanceId);
         if (StrUtil.isEmpty(result)) {
             return;
         }
@@ -156,8 +159,8 @@ public class PluginSyncActuator {
             SourceType oldSourceType = pluginChangeMetadata.getSourceType();
             if (oldSourceType == SourceType.ACTIVE || oldSourceType == SourceType.DISABLE) {
                 // 这里如果是 ACTIVE、DISABLE 类型，要先判断插件缓存是否有次插件，没有插件就下载
-                if (!pluginManager.hasPlugin(pluginChangeMetadata.getId())) {
-                    log.warn("plugin id {} is empty, begin download", pluginChangeMetadata.getId());
+                if (!pluginManager.hasPlugin(pluginChangeMetadata.getAppPluginId())) {
+                    log.warn("plugin id {} is empty, begin download", pluginChangeMetadata.getAppPluginId());
                     pluginChangeMetadata.setSourceType(SourceType.INSTALL);
                     this.notifyPlugin(pluginChangeMetadata);
                 }
@@ -179,13 +182,13 @@ public class PluginSyncActuator {
                 pluginManager.install(pluginChangeMetadata);
                 break;
             case ACTIVE:
-                pluginManager.active(pluginChangeMetadata.getId());
+                pluginManager.active(pluginChangeMetadata.getAppPluginId());
                 break;
             case DISABLE:
-                pluginManager.disable(pluginChangeMetadata.getId());
+                pluginManager.disable(pluginChangeMetadata.getAppPluginId());
                 break;
             case UNINSTALL:
-                pluginManager.uninstall(pluginChangeMetadata.getId());
+                pluginManager.uninstall(pluginChangeMetadata.getAppPluginId());
                 break;
             default:
                 log.warn("操作有问题, {}", pluginChangeMetadata.getSourceType());

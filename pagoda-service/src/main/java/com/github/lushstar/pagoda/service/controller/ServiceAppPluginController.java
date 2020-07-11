@@ -2,13 +2,13 @@ package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.AppPluginRemote;
 import com.github.lushstar.pagoda.api.response.AppPluginResponse;
-import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.enums.SourceType;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
-import com.github.lushstar.pagoda.service.event.PluginChangeEvent;
+import com.github.lushstar.pagoda.service.listener.PluginChangeEvent;
 import com.github.lushstar.pagoda.service.service.AppPluginService;
 import com.github.lushstar.pagoda.service.service.AppService;
 import com.github.lushstar.pagoda.service.service.EventService;
@@ -110,13 +110,13 @@ public class ServiceAppPluginController implements AppPluginRemote {
     private void sendPluginChangeEvent(AppPluginEntity appPluginEntity, SourceType sourceType) {
         AppEntity appEntity = appService.findById(appPluginEntity.getAppId());
         PluginEntity pluginEntity = pluginService.findById(appPluginEntity.getPluginId());
-        PluginChangeMetadata pluginChangeMetadata = new PluginChangeMetadata();
-        pluginChangeMetadata.setId(appPluginEntity.getId());
-        pluginChangeMetadata.setActive(appPluginEntity.isActive());
-        pluginChangeMetadata.setAddress(pluginEntity.getAddress());
-        pluginChangeMetadata.setClassName(pluginEntity.getClassName());
-        pluginChangeMetadata.setSourceType(sourceType);
-        pluginChangeMetadata.setAppName(appEntity.getName());
-        eventService.sendEvent(new PluginChangeEvent(pluginChangeMetadata));
+        PluginNotifyMetadata metadata = new PluginNotifyMetadata();
+        metadata.setAppPluginId(appPluginEntity.getId());
+        //metadata.setActive(appPluginEntity.isActive());
+        metadata.setAddress(pluginEntity.getAddress());
+        metadata.setClassName(pluginEntity.getClassName());
+        metadata.setSourceType(sourceType);
+        metadata.setAppName(appEntity.getName());
+        eventService.sendEvent(new PluginChangeEvent(metadata));
     }
 }

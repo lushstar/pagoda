@@ -62,7 +62,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
     @Override
     public void install(PluginChangeMetadata pluginChangeMetadata) {
         // 1. 判断插件是否已经激活
-        PluginChangeMetadata cachePlugin = pluginCache.get(pluginChangeMetadata.getId());
+        PluginChangeMetadata cachePlugin = pluginCache.get(pluginChangeMetadata.getAppPluginId());
         if (cachePlugin != null) {
             log.warn("plugin {} has been active, cancel install operation", cachePlugin);
             return;
@@ -72,7 +72,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
         this.download(pluginChangeMetadata);
         // 3. 添加到插件列表中, 刚刚 install 过的插件默认是禁用
         pluginChangeMetadata.setActive(false);
-        pluginCache.putIfAbsent(pluginChangeMetadata.getId(), pluginChangeMetadata);
+        pluginCache.putIfAbsent(pluginChangeMetadata.getAppPluginId(), pluginChangeMetadata);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
         // 2. 禁用插件
         this.disable(id);
         // 3. 释放 jar 包资源
-        this.releaseJarResource(plugin.getId());
+        this.releaseJarResource(plugin.getAppPluginId());
         // 4. 删除本地 plugin 文件
         this.deleteLocalPlugin(plugin);
         // 5. 清除插件 cache 缓存
@@ -201,7 +201,7 @@ public class DefaultSpringPluginManager implements ApplicationContextAware, Plug
             method.setAccessible(true);
             method.invoke(classLoader, targetUrl);
             // 4. 缓存 url 资源
-            this.cacheUrlConnection(pluginChangeMetadata.getId(), targetUrl);
+            this.cacheUrlConnection(pluginChangeMetadata.getAppPluginId(), targetUrl);
         } else {
             log.warn("pluginChangeMetadata {} has been load", pluginChangeMetadata.getLocalAddress());
         }

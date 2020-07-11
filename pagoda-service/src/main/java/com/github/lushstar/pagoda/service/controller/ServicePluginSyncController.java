@@ -1,18 +1,21 @@
 package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.PluginSyncRemote;
-import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.enums.SourceType;
+import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
-import com.github.lushstar.pagoda.service.event.PluginContext;
+import com.github.lushstar.pagoda.service.register.AppInfo;
+import com.github.lushstar.pagoda.service.register.RegisterCenter;
 import com.github.lushstar.pagoda.service.response.DeferredResultWrapper;
 import com.github.lushstar.pagoda.service.service.AppPluginService;
 import com.github.lushstar.pagoda.service.service.AppService;
 import com.github.lushstar.pagoda.service.service.PluginService;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,13 +49,20 @@ public class ServicePluginSyncController implements PluginSyncRemote {
     @Autowired
     private PluginService pluginService;
 
+    @Autowired
+    private MapperFacade mapperFacade;
+
     @Override
-    @RequestMapping("part/{appName}")
-    public DeferredResult<ResponseEntity<PluginChangeMetadata>> partSync(@PathVariable(value = "appName") String appName) {
+    @RequestMapping("part/{appName}/{instanceId}")
+    public DeferredResult<ResponseEntity<PluginNotifyMetadata>> partSync(@PathVariable(value = "appName") String appName,
+                                                                         @PathVariable(value = "instanceId") String instanceId) {
+        // 校验合法性
+        AppInfo appInfo = RegisterCenter.get(appName, instanceId);
+        PagodaExceptionEnum.DATA_NULL.notNull(appInfo);
         // 判断是否已经缓存, 如果有了, 则直接响应结果
-        if (PluginContext.CACHE_CONFIGS.containsKey(appName)) {
+        if (RegisterCenter.CACHE_CONFIGS.containsKey(instanceId)) {
             DeferredResultWrapper deferredResult = new DeferredResultWrapper();
-            deferredResult.setResult(PluginContext.CACHE_CONFIGS.remove(appName));
+            deferredResult.setResult(RegisterCenter.CACHE_CONFIGS.remove(instanceId));
             return deferredResult.getResult();
         }
         // 如果没有缓存, hold 60s
@@ -60,39 +70,36 @@ public class ServicePluginSyncController implements PluginSyncRemote {
         // 60s 到了, 移除
         deferredResult.onTimeout(() -> {
             // if timeout, print log
-            log.info("instanceId >>> 【{}】 wait timeout", appName);
+            log.info("instanceId >>> 【{}】 wait timeout", instanceId);
         });
         // 响应成功后操作
         deferredResult.onCompletion(() -> {
             // if completion(it contains two cases:1. timeout 2. return in 60 seconds), delete this cache request
-            log.info("delete DeferredResultWrapper instanceId >>> 【{}】", appName);
-            PluginContext.HOLD_REQUEST_CONFIGS.remove(appName, deferredResult);
+            log.info("delete DeferredResultWrapper instanceId >>> 【{}】", instanceId);
+            RegisterCenter.HOLD_REQUEST_CONFIGS.remove(instanceId, deferredResult);
         });
         // hold request
-        PluginContext.HOLD_REQUEST_CONFIGS.put(appName, deferredResult);
+        RegisterCenter.HOLD_REQUEST_CONFIGS.put(instanceId, deferredResult);
         // 响应
         return deferredResult.getResult();
     }
 
     @Override
     @RequestMapping("full/{appName}")
-    public ServiceResponse<List<PluginChangeMetadata>> fullSync(@PathVariable(value = "appName") String appName) {
+    public ServiceResponse<List<PluginNotifyMetadata>> fullSync(@PathVariable(value = "appName") String appName) {
         AppEntity appEntity = appService.findByName(appName);
         List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appEntity.getId());
-        List<PluginChangeMetadata> result = new ArrayList<>();
+        List<PluginNotifyMetadata> result = new ArrayList<>();
         appPluginEntityList.forEach(appPluginEntity -> {
             PluginEntity pluginEntity = pluginService.findById(appPluginEntity.getPluginId());
-            PluginChangeMetadata temp = new PluginChangeMetadata();
-            temp.setId(appPluginEntity.getId());
-            temp.setClassName(pluginEntity.getClassName());
-            temp.setAddress(pluginEntity.getAddress());
-            temp.setActive(appPluginEntity.isActive());
+            PluginNotifyMetadata pluginChangeMetadata = mapperFacade.map(pluginEntity, PluginNotifyMetadata.class);
+            pluginChangeMetadata.setAppPluginId(appPluginEntity.getId());
             if (appPluginEntity.isActive()) {
-                temp.setSourceType(SourceType.ACTIVE);
+                pluginChangeMetadata.setSourceType(SourceType.ACTIVE);
             } else {
-                temp.setSourceType(SourceType.DISABLE);
+                pluginChangeMetadata.setSourceType(SourceType.DISABLE);
             }
-            result.add(temp);
+            result.add(pluginChangeMetadata);
         });
         return ServiceResponse.success(result);
     }

@@ -4,36 +4,40 @@ import com.github.lushstar.pagoda.common.enums.SourceType;
 import lombok.Data;
 
 /**
- * <p>description : PluginChangeMetadata
+ * <p>description : PluginNotifyMetadata
  *
  * <p>blog : https://blog.csdn.net/masteryourself
  *
  * @author : masteryourself
  * @version : 1.0.0
- * @date : 2020/3/8 16:40
+ * @date : 2020/7/11 14:36
  */
 @Data
-public class PluginChangeMetadata {
+public class PluginNotifyMetadata {
 
+    /**
+     * 应用插件 Id
+     */
     private Long appPluginId;
 
+    /**
+     * 应用名称
+     */
     private String appName;
 
+    /**
+     * 地址
+     */
     private String address;
 
+    /**
+     * 插件类名
+     */
     private String className;
 
+    /**
+     * 事件类型
+     */
     private SourceType sourceType;
-
-    /**
-     * 0、false 表示禁用
-     */
-    private boolean active;
-
-    /**
-     * 临时变量，仅用于客户端
-     * 表示下载后的缓存地址
-     */
-    private String localAddress;
 
 }

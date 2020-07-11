@@ -1,7 +1,7 @@
 package com.github.lushstar.pagoda.api.remote;
 
+import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
-import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +20,10 @@ import java.util.List;
  */
 public interface PluginSyncRemote {
 
-    @RequestMapping("part/{appName}")
-    DeferredResult<ResponseEntity<PluginChangeMetadata>> partSync(@PathVariable(value = "appName") String appName);
+    @RequestMapping("part/{appName}/{instanceId}")
+    DeferredResult<ResponseEntity<PluginNotifyMetadata>> partSync(@PathVariable(value = "appName") String appName,
+                                                                  @PathVariable(value = "instanceId") String instanceId);
 
     @RequestMapping("full/{appName}")
-    ServiceResponse<List<PluginChangeMetadata>> fullSync(@PathVariable(value = "appName") String appName);
+    ServiceResponse<List<PluginNotifyMetadata>> fullSync(@PathVariable(value = "appName") String appName);
 }

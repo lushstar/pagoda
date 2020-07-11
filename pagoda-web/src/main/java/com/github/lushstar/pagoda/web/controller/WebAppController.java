@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.web.controller;
 
 import com.github.lushstar.pagoda.api.request.app.AppAddRequest;
+import com.github.lushstar.pagoda.api.request.app.AppUpdateRequest;
 import com.github.lushstar.pagoda.api.response.AppResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.web.feign.AppRemoteFeign;
@@ -47,9 +48,8 @@ public class WebAppController {
 
     @PostMapping(value = "add")
     public String add(@Validated WebAppRequest webAppRequest) {
-        AppAddRequest appRequest = mapperFacade.map(webAppRequest, AppAddRequest.class);
-        appRequest.setDel(false);
-        appRemoteFeign.add(appRequest).log();
+        AppAddRequest request = mapperFacade.map(webAppRequest, AppAddRequest.class);
+        appRemoteFeign.add(request).log();
         return "redirect:/web/app/list";
     }
 
@@ -65,9 +65,9 @@ public class WebAppController {
         Long id = webAppRequest.getId();
         AppResponse appResponse = appRemoteFeign.find(id).getData();
         PagodaExceptionEnum.ID_DATA_NULL.notNull(appResponse, id);
-        AppAddRequest appRequest = mapperFacade.map(appResponse, AppAddRequest.class);
+        AppUpdateRequest request = mapperFacade.map(appResponse, AppUpdateRequest.class);
         // 更新
-        appRemoteFeign.update(appRequest);
+        appRemoteFeign.update(request);
         return "redirect:/web/app/list";
     }
 
@@ -76,10 +76,10 @@ public class WebAppController {
         // 先查询
         AppResponse appResponse = appRemoteFeign.find(id).getData();
         PagodaExceptionEnum.ID_DATA_NULL.notNull(appResponse, id);
-        AppAddRequest appRequest = mapperFacade.map(appResponse, AppAddRequest.class);
+        AppUpdateRequest request = mapperFacade.map(appResponse, AppUpdateRequest.class);
         // 删除
-        appRequest.setDel(true);
-        appRemoteFeign.update(appRequest);
+        request.setDel(true);
+        appRemoteFeign.update(request);
         return "redirect:/web/app/list";
     }
 

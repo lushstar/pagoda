@@ -1,6 +1,6 @@
 package com.github.lushstar.pagoda.service.response;
 
-import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -18,9 +18,9 @@ public class DeferredResultWrapper {
 
     private static final long TIMEOUT = 30 * 1000;
 
-    private static final ResponseEntity<PluginChangeMetadata> NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    private static final ResponseEntity<PluginNotifyMetadata> NOT_MODIFIED_RESPONSE = new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 
-    private final DeferredResult<ResponseEntity<PluginChangeMetadata>> result;
+    private final DeferredResult<ResponseEntity<PluginNotifyMetadata>> result;
 
     public DeferredResultWrapper() {
         result = new DeferredResult<>(TIMEOUT, NOT_MODIFIED_RESPONSE);
@@ -34,11 +34,11 @@ public class DeferredResultWrapper {
         result.onCompletion(completionCallback);
     }
 
-    public void setResult(PluginChangeMetadata pluginChangeMetadata) {
-        result.setResult(new ResponseEntity<>(pluginChangeMetadata, HttpStatus.OK));
+    public void setResult(PluginNotifyMetadata metadata) {
+        result.setResult(new ResponseEntity<>(metadata, HttpStatus.OK));
     }
 
-    public DeferredResult<ResponseEntity<PluginChangeMetadata>> getResult() {
+    public DeferredResult<ResponseEntity<PluginNotifyMetadata>> getResult() {
         return result;
     }
 

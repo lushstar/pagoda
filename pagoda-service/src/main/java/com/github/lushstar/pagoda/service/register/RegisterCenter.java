@@ -56,7 +56,11 @@ public class RegisterCenter {
     }
 
     public static AppInfo get(String appName, String instanceId) {
-        List<AppInfo> appInfoList = REGISTER_CENTER.get(appName).stream().filter(appInfo -> instanceId.equals(appInfo.getInstanceId())).collect(Collectors.toList());
+        List<AppInfo> appInfos = REGISTER_CENTER.get(appName);
+        if (CollectionUtils.isEmpty(appInfos)) {
+            return null;
+        }
+        List<AppInfo> appInfoList = appInfos.stream().filter(appInfo -> instanceId.equals(appInfo.getInstanceId())).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(appInfoList)) {
             return null;
         }

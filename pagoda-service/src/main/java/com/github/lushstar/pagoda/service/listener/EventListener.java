@@ -5,6 +5,7 @@ import com.github.lushstar.pagoda.service.register.AppInfo;
 import com.github.lushstar.pagoda.service.register.RegisterCenter;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -27,6 +28,9 @@ public class EventListener {
             PluginNotifyMetadata metadata = (PluginNotifyMetadata) source;
             // 获取应用名称下的所有实例
             List<AppInfo> appInfoList = RegisterCenter.get(metadata.getAppName());
+            if (CollectionUtils.isEmpty(appInfoList)) {
+                return;
+            }
             for (AppInfo appInfo : appInfoList) {
                 // 先判断是否 HOLD_REQUEST_CONFIGS 是否有缓存
                 String instanceId = appInfo.getInstanceId();

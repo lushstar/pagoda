@@ -132,7 +132,7 @@ public class PluginSyncActuator {
      */
     private void partSyncPluginInfo() {
         log.info("{} plugin info part sync start", Thread.currentThread().getName());
-        String result = this.syncPluginInfo(serviceUrl + PART_PLUGIN_SYNC_URL + appName + instanceId);
+        String result = this.syncPluginInfo(serviceUrl + PART_PLUGIN_SYNC_URL + appName + "/" + instanceId);
         if (StrUtil.isEmpty(result)) {
             return;
         }
@@ -202,7 +202,7 @@ public class PluginSyncActuator {
         try {
             response = HttpUtil.createGet(url)
                     .setConnectionTimeout(3 * 1000)
-                    .setReadTimeout(10 * 1000)
+                    .setReadTimeout(100 * 1000)
                     .execute();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);

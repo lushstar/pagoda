@@ -4,7 +4,6 @@ import com.github.lushstar.pagoda.api.remote.PluginSyncRemote;
 import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.enums.SourceType;
-import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
@@ -56,9 +55,11 @@ public class ServicePluginSyncController implements PluginSyncRemote {
     @RequestMapping("part/{appName}/{instanceId}")
     public DeferredResult<ResponseEntity<PluginNotifyMetadata>> partSync(@PathVariable(value = "appName") String appName,
                                                                          @PathVariable(value = "instanceId") String instanceId) {
-        // 校验合法性
+        // 判断是否注册过
         AppInfo appInfo = RegisterCenter.get(appName, instanceId);
-        PagodaExceptionEnum.DATA_NULL.notNull(appInfo);
+        if (appInfo == null) {
+            RegisterCenter.register(appName, instanceId);
+        }
         // 判断是否已经缓存, 如果有了, 则直接响应结果
         if (RegisterCenter.CACHE_CONFIGS.containsKey(instanceId)) {
             DeferredResultWrapper deferredResult = new DeferredResultWrapper();

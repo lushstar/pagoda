@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "pagoda",
+      "type": "com.github.lushstar.pagoda.client.spring.PagodaProperties",
+      "sourceType": "com.github.lushstar.pagoda.client.spring.PagodaProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "pagoda.app-name",
+      "type": "java.lang.String",
+      "sourceType": "com.github.lushstar.pagoda.client.spring.PagodaProperties"
+    },
+    {
+      "name": "pagoda.instance-id",
+      "type": "java.lang.String",
+      "sourceType": "com.github.lushstar.pagoda.client.spring.PagodaProperties"
+    },
+    {
+      "name": "pagoda.service-url",
+      "type": "java.lang.String",
+      "sourceType": "com.github.lushstar.pagoda.client.spring.PagodaProperties"
+    }
+  ],
+  "hints": []
+}

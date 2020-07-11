@@ -2,7 +2,7 @@ package com.github.lushstar.pagoda.sample.spring.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.github.lushstar.pagoda.client.annotation.EnablePagoda;
+import com.github.lushstar.pagoda.client.spring.EnablePagoda;
 
 /**
  * <p>description : PagodaDemoServiceApplication

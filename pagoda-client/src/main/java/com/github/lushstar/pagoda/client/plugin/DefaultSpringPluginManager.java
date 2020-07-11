@@ -1,9 +1,9 @@
-package com.github.lushstar.pagoda.client.core;
+package com.github.lushstar.pagoda.client.plugin;
 
 import cn.hutool.core.io.IoUtil;
 import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
-import com.github.lushstar.pagoda.client.PluginManager;
-import com.github.lushstar.pagoda.client.annotation.Pagoda;
+import com.github.lushstar.pagoda.client.spring.Pagoda;
+import com.github.lushstar.pagoda.client.spring.PagodaScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;

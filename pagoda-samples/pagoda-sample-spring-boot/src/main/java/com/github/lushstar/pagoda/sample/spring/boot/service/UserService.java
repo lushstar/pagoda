@@ -1,6 +1,6 @@
 package com.github.lushstar.pagoda.sample.spring.boot.service;
 
-import com.github.lushstar.pagoda.client.annotation.Pagoda;
+import com.github.lushstar.pagoda.client.spring.Pagoda;
 import lombok.extern.slf4j.Slf4j;
 
 /**

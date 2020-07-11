@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.client.core;
+package com.github.lushstar.pagoda.client.spring;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -31,12 +31,6 @@ public class PagodaScanner extends ClassPathBeanDefinitionScanner {
         super(registry);
     }
 
-    /**
-     * 扫包
-     *
-     * @param basePackages 包路径
-     * @return
-     */
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
@@ -55,11 +49,6 @@ public class PagodaScanner extends ClassPathBeanDefinitionScanner {
         });
     }
 
-    /**
-     * 注冊到 Spring 容器中
-     *
-     * @param beanDefinitionHolder
-     */
     private void registerBean(BeanDefinitionHolder beanDefinitionHolder) {
         BeanDefinition beanDefinition = beanDefinitionHolder.getBeanDefinition();
         GenericBeanDefinition definition = (GenericBeanDefinition) beanDefinition;

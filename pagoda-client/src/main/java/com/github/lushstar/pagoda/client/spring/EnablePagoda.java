@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.client.annotation;
+package com.github.lushstar.pagoda.client.spring;
 
 import org.springframework.context.annotation.Import;
 

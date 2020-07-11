@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.web.controller;
 
 import com.github.lushstar.pagoda.api.request.AppRequest;
+import com.github.lushstar.pagoda.api.response.AppResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.web.feign.AppRemoteFeign;
 import com.github.lushstar.pagoda.web.request.WebAppRequest;
@@ -61,9 +62,10 @@ public class WebAppController {
     @PostMapping(value = "edit")
     public String edit(@Validated WebAppRequest webAppRequest) {
         // 先查询
-        AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(webAppRequest.getId()).getData(), AppRequest.class);
-        PagodaExceptionEnum.ID_DATA_NULL.notNull(appRequest, webAppRequest.getId());
-        appRequest.setDescription(webAppRequest.getDescription());
+        Long id = webAppRequest.getId();
+        AppResponse appResponse = appRemoteFeign.find(id).getData();
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(appResponse, id);
+        AppRequest appRequest = mapperFacade.map(appResponse, AppRequest.class);
         // 更新
         appRemoteFeign.update(appRequest);
         return "redirect:/web/app/list";
@@ -72,8 +74,9 @@ public class WebAppController {
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
         // 先查询
-        AppRequest appRequest = mapperFacade.map(appRemoteFeign.find(id).getData(), AppRequest.class);
-        PagodaExceptionEnum.ID_DATA_NULL.notNull(appRequest, id);
+        AppResponse appResponse = appRemoteFeign.find(id).getData();
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(appResponse, id);
+        AppRequest appRequest = mapperFacade.map(appResponse, AppRequest.class);
         // 删除
         appRequest.setDel(true);
         appRemoteFeign.update(appRequest);

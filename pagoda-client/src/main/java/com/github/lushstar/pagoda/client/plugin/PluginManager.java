@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.client;
+package com.github.lushstar.pagoda.client.plugin;
 
 import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 
@@ -14,13 +14,6 @@ import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
 public interface PluginManager {
 
     /**
-     * 安装插件
-     *
-     * @param pluginChangeMetadata 插件元数据
-     */
-    void install(PluginChangeMetadata pluginChangeMetadata);
-
-    /**
      * 判断是否有插件
      *
      * @param id 插件 Id
@@ -29,11 +22,11 @@ public interface PluginManager {
     boolean hasPlugin(Long id);
 
     /**
-     * 卸载插件
+     * 安装插件
      *
-     * @param id 插件 Id
+     * @param pluginChangeMetadata 插件元数据
      */
-    void uninstall(Long id);
+    void install(PluginChangeMetadata pluginChangeMetadata);
 
     /**
      * 激活插件
@@ -48,5 +41,12 @@ public interface PluginManager {
      * @param id 插件 Id
      */
     void disable(Long id);
+
+    /**
+     * 卸载插件
+     *
+     * @param id 插件 Id
+     */
+    void uninstall(Long id);
 
 }

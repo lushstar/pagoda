@@ -1,4 +1,4 @@
-package com.github.lushstar.pagoda.client.core;
+package com.github.lushstar.pagoda.client.spring;
 
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 import org.springframework.beans.factory.FactoryBean;

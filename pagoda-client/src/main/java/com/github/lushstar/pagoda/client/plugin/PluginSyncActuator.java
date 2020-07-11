@@ -6,6 +6,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.lushstar.pagoda.api.response.PluginChangeMetadata;
+import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.client.core.BizResponse;
 import com.github.lushstar.pagoda.client.spring.PagodaProperties;
 import com.github.lushstar.pagoda.common.enums.SourceType;
@@ -96,6 +97,10 @@ public class PluginSyncActuator {
                     .setConnectionTimeout(3 * 1000)
                     .setReadTimeout(10 * 1000)
                     .execute();
+            TypeReference<ServiceResponse<Boolean>> typeReference = new TypeReference<ServiceResponse<Boolean>>() {
+            };
+            ServiceResponse<Boolean> serviceResponse = JSONUtil.toBean(response.body(), typeReference, false);
+            PagodaExceptionEnum.REGISTER_ERROR.isTrue(serviceResponse.getData());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
         }

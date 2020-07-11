@@ -1,14 +1,19 @@
 package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.AppRemote;
-import com.github.lushstar.pagoda.api.request.AppRequest;
+import com.github.lushstar.pagoda.api.request.app.AppAddRequest;
+import com.github.lushstar.pagoda.api.request.app.AppBaseRequest;
+import com.github.lushstar.pagoda.api.request.app.AppRegisterRequest;
+import com.github.lushstar.pagoda.api.request.app.AppUpdateRequest;
 import com.github.lushstar.pagoda.api.response.AppResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
+import com.github.lushstar.pagoda.service.register.RegisterCenter;
 import com.github.lushstar.pagoda.service.service.AppService;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,11 +46,11 @@ public class ServiceAppController implements AppRemote {
 
     @Override
     @PostMapping(value = "add")
-    public ServiceResponse<AppResponse> add(@RequestBody AppRequest appRequest) {
+    public ServiceResponse<AppResponse> add(@RequestBody AppAddRequest request) {
         // 属性校验
-        this.check(appRequest, false);
+        this.check(request);
         // 保存
-        AppEntity appEntity = appService.save(mapperFacade.map(appRequest, AppEntity.class));
+        AppEntity appEntity = appService.save(mapperFacade.map(request, AppEntity.class));
         return ServiceResponse.success(mapperFacade.map(appEntity, AppResponse.class));
     }
 
@@ -58,22 +63,33 @@ public class ServiceAppController implements AppRemote {
 
     @Override
     @PostMapping(value = "update")
-    public ServiceResponse<AppResponse> update(@RequestBody AppRequest appRequest) {
+    public ServiceResponse<AppResponse> update(@Validated @RequestBody AppUpdateRequest request) {
         // 属性校验
-        this.check(appRequest, true);
+        this.check(request);
         // 更新
-        AppEntity appEntity = appService.save(mapperFacade.map(appRequest, AppEntity.class));
+        AppEntity appEntity = appService.save(mapperFacade.map(request, AppEntity.class));
         return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppResponse.class));
     }
 
-    private void check(AppRequest appRequest, boolean update) {
-        AppEntity appEntity = appService.findByName(appRequest.getName());
-        if (update) {
-            if (appEntity != null) {
-                PagodaExceptionEnum.PARAM_REPEAT.isTrue(appEntity.getId().equals(appRequest.getId()), "应用名称");
-            }
-        } else {
+    @Override
+    public ServiceResponse<Boolean> register(@Validated AppRegisterRequest request) {
+        String name = request.getName();
+        AppEntity appEntity = appService.findByName(name);
+        PagodaExceptionEnum.DATA_NULL.notNull(appEntity);
+        RegisterCenter.register(name, request.getInstanceId());
+        return ServiceResponse.success(true);
+    }
+
+    private void check(AppBaseRequest request) {
+        // 查询是否有同名
+        AppEntity appEntity = appService.findByName(request.getName());
+        if (request instanceof AppAddRequest) {
             PagodaExceptionEnum.PARAM_REPEAT.isNull(appEntity, "应用名称");
+        } else if (request instanceof AppUpdateRequest) {
+            AppUpdateRequest appUpdateRequest = (AppUpdateRequest) request;
+            if (appEntity != null) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(appEntity.getId().equals(appUpdateRequest.getId()), "应用名称");
+            }
         }
     }
 

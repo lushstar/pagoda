@@ -22,13 +22,15 @@ public enum PagodaExceptionEnum implements BizExceptionAssert {
 
     // client 异常
     APP_NAME_EMPTY(100101L, "app name 不能为空"),
-    SERVICE_URL_EMPTY(100101L, "service url 不能为空"),
+    SERVICE_URL_EMPTY(100102L, "service url 不能为空"),
+    REGISTER_ERROR(100103L, "注册失败"),
 
     // 数据校验异常
     VALID_ERROR(100201L, "校验异常"),
     PARAM_EMPTY(100202L, "{0}不能为空"),
     PARAM_REPEAT(100203L, "{0}不能重复"),
     ID_DATA_NULL(100204L, "[id={0}]的数据查询为空"),
+    DATA_NULL(100205L, "未找到对应的数据"),
     ;
 
     private final Long code;

@@ -53,7 +53,7 @@ public class ServiceAppPluginController implements AppPluginRemote {
 
     @Override
     @GetMapping(value = "findByAppId/{appId}")
-    public ServiceResponse<List<AppPluginResponse>> findByAppId(Long appId) {
+    public ServiceResponse<List<AppPluginResponse>> findByAppId(@PathVariable Long appId) {
         List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appId);
         return ServiceResponse.success(mapperFacade.mapAsList(appPluginEntityList, AppPluginResponse.class));
     }

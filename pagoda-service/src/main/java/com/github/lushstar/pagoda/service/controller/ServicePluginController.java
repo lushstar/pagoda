@@ -1,7 +1,9 @@
 package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.PluginRemote;
-import com.github.lushstar.pagoda.api.request.PluginRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginAddRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginBaseRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginUpdateRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
@@ -45,14 +47,13 @@ public class ServicePluginController implements PluginRemote {
 
     @Override
     @PostMapping(value = "add")
-    public ServiceResponse<PluginResponse> add(@RequestBody @Validated PluginRequest pluginRequest) {
+    public ServiceResponse<PluginResponse> add(@RequestBody @Validated PluginAddRequest request) {
         // 属性校验
-        this.check(pluginRequest, false);
+        this.check(request);
         // 保存
-        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(request, PluginEntity.class));
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
-
 
     @Override
     @GetMapping(value = "find/{id}")
@@ -63,36 +64,38 @@ public class ServicePluginController implements PluginRemote {
 
     @Override
     @PostMapping(value = "update")
-    public ServiceResponse<PluginResponse> update(@RequestBody @Validated PluginRequest pluginRequest) {
+    public ServiceResponse<PluginResponse> update(@RequestBody @Validated PluginUpdateRequest request) {
         // 属性校验
-        this.check(pluginRequest, true);
+        this.check(request);
         // 更新
-        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginRequest, PluginEntity.class));
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(request, PluginEntity.class));
         // 判断是否需要删除插件
-        if(pluginEntity.isDel()){
+        if (pluginEntity.isDel()) {
             log.info("{} 插件文件是否删除成功：{}", pluginEntity.getAddress(), new File(pluginEntity.getAddress()).delete());
         }
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
     }
 
-    private void check(PluginRequest pluginRequest, boolean update) {
+    private void check(PluginBaseRequest request) {
         // 判断名称是否重复
-        PluginEntity pluginEntityByName = pluginService.findByName(pluginRequest.getName());
-        if (update) {
-            if (pluginEntityByName != null) {
-                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityByName.getId().equals(pluginRequest.getId()), "插件名称");
-            }
-        } else {
+        PluginEntity pluginEntityByName = pluginService.findByName(request.getName());
+        if (request instanceof PluginAddRequest) {
             PagodaExceptionEnum.PARAM_REPEAT.isNull(pluginEntityByName, "插件名称");
+        } else if (request instanceof PluginUpdateRequest) {
+            PluginUpdateRequest pluginUpdateRequest = (PluginUpdateRequest) request;
+            if (pluginEntityByName != null) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityByName.getId().equals(pluginUpdateRequest.getId()), "插件名称");
+            }
         }
         // 判断类名是否重复
-        PluginEntity pluginEntityByClassName = pluginService.findByClassName(pluginRequest.getClassName());
-        if (update) {
-            if (pluginEntityByClassName != null) {
-                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityByClassName.getId().equals(pluginRequest.getId()), "类名");
-            }
-        } else {
+        PluginEntity pluginEntityByClassName = pluginService.findByClassName(request.getClassName());
+        if (request instanceof PluginAddRequest) {
             PagodaExceptionEnum.PARAM_REPEAT.isNull(pluginEntityByClassName, "类名");
+        } else if (request instanceof PluginUpdateRequest) {
+            PluginUpdateRequest pluginUpdateRequest = (PluginUpdateRequest) request;
+            if (pluginEntityByClassName != null) {
+                PagodaExceptionEnum.PARAM_REPEAT.isTrue(pluginEntityByClassName.getId().equals(pluginUpdateRequest.getId()), "类名");
+            }
         }
     }
 

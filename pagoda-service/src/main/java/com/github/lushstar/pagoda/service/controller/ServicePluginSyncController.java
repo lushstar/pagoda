@@ -1,12 +1,13 @@
 package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.PluginSyncRemote;
-import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
+import com.github.lushstar.pagoda.api.response.PluginNotifyResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.enums.SourceType;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
+import com.github.lushstar.pagoda.service.listener.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.service.register.AppInfo;
 import com.github.lushstar.pagoda.service.register.RegisterCenter;
 import com.github.lushstar.pagoda.service.response.DeferredResultWrapper;
@@ -53,7 +54,7 @@ public class ServicePluginSyncController implements PluginSyncRemote {
 
     @Override
     @RequestMapping("part/{appName}/{instanceId}")
-    public DeferredResult<ResponseEntity<PluginNotifyMetadata>> partSync(@PathVariable(value = "appName") String appName,
+    public DeferredResult<ResponseEntity<PluginNotifyResponse>> partSync(@PathVariable(value = "appName") String appName,
                                                                          @PathVariable(value = "instanceId") String instanceId) {
         // 判断是否注册过
         AppInfo appInfo = RegisterCenter.get(appName, instanceId);
@@ -63,7 +64,7 @@ public class ServicePluginSyncController implements PluginSyncRemote {
         // 判断是否已经缓存, 如果有了, 则直接响应结果
         if (RegisterCenter.CACHE_CONFIGS.containsKey(instanceId)) {
             DeferredResultWrapper deferredResult = new DeferredResultWrapper();
-            deferredResult.setResult(RegisterCenter.CACHE_CONFIGS.remove(instanceId));
+            deferredResult.setResult(mapperFacade.map(RegisterCenter.CACHE_CONFIGS.remove(instanceId), PluginNotifyResponse.class));
             return deferredResult.getResult();
         }
         // 如果没有缓存, hold 60s
@@ -87,10 +88,10 @@ public class ServicePluginSyncController implements PluginSyncRemote {
 
     @Override
     @RequestMapping("full/{appName}")
-    public ServiceResponse<List<PluginNotifyMetadata>> fullSync(@PathVariable(value = "appName") String appName) {
+    public ServiceResponse<List<PluginNotifyResponse>> fullSync(@PathVariable(value = "appName") String appName) {
         AppEntity appEntity = appService.findByName(appName);
         List<AppPluginEntity> appPluginEntityList = appPluginService.findByAppId(appEntity.getId());
-        List<PluginNotifyMetadata> result = new ArrayList<>();
+        List<PluginNotifyResponse> result = new ArrayList<>();
         appPluginEntityList.forEach(appPluginEntity -> {
             PluginEntity pluginEntity = pluginService.findById(appPluginEntity.getPluginId());
             PluginNotifyMetadata pluginChangeMetadata = mapperFacade.map(pluginEntity, PluginNotifyMetadata.class);
@@ -100,7 +101,7 @@ public class ServicePluginSyncController implements PluginSyncRemote {
             } else {
                 pluginChangeMetadata.setSourceType(SourceType.DISABLE);
             }
-            result.add(pluginChangeMetadata);
+            result.add(mapperFacade.map(pluginChangeMetadata, PluginNotifyResponse.class));
         });
         return ServiceResponse.success(result);
     }

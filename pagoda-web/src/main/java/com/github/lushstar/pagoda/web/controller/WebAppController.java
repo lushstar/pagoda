@@ -1,9 +1,8 @@
 package com.github.lushstar.pagoda.web.controller;
 
 import com.github.lushstar.pagoda.api.request.app.AppAddRequest;
+import com.github.lushstar.pagoda.api.request.app.AppDelRequest;
 import com.github.lushstar.pagoda.api.request.app.AppUpdateRequest;
-import com.github.lushstar.pagoda.api.response.AppResponse;
-import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.web.feign.AppRemoteFeign;
 import com.github.lushstar.pagoda.web.request.WebAppRequest;
 import ma.glasnost.orika.MapperFacade;
@@ -61,25 +60,16 @@ public class WebAppController {
 
     @PostMapping(value = "edit")
     public String edit(@Validated WebAppRequest webAppRequest) {
-        // 先查询
-        Long id = webAppRequest.getId();
-        AppResponse appResponse = appRemoteFeign.find(id).getData();
-        PagodaExceptionEnum.ID_DATA_NULL.notNull(appResponse, id);
-        AppUpdateRequest request = mapperFacade.map(appResponse, AppUpdateRequest.class);
-        // 更新
-        appRemoteFeign.update(request);
+        appRemoteFeign.update(mapperFacade.map(webAppRequest, AppUpdateRequest.class)).log();
         return "redirect:/web/app/list";
     }
 
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
-        // 先查询
-        AppResponse appResponse = appRemoteFeign.find(id).getData();
-        PagodaExceptionEnum.ID_DATA_NULL.notNull(appResponse, id);
-        AppUpdateRequest request = mapperFacade.map(appResponse, AppUpdateRequest.class);
-        // 删除
+        AppDelRequest request = new AppDelRequest();
+        request.setId(id);
         request.setDel(true);
-        appRemoteFeign.update(request);
+        appRemoteFeign.del(request).log();
         return "redirect:/web/app/list";
     }
 

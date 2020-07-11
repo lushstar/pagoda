@@ -1,8 +1,10 @@
 package com.github.lushstar.pagoda.service.listener;
 
-import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
+import com.github.lushstar.pagoda.api.response.PluginNotifyResponse;
 import com.github.lushstar.pagoda.service.register.AppInfo;
 import com.github.lushstar.pagoda.service.register.RegisterCenter;
+import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -19,9 +21,12 @@ import java.util.List;
  * @date : 2020/3/7 20:49
  */
 @Component
-public class EventListener {
+public class PluginNotifyEventListener {
 
-    @org.springframework.context.event.EventListener(classes = {PluginChangeEvent.class})
+    @Autowired
+    private MapperFacade mapperFacade;
+
+    @org.springframework.context.event.EventListener(classes = {PluginNotifyEvent.class})
     public void ruleNotifyEvent(ApplicationEvent event) {
         Object source = event.getSource();
         if (source instanceof PluginNotifyMetadata) {
@@ -35,7 +40,7 @@ public class EventListener {
                 // 先判断是否 HOLD_REQUEST_CONFIGS 是否有缓存
                 String instanceId = appInfo.getInstanceId();
                 if (RegisterCenter.HOLD_REQUEST_CONFIGS.containsKey(instanceId)) {
-                    RegisterCenter.HOLD_REQUEST_CONFIGS.get(instanceId).setResult(metadata);
+                    RegisterCenter.HOLD_REQUEST_CONFIGS.get(instanceId).setResult(mapperFacade.map(metadata, PluginNotifyResponse.class));
                 }
                 // 如果 HOLD_REQUEST_CONFIGS 没有缓存, 就缓存这次变化
                 else {

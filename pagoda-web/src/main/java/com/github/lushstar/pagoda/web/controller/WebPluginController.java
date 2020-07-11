@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.web.controller;
 
 import com.github.lushstar.pagoda.api.request.plugin.PluginAddRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginDelRequest;
 import com.github.lushstar.pagoda.api.request.plugin.PluginUpdateRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
@@ -97,13 +98,11 @@ public class WebPluginController {
 
     @GetMapping(value = "del/{id}")
     public String del(@PathVariable Long id) {
-        // 先查询
-        PluginResponse pluginResponse = pluginRemoteFeign.find(id).getData();
-        PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginResponse, id);
-        PluginUpdateRequest request = mapperFacade.map(pluginResponse, PluginUpdateRequest.class);
         // 删除
+        PluginDelRequest request = new PluginDelRequest();
+        request.setId(id);
         request.setDel(true);
-        pluginRemoteFeign.update(request);
+        pluginRemoteFeign.del(request).log();
         return "redirect:/web/plugin/list";
     }
 

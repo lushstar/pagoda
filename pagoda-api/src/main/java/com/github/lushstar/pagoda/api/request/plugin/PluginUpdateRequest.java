@@ -2,7 +2,7 @@ package com.github.lushstar.pagoda.api.request.plugin;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>description : PluginUpdateRequest
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class PluginUpdateRequest extends PluginBaseRequest{
 
-    @NotBlank(message = "id 不能为空")
+    @NotNull(message = "id 不能为空")
     private Long id;
 
     /**

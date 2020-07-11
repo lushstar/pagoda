@@ -1,10 +1,7 @@
 package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.AppRemote;
-import com.github.lushstar.pagoda.api.request.app.AppAddRequest;
-import com.github.lushstar.pagoda.api.request.app.AppBaseRequest;
-import com.github.lushstar.pagoda.api.request.app.AppRegisterRequest;
-import com.github.lushstar.pagoda.api.request.app.AppUpdateRequest;
+import com.github.lushstar.pagoda.api.request.app.*;
 import com.github.lushstar.pagoda.api.response.AppResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
@@ -64,10 +61,27 @@ public class ServiceAppController implements AppRemote {
     @Override
     @PostMapping(value = "update")
     public ServiceResponse<AppResponse> update(@Validated @RequestBody AppUpdateRequest request) {
+        // 先查询
+        Long id = request.getId();
+        AppEntity appEntityQuery = appService.findById(id);
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(appEntityQuery, id);
+        mapperFacade.map(request, appEntityQuery);
         // 属性校验
         this.check(request);
         // 更新
-        AppEntity appEntity = appService.save(mapperFacade.map(request, AppEntity.class));
+        AppEntity appEntity = appService.save(mapperFacade.map(appEntityQuery, AppEntity.class));
+        return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppResponse.class));
+    }
+
+    @Override
+    public ServiceResponse<AppResponse> del(AppDelRequest request) {
+        // 先查询
+        Long id = request.getId();
+        AppEntity appEntityQuery = appService.findById(id);
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(appEntityQuery, id);
+        mapperFacade.map(request, appEntityQuery);
+        // 更新
+        AppEntity appEntity = appService.save(mapperFacade.map(appEntityQuery, AppEntity.class));
         return ServiceResponse.success(mapperFacade.map(appService.save(appEntity), AppResponse.class));
     }
 

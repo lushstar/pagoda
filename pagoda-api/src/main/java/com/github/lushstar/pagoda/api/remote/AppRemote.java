@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.api.remote;
 
 import com.github.lushstar.pagoda.api.request.app.AppAddRequest;
+import com.github.lushstar.pagoda.api.request.app.AppDelRequest;
 import com.github.lushstar.pagoda.api.request.app.AppRegisterRequest;
 import com.github.lushstar.pagoda.api.request.app.AppUpdateRequest;
 import com.github.lushstar.pagoda.api.response.AppResponse;
@@ -34,6 +35,9 @@ public interface AppRemote {
 
     @PostMapping(value = "update")
     ServiceResponse<AppResponse> update(@RequestBody AppUpdateRequest request);
+
+    @PostMapping(value = "del")
+    ServiceResponse<AppResponse> del(@RequestBody AppDelRequest request);
 
     @PostMapping(value = "register")
     ServiceResponse<Boolean> register(@RequestBody AppRegisterRequest request);

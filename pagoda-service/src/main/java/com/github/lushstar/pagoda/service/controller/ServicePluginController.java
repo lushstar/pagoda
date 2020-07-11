@@ -3,6 +3,7 @@ package com.github.lushstar.pagoda.service.controller;
 import com.github.lushstar.pagoda.api.remote.PluginRemote;
 import com.github.lushstar.pagoda.api.request.plugin.PluginAddRequest;
 import com.github.lushstar.pagoda.api.request.plugin.PluginBaseRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginDelRequest;
 import com.github.lushstar.pagoda.api.request.plugin.PluginUpdateRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
@@ -65,15 +66,33 @@ public class ServicePluginController implements PluginRemote {
     @Override
     @PostMapping(value = "update")
     public ServiceResponse<PluginResponse> update(@RequestBody @Validated PluginUpdateRequest request) {
+        // 先查询
+        Long id = request.getId();
+        PluginEntity pluginEntityQuery = pluginService.findById(id);
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginEntityQuery, id);
+        mapperFacade.map(request, pluginEntityQuery);
         // 属性校验
         this.check(request);
         // 更新
-        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(request, PluginEntity.class));
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginEntityQuery, PluginEntity.class));
         // 判断是否需要删除插件
         if (pluginEntity.isDel()) {
             log.info("{} 插件文件是否删除成功：{}", pluginEntity.getAddress(), new File(pluginEntity.getAddress()).delete());
         }
         return ServiceResponse.success(mapperFacade.map(pluginEntity, PluginResponse.class));
+    }
+
+    @Override
+    @PostMapping(value = "del")
+    public ServiceResponse<PluginResponse> del(PluginDelRequest request) {
+        // 先查询
+        Long id = request.getId();
+        PluginEntity pluginServiceQuery = pluginService.findById(id);
+        PagodaExceptionEnum.ID_DATA_NULL.notNull(pluginServiceQuery, id);
+        mapperFacade.map(request, pluginServiceQuery);
+        // 更新
+        PluginEntity pluginEntity = pluginService.save(mapperFacade.map(pluginServiceQuery, PluginEntity.class));
+        return ServiceResponse.success(mapperFacade.map(pluginService.save(pluginEntity), PluginResponse.class));
     }
 
     private void check(PluginBaseRequest request) {

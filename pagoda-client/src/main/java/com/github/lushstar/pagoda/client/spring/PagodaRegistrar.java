@@ -1,6 +1,6 @@
 package com.github.lushstar.pagoda.client.spring;
 
-import com.github.lushstar.pagoda.client.plugin.DefaultSpringPluginManager;
+import com.github.lushstar.pagoda.client.core.DefaultSpringPluginManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;

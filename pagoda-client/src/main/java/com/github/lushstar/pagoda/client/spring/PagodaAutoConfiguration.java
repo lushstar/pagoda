@@ -1,8 +1,8 @@
 package com.github.lushstar.pagoda.client.spring;
 
-import com.github.lushstar.pagoda.client.plugin.DefaultSpringPluginManager;
-import com.github.lushstar.pagoda.client.plugin.PluginManager;
-import com.github.lushstar.pagoda.client.plugin.PluginSyncActuator;
+import com.github.lushstar.pagoda.client.core.DefaultSpringPluginManager;
+import com.github.lushstar.pagoda.client.core.PluginManager;
+import com.github.lushstar.pagoda.client.core.PluginSyncActuator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

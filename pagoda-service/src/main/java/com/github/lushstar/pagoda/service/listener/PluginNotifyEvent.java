@@ -1,6 +1,5 @@
 package com.github.lushstar.pagoda.service.listener;
 
-import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -12,9 +11,9 @@ import org.springframework.context.ApplicationEvent;
  * @version : 1.0.0
  * @date : 2020/3/7 20:42
  */
-public class PluginChangeEvent extends ApplicationEvent {
+public class PluginNotifyEvent extends ApplicationEvent {
 
-    public PluginChangeEvent(PluginNotifyMetadata metadata) {
+    public PluginNotifyEvent(PluginNotifyMetadata metadata) {
         super(metadata);
     }
 

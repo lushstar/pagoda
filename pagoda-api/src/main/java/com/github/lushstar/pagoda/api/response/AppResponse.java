@@ -19,9 +19,15 @@ public class AppResponse {
 
     private Long id;
 
+    /**
+     * {@link JsonFormat} 用于序列化成 json 数据展示
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    /**
+     * {@link JsonFormat} 用于序列化成 json 数据展示
+     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 

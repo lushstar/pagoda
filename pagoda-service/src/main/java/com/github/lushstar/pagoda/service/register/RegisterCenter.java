@@ -1,6 +1,6 @@
 package com.github.lushstar.pagoda.service.register;
 
-import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
+import com.github.lushstar.pagoda.service.listener.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.service.response.DeferredResultWrapper;
 import org.springframework.util.CollectionUtils;
 

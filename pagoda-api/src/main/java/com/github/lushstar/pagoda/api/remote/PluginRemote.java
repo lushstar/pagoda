@@ -1,6 +1,7 @@
 package com.github.lushstar.pagoda.api.remote;
 
 import com.github.lushstar.pagoda.api.request.plugin.PluginAddRequest;
+import com.github.lushstar.pagoda.api.request.plugin.PluginDelRequest;
 import com.github.lushstar.pagoda.api.request.plugin.PluginUpdateRequest;
 import com.github.lushstar.pagoda.api.response.PluginResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
@@ -33,5 +34,8 @@ public interface PluginRemote {
 
     @PostMapping(value = "update")
     ServiceResponse<PluginResponse> update(@RequestBody PluginUpdateRequest request);
+
+    @PostMapping(value = "del")
+    ServiceResponse<PluginResponse> del(PluginDelRequest request);
 
 }

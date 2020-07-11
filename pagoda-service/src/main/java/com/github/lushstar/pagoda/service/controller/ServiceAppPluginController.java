@@ -2,13 +2,13 @@ package com.github.lushstar.pagoda.service.controller;
 
 import com.github.lushstar.pagoda.api.remote.AppPluginRemote;
 import com.github.lushstar.pagoda.api.response.AppPluginResponse;
-import com.github.lushstar.pagoda.api.response.PluginNotifyMetadata;
+import com.github.lushstar.pagoda.service.listener.PluginNotifyMetadata;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.enums.SourceType;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
-import com.github.lushstar.pagoda.service.listener.PluginChangeEvent;
+import com.github.lushstar.pagoda.service.listener.PluginNotifyEvent;
 import com.github.lushstar.pagoda.service.service.AppPluginService;
 import com.github.lushstar.pagoda.service.service.AppService;
 import com.github.lushstar.pagoda.service.service.EventService;
@@ -117,6 +117,6 @@ public class ServiceAppPluginController implements AppPluginRemote {
         metadata.setClassName(pluginEntity.getClassName());
         metadata.setSourceType(sourceType);
         metadata.setAppName(appEntity.getName());
-        eventService.sendEvent(new PluginChangeEvent(metadata));
+        eventService.sendEvent(new PluginNotifyEvent(metadata));
     }
 }

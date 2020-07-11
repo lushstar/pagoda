@@ -20,13 +20,13 @@ public class PluginResponse {
     private Long id;
 
     /**
-     * 创建时间
+     * {@link JsonFormat} 用于序列化成 json 数据展示
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**
-     * 修改时间
+     * {@link JsonFormat} 用于序列化成 json 数据展示
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;

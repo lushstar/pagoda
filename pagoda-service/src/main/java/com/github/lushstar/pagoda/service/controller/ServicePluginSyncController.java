@@ -4,6 +4,7 @@ import com.github.lushstar.pagoda.api.remote.PluginSyncRemote;
 import com.github.lushstar.pagoda.api.response.PluginNotifyResponse;
 import com.github.lushstar.pagoda.api.response.ServiceResponse;
 import com.github.lushstar.pagoda.common.enums.SourceType;
+import com.github.lushstar.pagoda.common.ex.PagodaExceptionEnum;
 import com.github.lushstar.pagoda.dal.model.AppEntity;
 import com.github.lushstar.pagoda.dal.model.AppPluginEntity;
 import com.github.lushstar.pagoda.dal.model.PluginEntity;
@@ -59,6 +60,8 @@ public class ServicePluginSyncController implements PluginSyncRemote {
         // 判断是否注册过
         AppInfo appInfo = RegisterCenter.get(appName, instanceId);
         if (appInfo == null) {
+            AppEntity appEntity = appService.findByName(appName);
+            PagodaExceptionEnum.DATA_NULL.notNull(appEntity);
             RegisterCenter.register(appName, instanceId);
         }
         // 判断是否已经缓存, 如果有了, 则直接响应结果

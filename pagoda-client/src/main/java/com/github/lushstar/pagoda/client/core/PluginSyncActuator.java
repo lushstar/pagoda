@@ -101,6 +101,9 @@ public class PluginSyncActuator {
             TypeReference<ServiceResponse<Boolean>> typeReference = new TypeReference<ServiceResponse<Boolean>>() {
             };
             ServiceResponse<Boolean> serviceResponse = JSONUtil.toBean(response.body(), typeReference, false);
+            if (!serviceResponse.isSuccess()) {
+                log.info("app register error {}", serviceResponse);
+            }
             PagodaExceptionEnum.REGISTER_ERROR.isTrue(serviceResponse.getData());
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
@@ -174,7 +177,7 @@ public class PluginSyncActuator {
      *
      * @param pluginChangeMetadata {@link PluginChangeMetadata}
      */
-    private void notifyPlugin(PluginChangeMetadata pluginChangeMetadata) {
+    private synchronized void notifyPlugin(PluginChangeMetadata pluginChangeMetadata) {
         switch (pluginChangeMetadata.getSourceType()) {
             case INSTALL:
                 pluginManager.install(pluginChangeMetadata);

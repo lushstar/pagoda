@@ -38,7 +38,7 @@ public class AppEntity {
     @Column(columnDefinition = "bit(1) COMMENT '是否删除，0、false 表示未删除'")
     private boolean del = false;
 
-    @Column(unique = true, columnDefinition = "varchar(100) COMMENT '应用名称'")
+    @Column(columnDefinition = "varchar(100) COMMENT '应用名称'")
     private String name;
 
     @Column(columnDefinition = "varchar(5000) COMMENT '应用描述'")

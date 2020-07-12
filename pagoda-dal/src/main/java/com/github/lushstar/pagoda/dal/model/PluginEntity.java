@@ -38,7 +38,7 @@ public class PluginEntity {
     @Column(columnDefinition = "bit(1) COMMENT '是否删除，0、false 表示未删除'")
     private boolean del;
 
-    @Column(unique = true, columnDefinition = "varchar(100) COMMENT '插件名称'")
+    @Column(columnDefinition = "varchar(100) COMMENT '插件名称'")
     private String name;
 
     @Column(columnDefinition = "varchar(5000) COMMENT '插件描述'")
@@ -47,7 +47,7 @@ public class PluginEntity {
     @Column(columnDefinition = "varchar(5000) COMMENT '插件地址'")
     private String address;
 
-    @Column(name = "class_name", unique = true, columnDefinition = "varchar(100) COMMENT '插件类名'")
+    @Column(name = "class_name", columnDefinition = "varchar(100) COMMENT '插件类名'")
     private String className;
 
 }

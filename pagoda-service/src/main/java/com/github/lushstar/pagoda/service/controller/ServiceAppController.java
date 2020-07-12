@@ -74,6 +74,7 @@ public class ServiceAppController implements AppRemote {
     }
 
     @Override
+    @PostMapping(value = "del")
     public ServiceResponse<AppResponse> del(AppDelRequest request) {
         // 先查询
         Long id = request.getId();
@@ -86,6 +87,7 @@ public class ServiceAppController implements AppRemote {
     }
 
     @Override
+    @PostMapping(value = "register")
     public ServiceResponse<Boolean> register(@Validated AppRegisterRequest request) {
         String name = request.getName();
         AppEntity appEntity = appService.findByName(name);
